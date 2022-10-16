@@ -5,6 +5,7 @@ import Image from 'react-bootstrap/Image';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Spinner from 'react-bootstrap/Spinner';
 import logo from '../assets/noimage.png';
 // import AuthContext from '../context/AuthContext';
 import useAxios from '../utils/useAxios';
@@ -50,8 +51,12 @@ const Home = () => {
 
   if(loading) {
     return (
-      <Layout>
-        <h1>LOADING</h1>
+      <Layout className="container-height">
+        <Row className='h-100 justify-content-center align-items-center'>
+          <Col className='justify-content-center'>
+            <Spinner animation="border" style={{ width: "5rem", height: "5rem",  }} />;
+          </Col>
+        </Row>
       </Layout>
     )
   } else {
