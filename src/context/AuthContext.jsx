@@ -28,9 +28,6 @@ export const AuthProvider = ({children}) => {
             setAuthTokens(data);
             setUser(jwt_decode(data.access));
             localStorage.setItem('authTokens', JSON.stringify(data));
-
-            // const res = await api.get('/user/')
-            // console.log('res', res)
             navigate("/");
         } else {
             alert('You have entered an invalid username or password. Please try again')
@@ -44,23 +41,8 @@ export const AuthProvider = ({children}) => {
         navigate("/login");
     }
 
-    const changePassword = async (password) => {
-        const response = await fetch('https://web-production-94d8.up.railway.app/change-password/', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${authTokens?.access}`
-            },
-            body:JSON.stringify({ 'password': password })
-        });
-
-        const {is_change_password} = await response.json();
-        if(is_change_password) {
-            navigate("/");
-        }
-    }
-
     // const updateToken = async () => {
+    //     console.log('adsdasd')
     //     const response = await fetch('https://web-production-94d8.up.railway.app/token/refresh/', {
     //         method: 'POST',
     //         headers: {
@@ -84,6 +66,22 @@ export const AuthProvider = ({children}) => {
     //     }
     // }
 
+    const changePassword = async (password) => {
+        const response = await fetch('https://web-production-94d8.up.railway.app/change-password/', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${authTokens?.access}`
+            },
+            body:JSON.stringify({ 'password': password })
+        });
+
+        const {is_change_password} = await response.json();
+        if(is_change_password) {
+            navigate("/");
+        }
+    }
+
     const contextData = {
         user: user,
         authTokens:authTokens,
@@ -105,7 +103,7 @@ export const AuthProvider = ({children}) => {
         //     if(authTokens) {
         //         updateToken();
         //     }
-        // }, time)
+        // }, 5000)
         
         // return () => clearInterval(interval)
 
@@ -114,8 +112,6 @@ export const AuthProvider = ({children}) => {
             setUser(jwt_decode(authTokens.access));
         }
         setLoading(false);
-
-
     }, [authTokens, loading])
 
     return (

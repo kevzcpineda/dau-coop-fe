@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout/Index';
 import Image from 'react-bootstrap/Image';
@@ -7,32 +7,33 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
 import logo from '../assets/noimage.png';
-// import AuthContext from '../context/AuthContext';
+import AuthContext from '../context/AuthContext';
 import useAxios from '../utils/useAxios';
 
 const Home = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({});
-  // const {authTokens, logoutUser} = useContext(AuthContext);
+  const {authTokens, logoutUser} = useContext(AuthContext);
 
   let api = useAxios()
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     getUserInfo();
   }, [])
 
   const getUserInfo = async () => {
-    // const response = await fetch('https://web-production-94d8.up.railway.app/user/', {
+    setLoading(true);
+    const response = await api.get('/user/')
+    //   const response = await fetch('https://web-production-94d8.up.railway.app/user/', {
     //     method: 'GET',
     //     headers: {
     //         'Content-Type': 'application/json',
     //         'Authorization': `Bearer ${String(authTokens.access)}`
     //     },
     // });
+    // console.log(response);
     // const data = await response.json();
-    setLoading(true);
-    const response = await api.get('/user/')
     
     if(response.status === 200) {
       if(response.data.is_change_password === false) {
@@ -42,29 +43,28 @@ const Home = () => {
         setUserInfo(response.data)
         setLoading(false);
       }
-    } 
-
-    // else if (response.status === 401) {
-    //   logoutUser();
-    // }
+    } else if (response.status === 401) {
+      logoutUser();
+      setLoading(false);
+    }
   }
 
   if(loading) {
     return (
       <Layout className="container-height">
-        <Row className='h-100 justify-content-center align-items-center'>
-          <Col className='justify-content-center'>
-            <Spinner animation="border" style={{ width: "5rem", height: "5rem",  }} />;
+        <Row className='h-100 align-items-center'>
+          <Col className='d-flex justify-content-center'>
+            <Spinner animation="border" style={{ width: "150px", height: "150px", borderWidth: '10px'  }} />;
           </Col>
         </Row>
       </Layout>
     )
   } else {
     return (
-      <Layout>
+      <Layout className="pt-5">
         <Row>
           <Col xs={3}>
-            <Image src={logo} alt='logo' width={200} height={250} />
+            <Image src={ userInfo.image ? `https://web-production-94d8.up.railway.app${userInfo.image}` : logo} alt='logo' width={250} height={250} />
           </Col>
           <Col>
             <Row>

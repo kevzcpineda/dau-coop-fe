@@ -7,9 +7,9 @@ const Header = () => {
   const {user, logoutUser} = useContext(AuthContext);
   return (
     <Navbar bg="dark" variant="dark">
-      <Container>
+      <Container fluid>
         <Navbar.Brand href='#home'>
-          <img src='/logo.svg' width='30' height='30' className='d-inline-block align-top' alt='React Bootstrap logo' />
+          {/* <img src='/logo.svg' width='30' height='30' className='d-inline-block align-top' alt='React Bootstrap logo' /> */}
         </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
@@ -19,9 +19,9 @@ const Header = () => {
             </Navbar.Text>
           )} */}
           {user && (
-            <Navbar.Text onClick={logoutUser}>
+            <Navbar.Brand className='user-select-none'  onClick={logoutUser}>
               Logout
-            </Navbar.Text>
+            </Navbar.Brand>
           )}
         </Navbar.Collapse>
       </Container>
