@@ -4,7 +4,7 @@ import jwt_decode from "jwt-decode";
 import dayjs from "dayjs";
 import AuthContext from '../context/AuthContext';
 
-const baseURL = 'https://web-production-94d8.up.railway.app';
+const baseURL = process.env.REACT_APP_API_BASE_URL;
 
 const useAxios = () => {
     const { authTokens, setUser, setAuthTokens } = useContext(AuthContext);

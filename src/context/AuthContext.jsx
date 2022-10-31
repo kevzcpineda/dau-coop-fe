@@ -7,7 +7,7 @@ const AuthContext = createContext();
 export default AuthContext;
 
 export const AuthProvider = ({children}) => {
-
+    const baseURL = process.env.REACT_APP_API_BASE_URL;
     const [authTokens, setAuthTokens] = useState(() => localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null);
     const [user, setUser] = useState(() => localStorage.getItem('authTokens') ? jwt_decode(localStorage.getItem('authTokens')) : null);
     const [loading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ export const AuthProvider = ({children}) => {
     const navigate = useNavigate();
 
     const loginUser = async (username, password) => {
-        const response = await fetch('https://web-production-94d8.up.railway.app/token/', {
+        const response = await fetch(`${baseURL}/token/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -71,7 +71,7 @@ export const AuthProvider = ({children}) => {
     // }
 
     const changePassword = async (password) => {
-        const response = await fetch('https://web-production-94d8.up.railway.app/change-password/', {
+        const response = await fetch(`${baseURL}/change-password/`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
