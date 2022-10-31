@@ -28,7 +28,11 @@ export const AuthProvider = ({children}) => {
             setAuthTokens(data);
             setUser(jwt_decode(data.access));
             localStorage.setItem('authTokens', JSON.stringify(data));
-            navigate("/");
+            if(!data.isAdmin) {
+                navigate("/");
+            } else {
+                navigate("/dashboard");
+            }
         } else {
             alert('You have entered an invalid username or password. Please try again')
         }
@@ -93,21 +97,6 @@ export const AuthProvider = ({children}) => {
     }
 
     useEffect(() => {
-        // ---- OLD ---
-        // if(loading) {
-        //     updateToken();
-        // }
-
-        // let time = 1000 * 60 * 4;
-        // let interval = setInterval(() => {
-        //     if(authTokens) {
-        //         updateToken();
-        //     }
-        // }, 5000)
-        
-        // return () => clearInterval(interval)
-
-        // --- NEW ---
         if(authTokens) {
             setUser(jwt_decode(authTokens.access));
         }

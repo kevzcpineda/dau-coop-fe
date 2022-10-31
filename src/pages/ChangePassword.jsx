@@ -1,14 +1,27 @@
 import React, { useState, useContext } from 'react';
-import Layout from '../components/Layout/Index';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import Form from 'react-bootstrap/Form';
+import {
+  Box,
+  Button,
+  Container,
+  Stack,
+  InputGroup,
+  Input,
+  InputRightElement,
+  useBreakpointValue,
+  useColorModeValue,
+} from '@chakra-ui/react'
+import { Logo } from '../components/Login/Logo'
 import AuthContext from '../context/AuthContext';
 
 const ChangePassword = () => {
   const {changePassword} = useContext(AuthContext);
+
+  const [showPassword, setShowPassword] = React.useState(false)
+  const passwordHandleClick  = () => setShowPassword(!showPassword)
+
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false)
+  const confirmPasswordHandleClick  = () => setShowConfirmPassword(!showConfirmPassword)
+
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -23,34 +36,82 @@ const ChangePassword = () => {
   }
   //className='vh-100 gray-900'
   return (
-    <>
-      <Layout>
-        <Row className='h-100 justify-content-center align-items-center'>
-          <Col xs={6}>
-            <Card className='w-100'>
-              {/* <Card.Img variant='top' src='holder.js/100px180' /> */}
-              <Card.Body>
-                <Form onSubmit={handleLogin}>
-
-                  <Form.Group className='mb-3' controlId='formBasicPassword'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type='password' name="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder='Enter New Password' />
-                  </Form.Group>
-
-                  <Form.Group className='mb-3' controlId='formBasicConfirmPassword'>
-                    <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control type='password' name="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder='Enter Confirm Password' />
-                  </Form.Group>
-                  <Button variant='primary' type='submit'>
-                    Submit
+    <Container
+      maxW='lg'
+      py={{
+        base: '12',
+        md: '24',
+      }}
+      px={{
+        base: '0',
+        sm: '8',
+      }}
+    >
+      <Stack spacing='8'>
+        <Stack spacing='6'>
+          <Logo />
+        </Stack>
+        <Box
+          py={{
+            base: '0',
+            sm: '8',
+          }}
+          px={{
+            base: '4',
+            sm: '10',
+          }}
+          bg={useBreakpointValue({
+            base: 'transparent',
+            sm: 'bg-surface',
+          })}
+          boxShadow={{
+            base: 'none',
+            sm: useColorModeValue('md', 'md-dark'),
+          }}
+          borderRadius={{
+            base: 'none',
+            sm: 'xl',
+          }}
+        >
+          <Stack as='form' onSubmit={handleLogin} spacing='6'>
+            <Stack spacing='5'>
+              <InputGroup size='md'>
+                <Input
+                  pr='4.5rem'
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder='Enter New Password'
+                  value={password} onChange={(e) => setPassword(e.target.value)}
+                />
+                <InputRightElement width='4.5rem'>
+                  <Button h='1.75rem' size='sm' onClick={passwordHandleClick}>
+                    {showPassword ? 'Hide' : 'Show'}
                   </Button>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Layout>
-    </>
+                </InputRightElement>
+              </InputGroup>
+
+              <InputGroup size='md'>
+                <Input
+                  pr='4.5rem'
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  placeholder='Enter Confirm Password'
+                  value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+                <InputRightElement width='4.5rem'>
+                  <Button h='1.75rem' size='sm' onClick={confirmPasswordHandleClick}>
+                    {showConfirmPassword ? 'Hide' : 'Show'}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </Stack>
+            <Stack spacing='6'>
+              <Button type='submit' colorScheme='blue' variant='solid'>
+                Submit
+              </Button>
+            </Stack>
+          </Stack>
+        </Box>
+      </Stack>
+    </Container>
   );
 };
 

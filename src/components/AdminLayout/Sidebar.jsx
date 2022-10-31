@@ -1,0 +1,49 @@
+import React from 'react'
+import {
+  Box,
+  Flex,
+  Spacer,
+  Stack,
+  Heading,
+  useColorModeValue as mode,
+} from "@chakra-ui/react";
+import { FaRegChartBar } from "react-icons/fa";
+import { AiFillHome, AiFillSetting } from "react-icons/ai";
+import { BsFillPeopleFill, BsCalendar } from "react-icons/bs";
+
+import { NavLink } from "./NavLink";
+
+export const Sidebar = (props) => {
+  return (
+    <Flex
+    bg={mode("gray.50", "gray.800")}
+    direction="column"
+    borderRightWidth="1px"
+    width="80"
+    {...props}
+  >
+    <Flex direction="column" flex="1" pt="5" pb="4" overflowY="auto" px="4">
+      <Box mb="6">
+        <Heading as="h2" size="x1" color={mode("gray.600", "gray.400")}>
+          DAU COOP
+        </Heading>
+      </Box>
+
+      <Stack spacing="6" as="nav" aria-label="Sidebar Navigation">
+        <Stack spacing="1">
+          <NavLink label="Home" href="/dashboard" icon={AiFillHome} />
+          {/* <NavLink label="Members" href="/members" icon={BsFillPeopleFill} />
+          <NavLink
+            label="Scheduled Viewing"
+            href="/schedule"
+            icon={BsCalendar}
+          />
+          <NavLink label="Reports" href="/reports" icon={FaRegChartBar} />
+          <NavLink label="Setting" href="/settings" icon={AiFillSetting} /> */}
+        </Stack>
+      </Stack>
+      <Spacer />
+    </Flex>
+  </Flex>
+  )
+}

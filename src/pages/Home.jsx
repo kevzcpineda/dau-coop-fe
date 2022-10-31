@@ -1,11 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
-import Layout from '../components/Layout/Index';
-import Image from 'react-bootstrap/Image';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import Spinner from 'react-bootstrap/Spinner';
+import { useNavigate } from 'react-router-dom';
+import Layout from '../components/UserLayout';
+import { Spinner } from '@chakra-ui/react';
+import { Image, Box, Grid, GridItem, Input, FormControl, FormLabel } from '@chakra-ui/react';
 import logo from '../assets/noimage.png';
 import AuthContext from '../context/AuthContext';
 import useAxios from '../utils/useAxios';
@@ -14,9 +11,9 @@ const Home = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({});
-  const {authTokens, logoutUser} = useContext(AuthContext);
+  const { authTokens, logoutUser } = useContext(AuthContext);
 
-  let api = useAxios()
+  let api = useAxios();
 
   useEffect(() => {
     getUserInfo();
@@ -24,167 +21,163 @@ const Home = () => {
 
   const getUserInfo = async () => {
     setLoading(true);
-    const response = await api.get('/user/')
-    //   const response = await fetch('https://web-production-94d8.up.railway.app/user/', {
-    //     method: 'GET',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': `Bearer ${String(authTokens.access)}`
-    //     },
-    // });
-    // console.log(response);
-    // const data = await response.json();
-    
-    if(response.status === 200) {
-      if(response.data.is_change_password === false) {
-        navigate("/change-password");
+    const response = await api.get('/user/');
+
+    if (response.status === 200) {
+      if (response.data.is_change_password === false) {
+        navigate('/change-password');
         setLoading(false);
       } else {
-        setUserInfo(response.data)
+        setUserInfo(response.data);
         setLoading(false);
       }
     } else if (response.status === 401) {
       logoutUser();
       setLoading(false);
     }
-  }
+  };
 
-  if(loading) {
+  if (loading) {
     return (
-      <Layout className="container-height">
-        <Row className='h-100 align-items-center'>
-          <Col className='d-flex justify-content-center'>
-            <Spinner animation="border" style={{ width: "150px", height: "150px", borderWidth: '10px'  }} />;
-          </Col>
-        </Row>
+      <Layout>
+        <Spinner thickness='4px' speed='0.65s' emptyColor='gray.200' color='blue.500' size='xl' />
       </Layout>
-    )
+    );
   } else {
     return (
-      <Layout className="pt-5">
-        <Row>
-          <Col xs={3}>
-            <Image src={ userInfo.image ? `https://web-production-94d8.up.railway.app${userInfo.image}` : logo} alt='logo' width={250} height={250} />
-          </Col>
-          <Col>
-            <Row>
-              <Col>
-                <Form.Group className='mb-3'>
-                  <Form.Label>First Name</Form.Label>
-                  <Form.Control type='Text' placeholder={userInfo.first_name} disabled readOnly />
-                </Form.Group> 
-              </Col>
-              <Col>
-                <Form.Group className='mb-3'>
-                  <Form.Label>Last Name</Form.Label>
-                  <Form.Control type='text' placeholder={userInfo.last_name} disabled readOnly />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group className='mb-3'>
-                  <Form.Label>Middle Name</Form.Label>
-                  <Form.Control type='text' placeholder={userInfo.middle_name} disabled readOnly />
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group className='mb-3'>
-                  <Form.Label>Age</Form.Label>
-                  <Form.Control type='text' placeholder={userInfo.age} disabled readOnly />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group className='mb-3'>
-                  <Form.Label>Gender</Form.Label>
-                  <Form.Control type='text' placeholder={userInfo.gender} disabled readOnly />
-                </Form.Group>
-              </Col>
-              <Col>
-                <Form.Group className='mb-3'>
-                  <Form.Label>Date of Birth</Form.Label>
-                  <Form.Control type='text' placeholder={userInfo.birth_date} disabled readOnly />
-                </Form.Group>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Form.Group className='mb-3'>
-              <Form.Label>Full Address</Form.Label>
-              <Form.Control type='text' placeholder={userInfo.address} disabled readOnly />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group className='mb-3'>
-              <Form.Label>Phone Number</Form.Label>
-              <Form.Control type='text' placeholder={userInfo.phone_no} disabled readOnly />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group className='mb-3'>
-              <Form.Label>Civil Status</Form.Label>
-              <Form.Control type='text' placeholder={userInfo.civil_status} disabled readOnly />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Form.Group className='mb-3'>
-              <Form.Label>Date of Membership</Form.Label>
-              <Form.Control type='text' placeholder={userInfo.date_of_membership} disabled readOnly />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group className='mb-3'>
-              <Form.Label>Driver Licinse Number</Form.Label>
-              <Form.Control type='text' placeholder={userInfo.driver_license_no} disabled readOnly />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group className='mb-3'>
-              <Form.Label>Member Status</Form.Label>
-              <Form.Control type='text' placeholder={userInfo.member_status} disabled readOnly />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Form.Group className='mb-3'>
-              <Form.Label>Height</Form.Label>
-              <Form.Control type='text' placeholder={userInfo.height} disabled readOnly />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group className='mb-3'>
-              <Form.Label>Weight</Form.Label>
-              <Form.Control type='text' placeholder={userInfo.weight} disabled readOnly />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group className='mb-3'>
-              <Form.Label>Blood Type</Form.Label>
-              <Form.Control type='text' placeholder={userInfo.blood_type} disabled readOnly />
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Form.Group className='mb-3'>
-              <Form.Label>Philhealth No.</Form.Label>
-              <Form.Control type='text' placeholder={userInfo.philhealth_no} disabled readOnly />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group className='mb-3'>
-              <Form.Label>SSS</Form.Label>
-              <Form.Control type='text' placeholder={userInfo.sss_no} disabled readOnly />
-            </Form.Group>
-          </Col>
-        </Row>
+      <Layout>
+        <Grid templateColumns='repeat(4, 1fr)' gap={1}>
+          <GridItem colSpan={1}>
+            <Box>
+              <Image
+                boxSize='270px'
+                objectFit='cover'
+                src={userInfo.image ? `https://web-production-94d8.up.railway.app${userInfo.image}` : logo}
+                alt='image'
+              />
+            </Box>
+          </GridItem>
+          <GridItem colSpan={3}>
+            <Grid templateColumns='repeat(2, 1fr)' my={4} gap={5}>
+              <GridItem>
+                <FormControl>
+                  <FormLabel>First Name</FormLabel>
+                  <Input placeholder={userInfo.first_name} isReadOnly />
+                </FormControl>
+              </GridItem>
+              <GridItem>
+                <FormControl>
+                  <FormLabel>Last Name</FormLabel>
+                  <Input placeholder={userInfo.last_name} isReadOnly />
+                </FormControl>
+              </GridItem>
+            </Grid>
+
+            <Grid templateColumns='repeat(2, 1fr)' my={4} gap={5}>
+              <GridItem>
+                <FormControl>
+                  <FormLabel>Middle Name</FormLabel>
+                  <Input placeholder={userInfo.middle_name} isReadOnly />
+                </FormControl>
+              </GridItem>
+              <GridItem>
+                <FormControl>
+                  <FormLabel>Age</FormLabel>
+                  <Input placeholder={userInfo.age} isReadOnly />
+                </FormControl>
+              </GridItem>
+            </Grid>
+
+            <Grid templateColumns='repeat(2, 1fr)' my={4} gap={5}>
+              <GridItem>
+                <FormControl>
+                  <FormLabel>Gender</FormLabel>
+                  <Input placeholder={userInfo.gender} isReadOnly />
+                </FormControl>
+              </GridItem>
+              <GridItem>
+                <FormControl>
+                  <FormLabel>Date of Birth</FormLabel>
+                  <Input placeholder={userInfo.birth_date} isReadOnly />
+                </FormControl>
+              </GridItem>
+            </Grid>
+          </GridItem>
+        </Grid>
+        <Grid templateColumns='repeat(3, 1fr)' my={4} gap={5}>
+          <GridItem>
+            <FormControl>
+              <FormLabel>Full Address</FormLabel>
+              <Input placeholder={userInfo.address} isReadOnly />
+            </FormControl>
+          </GridItem>
+          <GridItem>
+            <FormControl>
+              <FormLabel>Phone Number</FormLabel>
+              <Input placeholder={userInfo.phone_no} isReadOnly />
+            </FormControl>
+          </GridItem>
+          <GridItem>
+            <FormControl>
+              <FormLabel>Civil Status</FormLabel>
+              <Input placeholder={userInfo.civil_status} isReadOnly />
+            </FormControl>
+          </GridItem>
+        </Grid>
+        <Grid templateColumns='repeat(3, 1fr)' my={4} gap={5}>
+          <GridItem>
+            <FormControl>
+              <FormLabel>Date of Membership</FormLabel>
+              <Input placeholder={userInfo.date_of_membership} isReadOnly />
+            </FormControl>
+          </GridItem>
+          <GridItem>
+            <FormControl>
+              <FormLabel>Driver Licinse Number</FormLabel>
+              <Input placeholder={userInfo.driver_license_no} isReadOnly />
+            </FormControl>
+          </GridItem>
+          <GridItem>
+            <FormControl>
+              <FormLabel>Member Status</FormLabel>
+              <Input placeholder={userInfo.member_status} isReadOnly />
+            </FormControl>
+          </GridItem>
+        </Grid>
+        <Grid templateColumns='repeat(3, 1fr)' my={4} gap={5}>
+          <GridItem>
+            <FormControl>
+              <FormLabel>Height</FormLabel>
+              <Input placeholder={userInfo.height} isReadOnly />
+            </FormControl>
+          </GridItem>
+          <GridItem>
+            <FormControl>
+              <FormLabel>Weight</FormLabel>
+              <Input placeholder={userInfo.weight} isReadOnly />
+            </FormControl>
+          </GridItem>
+          <GridItem>
+            <FormControl>
+              <FormLabel>Blood Type</FormLabel>
+              <Input placeholder={userInfo.blood_type} isReadOnly />
+            </FormControl>
+          </GridItem>
+        </Grid>
+        <Grid templateColumns='repeat(3, 1fr)' my={4} gap={5}>
+          <GridItem>
+            <FormControl>
+              <FormLabel>Philhealth No.</FormLabel>
+              <Input placeholder={userInfo.philhealth_no} isReadOnly />
+            </FormControl>
+          </GridItem>
+          <GridItem>
+            <FormControl>
+              <FormLabel>SSS</FormLabel>
+              <Input placeholder={userInfo.sss_no} isReadOnly />
+            </FormControl>
+          </GridItem>
+        </Grid>
       </Layout>
     );
   }
