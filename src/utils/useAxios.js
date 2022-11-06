@@ -4,9 +4,9 @@ import jwt_decode from "jwt-decode";
 import dayjs from "dayjs";
 import AuthContext from '../context/AuthContext';
 
-const baseURL = process.env.REACT_APP_API_BASE_URL;
-
 const useAxios = () => {
+    const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
+
     const { authTokens, setUser, setAuthTokens } = useContext(AuthContext);
 
     const axiosInstance = axios.create({

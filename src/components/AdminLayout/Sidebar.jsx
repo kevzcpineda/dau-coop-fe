@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   Box,
   Flex,
@@ -6,14 +6,17 @@ import {
   Stack,
   Heading,
   useColorModeValue as mode,
+  Button,
 } from "@chakra-ui/react";
 import { FaRegChartBar } from "react-icons/fa";
 import { AiFillHome, AiFillSetting } from "react-icons/ai";
 import { BsFillPeopleFill, BsCalendar } from "react-icons/bs";
 
 import { NavLink } from "./NavLink";
+import AuthContext from '../../context/AuthContext';
 
 export const Sidebar = (props) => {
+  const { logoutUser } = useContext(AuthContext);
   return (
     <Flex
     bg={mode("gray.50", "gray.800")}
@@ -40,6 +43,7 @@ export const Sidebar = (props) => {
           />
           <NavLink label="Reports" href="/reports" icon={FaRegChartBar} />
           <NavLink label="Setting" href="/settings" icon={AiFillSetting} /> */}
+          <Button colorScheme='blue' onClick={logoutUser}>Button</Button>
         </Stack>
       </Stack>
       <Spacer />

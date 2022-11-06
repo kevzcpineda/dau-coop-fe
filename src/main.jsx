@@ -21,9 +21,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route element={<PrivateRoutes />}>
                 <Route path="/" element={<Home />} exact />
                 <Route path="/change-password" element={<ChangePassword />} exact />
+                <Route path='/dashboard' element={<Dashboard />} exact />
               </Route>
               <Route path="/login" element={<Login />} />
-              <Route path='/dashboard' element={<Dashboard />} exact />
             </Routes>
           </AuthProvider>
         </Router>

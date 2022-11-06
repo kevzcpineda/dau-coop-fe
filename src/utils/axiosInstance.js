@@ -2,7 +2,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import dayjs from "dayjs";
 
-const baseURL = process.env.REACT_APP_API_BASE_URL;
+const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
 
 let authTokens = localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null;
 

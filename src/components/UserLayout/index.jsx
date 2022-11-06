@@ -1,11 +1,13 @@
 import React from 'react';
 import { Container } from '@chakra-ui/react'
-// import Header from './Header';
+import Header from './Header';
 
-const Index = ({ children, props }) => {
+const Index = ({ children, showHeader, props }) => {
   return (
     <>
-      {/* <Header /> */}
+      {showHeader && (
+        <Header />
+      )}
       <Container maxW='container.xl' {...props}>
         {children}
       </Container>
