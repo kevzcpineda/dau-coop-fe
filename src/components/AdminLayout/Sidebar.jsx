@@ -35,8 +35,8 @@ export const Sidebar = (props) => {
       <Stack spacing="6" as="nav" aria-label="Sidebar Navigation">
         <Stack spacing="1">
           <NavLink label="Home" href="/dashboard" icon={AiFillHome} />
-          {/* <NavLink label="Members" href="/members" icon={BsFillPeopleFill} />
-          <NavLink
+          <NavLink label="Members" href="/members" icon={BsFillPeopleFill} />
+          {/* <NavLink
             label="Scheduled Viewing"
             href="/schedule"
             icon={BsCalendar}

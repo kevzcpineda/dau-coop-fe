@@ -116,6 +116,18 @@ export const AuthProvider = ({children}) => {
         }
     }
 
+    const getUsers = async () => {
+        const response = await fetch(`${baseURL}/createUser/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        const data = await response.json();
+        return data;
+    }
+
     const contextData = {
         user: user,
         authTokens:authTokens,
@@ -124,7 +136,8 @@ export const AuthProvider = ({children}) => {
         loginUser: loginUser,
         logoutUser: logoutUser,
         changePassword: changePassword,
-        createUser: createUser
+        createUser: createUser,
+        getUsers: getUsers
     }
 
     useEffect(() => {

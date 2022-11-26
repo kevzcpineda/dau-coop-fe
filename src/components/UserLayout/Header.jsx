@@ -4,7 +4,6 @@ import AuthContext from '../../context/AuthContext';
 
 const Header = () => {
   const {user, logoutUser} = useContext(AuthContext);
-  console.log(user)
   return (
     <Box as='header' bgColor='blue.500' py={2}>
       <Container maxW='container.xl'>
