@@ -39,8 +39,7 @@ export const AuthProvider = ({ children }) => {
       setUser(jwt_decode(data.access));
       localStorage.setItem('authTokens', JSON.stringify(data));
       const { is_superuser, user_id } = jwt_decode(data.access);
-      console(user_id);
-      if (user_id !== 1) {
+      if (!is_superuser) {
         navigate('/');
       } else {
         navigate('/dashboard');
