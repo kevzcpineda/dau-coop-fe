@@ -27,7 +27,7 @@ import AuthContext from '../context/AuthContext';
 import { useUser } from '../states/User';
 
 const Members = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: editIsOpen, onOpen: editOnOpen, onClose } = useDisclosure();
   const {
     isOpen: deleteIsOpen,
     onOpen: deleteOnOpen,
@@ -47,8 +47,8 @@ const Members = () => {
 
   const handleGetUser = async () => {
     const response = await getUsers();
+    console.log(response)
     setUser(response);
-    console.log(response);
   };
 
   const handleEdit = () => {
@@ -56,10 +56,12 @@ const Members = () => {
     onClose();
   };
 
-  const handleEditModal = (id) => {
-    getUser(id);
-    setId(id);
-    onOpen();
+  const handleEditModal = (user) => {
+    getUser(user.id);
+    setId(user.id);
+    setfirstName(user.first_name)
+    setlastName(user.last_name)
+    editOnOpen();
   };
 
   const handleLoanModal = (id) => {
@@ -104,7 +106,7 @@ const Members = () => {
                     <Td>{user.first_name}</Td>
                     <Td>{user.last_name}</Td>
                     <Td>
-                      <Button onClick={() => handleEditModal(user.id)}>
+                      <Button onClick={() => handleEditModal(user)}>
                         Edit
                       </Button>
                       <Button onClick={() => handledeleteClick(user.id)}>
@@ -114,7 +116,7 @@ const Members = () => {
                         Loan
                       </Button>
 
-                      <Modal isOpen={isOpen} onClose={onClose} size='6xl'>
+                      <Modal isOpen={editIsOpen} onClose={onClose} size='6xl'>
                         <ModalOverlay />
                         <ModalContent>
                           <ModalHeader>Edit</ModalHeader>
@@ -123,14 +125,14 @@ const Members = () => {
                             <FormControl>
                               <FormLabel>First name</FormLabel>
                               <Input
-                                value={user.first_name}
+                                value={firstName}
                                 onChange={(e) => setfirstName(e.target.value)}
                               />
                             </FormControl>
                             <FormControl>
                               <FormLabel>Last name</FormLabel>
                               <Input
-                                value={user.last_name}
+                                value={lastName}
                                 onChange={(e) => setlastName(e.target.value)}
                               />
                             </FormControl>
