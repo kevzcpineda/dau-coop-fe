@@ -1,5 +1,12 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
 import {
   Box,
   Heading,
@@ -21,13 +28,20 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Spinner,
   useDisclosure,
 } from '@chakra-ui/react';
 import AuthContext from '../context/AuthContext';
 import { useUser } from '../states/User';
+import { useLoan } from '../states/Loan';
+import UserModal from '../components/Members/UserModal';
+import DeleteModal from '../components/Members/DeleteModal';
+import LoanModal from '../components/Members/LoanModal';
+import AddJeepModal from '../components/Members/AddJeepModal';
+import EditModal from '../components/Members/EditModal';
+import MemberTable from '../components/Members/MemberTable';
 
 const Members = () => {
-  const { isOpen: editIsOpen, onOpen: editOnOpen, onClose } = useDisclosure();
   const {
     isOpen: deleteIsOpen,
     onOpen: deleteOnOpen,
@@ -38,171 +52,146 @@ const Members = () => {
     onOpen: loanOnOpen,
     onClose: loanOnClose,
   } = useDisclosure();
-  const { getUsers } = useContext(AuthContext);
-  const [users, setUser] = useState([]);
+  const {
+    isOpen: jeepIsOpen,
+    onOpen: jeepOnOpen,
+    onClose: jeepOnClose,
+  } = useDisclosure();
+  const {
+    isOpen: userIsOpen,
+    onOpen: userOnOpen,
+    onClose: userOnClose,
+  } = useDisclosure();
+
+  // const { getUsers } = useContext(AuthContext);
+  const [Users, setUsers] = useState([]);
   const [id, setId] = useState(null);
-  const { getUser, user, deleteUser, editUser } = useUser((state) => state);
-  const [firstName, setfirstName] = useState('');
-  const [lastName, setlastName] = useState('');
 
-  const handleGetUser = async () => {
-    const response = await getUsers();
-    console.log(response)
-    setUser(response);
-  };
+  const {
+    getUsers,
+    getUser,
+    users,
+    deleteUser,
+    editUser,
+    createJeep,
+    token,
+    setUserId,
+  } = useUser((state) => state);
 
-  const handleEdit = () => {
-    editUser(id, firstName, lastName);
-    onClose();
-  };
+  const [filterUser, setFilterUser] = useState({});
 
-  const handleEditModal = (user) => {
-    getUser(user.id);
-    setId(user.id);
-    setfirstName(user.first_name)
-    setlastName(user.last_name)
-    editOnOpen();
-  };
+  const { createLoan } = useLoan((state) => state);
 
-  const handleLoanModal = (id) => {
+  // functions
+
+  const handleLoanModal = (e, id) => {
+    // stopPropagation - para hindi ma trigger yung parent function - handleUserModal
+    e.stopPropagation();
     setId(id);
     loanOnOpen();
   };
-  const handleDeleteUser = (id) => {
+  const handleLoan = (amount) => {
+    createLoan(id, amount);
+    loanOnClose();
+  };
+  const handleDeleteUser = () => {
     deleteUser(id);
     const newUser = users.filter((user) => user.id !== id);
-    setUser(newUser);
+    setUsers(newUser);
     deleteOnClose();
   };
 
-  const handledeleteClick = (id) => {
+  const handledeleteModal = (e, id) => {
+    e.stopPropagation();
     deleteOnOpen();
     setId(id);
   };
 
-  useEffect(() => {
-    handleGetUser();
-  }, []);
+  const handleJeepModal = (e, id) => {
+    e.stopPropagation();
+    setId(id);
+    jeepOnOpen();
+  };
+
+  const handleUserModal = async (id) => {
+    setId(id);
+    // await setUserId(id);
+    // await getUser(id);
+    const userFind = users.find((item) => item.id === id);
+    console.log(userFind);
+    setFilterUser(userFind);
+    userOnOpen();
+  };
+
+  const handleAddJeep = async (crFileNo) => {
+    await createJeep(
+      id,
+      crFileNo,
+      plateNo,
+      engineNo,
+      chasisNo,
+      caseNo,
+      make,
+      yearModel,
+      color,
+      franchiseValidDate
+    );
+  };
+
+  const { data, status } = useQuery('members', getUsers);
 
   return (
     <AdminLayout>
       <Box>
         <Heading>Members</Heading>
-        <TableContainer>
-          <Table variant='striped' colorScheme='gray'>
-            <Thead>
-              <Tr>
-                <Th>ID</Th>
-                <Th>First Name</Th>
-                <Th>Lasr Name</Th>
-                <Th>Action</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {users &&
-                users.map((user) => (
-                  <Tr key={user.id}>
-                    <Td>{user.id}</Td>
-                    <Td>{user.first_name}</Td>
-                    <Td>{user.last_name}</Td>
-                    <Td>
-                      <Button onClick={() => handleEditModal(user)}>
-                        Edit
-                      </Button>
-                      <Button onClick={() => handledeleteClick(user.id)}>
-                        delete
-                      </Button>
-                      <Button onClick={() => handleLoanModal(user.id)}>
-                        Loan
-                      </Button>
-
-                      <Modal isOpen={editIsOpen} onClose={onClose} size='6xl'>
-                        <ModalOverlay />
-                        <ModalContent>
-                          <ModalHeader>Edit</ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody>
-                            <FormControl>
-                              <FormLabel>First name</FormLabel>
-                              <Input
-                                value={firstName}
-                                onChange={(e) => setfirstName(e.target.value)}
-                              />
-                            </FormControl>
-                            <FormControl>
-                              <FormLabel>Last name</FormLabel>
-                              <Input
-                                value={lastName}
-                                onChange={(e) => setlastName(e.target.value)}
-                              />
-                            </FormControl>
-                          </ModalBody>
-
-                          <ModalFooter>
-                            <Button colorScheme='blue' mr={3} onClick={onClose}>
-                              Close
-                            </Button>
-                            <Button
-                              variant='ghost'
-                              onClick={() => handleEdit()}
-                            >
-                              Edit
-                            </Button>
-                          </ModalFooter>
-                        </ModalContent>
-                      </Modal>
-
-                      <Modal isOpen={deleteIsOpen} onClose={deleteOnClose}>
-                        <ModalOverlay />
-                        <ModalContent>
-                          <ModalHeader>delete</ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody>delete</ModalBody>
-
-                          <ModalFooter>
-                            <Button
-                              colorScheme='blue'
-                              mr={3}
-                              onClick={deleteOnClose}
-                            >
-                              Close
-                            </Button>
-                            <Button
-                              variant='ghost'
-                              onClick={() => handleDeleteUser(id)}
-                            >
-                              Delete
-                            </Button>
-                          </ModalFooter>
-                        </ModalContent>
-                      </Modal>
-
-                      <Modal isOpen={loanIsOpen} onClose={loanOnClose}>
-                        <ModalOverlay />
-                        <ModalContent>
-                          <ModalHeader>loan</ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody>loan</ModalBody>
-
-                          <ModalFooter>
-                            <Button
-                              colorScheme='blue'
-                              mr={3}
-                              onClick={loanOnClose}
-                            >
-                              Close
-                            </Button>
-                            <Button variant='ghost'>Delete</Button>
-                          </ModalFooter>
-                        </ModalContent>
-                      </Modal>
-                    </Td>
-                  </Tr>
-                ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+        {status === 'loading' && <Spinner />}
+        {status === 'error' && <div>error...</div>}
+        {status === 'success' && (
+          <MemberTable
+            handleUserModal={handleUserModal}
+            handledeleteModal={handledeleteModal}
+            handleLoanModal={handleLoanModal}
+            handleJeepModal={handleJeepModal}
+          />
+        )}
       </Box>
+      {deleteIsOpen && (
+        <DeleteModal
+          onClose={deleteOnClose}
+          onOpen={deleteOnOpen}
+          isOpen={deleteIsOpen}
+          handleDeleteUser={handleDeleteUser}
+        />
+      )}
+
+      {loanIsOpen && (
+        <LoanModal
+          onClose={loanOnClose}
+          onOpen={loanOnOpen}
+          isOpen={loanIsOpen}
+          handleLoan={handleLoan}
+        />
+      )}
+
+      {jeepIsOpen && (
+        <AddJeepModal
+          onClose={jeepOnClose}
+          onOpen={jeepOnOpen}
+          isOpen={jeepIsOpen}
+          id={id}
+          handleAddJeep={handleAddJeep}
+        />
+      )}
+
+      {userIsOpen && (
+        <UserModal
+          onClose={userOnClose}
+          onOpen={userOnOpen}
+          isOpen={userIsOpen}
+          id={id}
+          filterUser={filterUser}
+        />
+      )}
     </AdminLayout>
   );
 };

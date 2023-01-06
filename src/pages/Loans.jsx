@@ -11,110 +11,112 @@ import {
   Td,
   TableContainer,
   Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  FormControl,
-  FormLabel,
-  Input,
   useDisclosure,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Spinner,
 } from '@chakra-ui/react';
 import { useUser } from '../states/User';
 import { useLoan } from '../states/Loan';
+import Paper from '../components/pdf/Paper';
+import { useReactToPrint } from 'react-to-print';
+import AuthContext from '../context/AuthContext';
+import PaymentModal from '../components/Loan/PaymentModal';
+import LoanTable from '../components/Loan/LoanTable';
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
 
 const Loans = () => {
-  const users = [];
+  const { getUser } = useContext(AuthContext);
+  const [user, setUser] = useState({});
   const [id, setId] = useState(null);
-  const [amount, setAmount] = useState(null);
+  const [amount, setAmount] = useState(0);
+  const [ticket, setTicket] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { getUser, user, deleteUser } = useUser((state) => state);
   const { getLoans, loans, loanPayment } = useLoan((state) => state);
+  const filterLoan = loans.filter((item) => item.balance === 0);
 
   const handlePaymentModal = (id) => {
     onOpen();
     setId(id);
   };
 
-  const handlePayment = () => {
-    loanPayment(id, amount);
+  const handlePayment = async () => {
+    await loanPayment(id, amount, ticket);
     onClose();
   };
+  const printRef = useRef();
 
-  useEffect(() => {
-    getLoans();
-  }, []);
+  const toPrint = useReactToPrint({
+    content: () => printRef.current,
+  });
+
+  const print = async (user) => {
+    // const response = await getUser(id);
+    await setUser(user);
+    toPrint();
+    // console.log(user);
+  };
+
+  const { data, status } = useQuery('loan', getLoans);
 
   return (
     <AdminLayout>
+      <div style={{ display: 'none' }}>
+        <div ref={printRef}>
+          <TableContainer>
+            <Table variant='striped' colorScheme='gray'>
+              <Thead>
+                <Tr>
+                  <Th>ID</Th>
+                  <Th>First Name</Th>
+                  <Th>Lasr Name</Th>
+                  <Th>Action</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                <Tr>
+                  <Td>kevin</Td>
+                  <Td>sdkjfbsd</Td>
+                  <Td>asdasd</Td>
+                  <Td>asdasd</Td>
+                </Tr>
+              </Tbody>
+            </Table>
+          </TableContainer>
+          {/* <h1>keivn</h1> */}
+        </div>
+      </div>
+
+      {isOpen && (
+        <PaymentModal
+          isOpen={isOpen}
+          onClose={onClose}
+          setAmount={setAmount}
+          setTicket={setTicket}
+          handlePayment={handlePayment}
+        />
+      )}
+
       <Box>
         <Heading>Loans</Heading>
-        <TableContainer>
-          <Table variant='striped' colorScheme='gray'>
-            <Thead>
-              <Tr>
-                <Th>ID</Th>
-                <Th>First Name</Th>
-                <Th>Lasr Name</Th>
-                <Th>balance</Th>
-                <Th>Action</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {loans &&
-                loans.map((item) => {
-                  return (
-                    <Tr key={item.id}>
-                      <Td>{item.id}</Td>
-                      <Td>{item.first_name}</Td>
-                      <Td>{item.last_name}</Td>
-                      <Td>{item.balance}</Td>
-                      <Td>
-                        <Button onClick={() => handlePaymentModal(item.id)}>
-                          Payment
-                        </Button>
-                        <Modal isOpen={isOpen} onClose={onClose}>
-                          <ModalOverlay />
-                          <ModalContent>
-                            <ModalHeader>Loan Payment</ModalHeader>
-                            <ModalCloseButton />
-                            <ModalBody>
-                              <FormControl>
-                                <FormLabel>Amount</FormLabel>
-                                <Input
-                                  placeholder='Amount'
-                                  onChange={(e) => setAmount(e.target.value)}
-                                />
-                              </FormControl>
-                            </ModalBody>
-
-                            <ModalFooter>
-                              <Button
-                                colorScheme='blue'
-                                mr={3}
-                                onClick={onClose}
-                              >
-                                Close
-                              </Button>
-                              <Button
-                                variant='ghost'
-                                onClick={() => handlePayment()}
-                              >
-                                Pay
-                              </Button>
-                            </ModalFooter>
-                          </ModalContent>
-                        </Modal>
-                      </Td>
-                    </Tr>
-                  );
-                })}
-            </Tbody>
-          </Table>
-        </TableContainer>
+        {status === 'loading' && <Spinner />}
+        {status === 'error' && <div>error...</div>}
+        {status === 'success' && (
+          <LoanTable
+            handlePaymentModal={handlePaymentModal}
+            print={print}
+            filterLoan={filterLoan}
+          />
+        )}
       </Box>
     </AdminLayout>
   );

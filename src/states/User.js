@@ -2,32 +2,39 @@ import create from 'zustand';
 
 const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
 const URL = 'https://web-production-94d8.up.railway.app';
-export const useUser = create((set) => ({
+export const useUser = create((set, get) => ({
   // states
+  userId: null,
   user: {},
-  // token: localStorage.getItem()
+  users: [],
+  token: localStorage.getItem('authTokens')
+    ? JSON.parse(localStorage.getItem('authTokens'))
+    : null,
   // functions
-  test: (id) => {
-    console.log(`${URL}/kevin${id}`);
+  setUserId: (id) => {
+    set({ userId: id });
+  },
+
+  getUsers: async () => {
+    const response = await fetch(`${URL}/createUser/`);
+    const result = await response.json();
+    set({ users: await result });
   },
 
   getUser: async (id) => {
     const response = await fetch(`${URL}/userDetail/${id}/`);
     const result = await response.json();
 
-    set(() => ({ user: result }));
+    set({ user: await result });
   },
-  editUser: async (id, fname, lname) => {
+
+  editUser: async (id, payload) => {
     const response = await fetch(`${baseURL}/userDetail/${id}/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        first_name: fname,
-        last_name: lname,
-        member_status: 'driver',
-      }),
+      body: JSON.stringify(payload),
     });
   },
   deleteUser: async (id) => {
@@ -48,23 +55,44 @@ export const useUser = create((set) => ({
     });
   },
 
-  editJeep: async (id) => {
+  editJeep: async (id, payload) => {
     const response = await fetch(`${baseURL}/jeep/${id}/`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username: username, password: password }),
+      body: JSON.stringify(payload),
     });
   },
 
-  createJeep: async (id) => {
-    const response = await fetch(`${baseURL}/createJeep/?user_id=${id}/`, {
+  createJeep: async (
+    id,
+    cr_fileNo,
+    plate_no,
+    engine_no,
+    chasis_no,
+    case_no,
+    make,
+    year_model,
+    color,
+    franchise_valid_date
+  ) => {
+    const response = await fetch(`${baseURL}/createJeep/?user_id=${id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username: username, password: password }),
+      body: JSON.stringify({
+        cr_fileNo: cr_fileNo,
+        plate_no: plate_no,
+        engine_no: engine_no,
+        chasis_no: chasis_no,
+        case_no: case_no,
+        make: make,
+        year_model: year_model,
+        color: color,
+        franchise_valid_date: franchise_valid_date,
+      }),
     });
   },
 }));

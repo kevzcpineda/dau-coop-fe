@@ -13,28 +13,50 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Members from './pages/Members';
 import Loans from './pages/Loans';
+import DailyJues from './pages/DailyJues';
+import AddDailyJues from './pages/AddDailyJues';
+import UserLoan from './pages/UserLoan';
+
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
+
+const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ChakraProvider>
-      <Router>
-        <AuthProvider>
-          <Routes>
-            <Route element={<PrivateRoutes />}>
-              <Route path='/' element={<Home />} exact />
-              <Route
-                path='/change-password'
-                element={<ChangePassword />}
-                exact
-              />
-              <Route path='/dashboard' element={<Dashboard />} exact />
-              <Route path='/members' element={<Members />} exact />
-              <Route path='/loans' element={<Loans />} exact />
-            </Route>
-            <Route path='/login' element={<Login />} />
-          </Routes>
-        </AuthProvider>
-      </Router>
-    </ChakraProvider>
+    <QueryClientProvider client={queryClient}>
+      <ChakraProvider>
+        <Router>
+          <AuthProvider>
+            <Routes>
+              <Route element={<PrivateRoutes />}>
+                <Route path='/' element={<Home />} exact />
+                <Route path='/user-loan' element={<UserLoan />} exact />
+                <Route
+                  path='/change-password'
+                  element={<ChangePassword />}
+                  exact
+                />
+                <Route path='/dashboard' element={<Dashboard />} exact />
+                <Route path='/members' element={<Members />} exact />
+                <Route path='/loans' element={<Loans />} exact />
+                <Route
+                  path='/add-daily-jues'
+                  element={<AddDailyJues />}
+                  exact
+                />
+                <Route path='/daily-jues' element={<DailyJues />} exact />
+              </Route>
+              <Route path='/login' element={<Login />} />
+            </Routes>
+          </AuthProvider>
+        </Router>
+      </ChakraProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );

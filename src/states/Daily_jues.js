@@ -2,7 +2,7 @@ import create from 'zustand';
 
 const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
 
-const useDailyJues = create((set) => ({
+export const useDailyJues = create((set) => ({
   // state
   dailyJues: [],
 
@@ -14,13 +14,15 @@ const useDailyJues = create((set) => ({
     set({ dailyJues: result });
   },
 
-  createDailyJues: async () => {
-    const response = await fetch(`${baseURL}/daily_jues/`, {
+  createDailyJuess: async (data) => {
+    console.log(data);
+    const response = await fetch(`${baseURL}/daily_jues/add`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: username, amount: password }),
+      body: JSON.stringify(data),
     });
+    console.log(response);
   },
 }));

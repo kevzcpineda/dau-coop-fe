@@ -108,7 +108,7 @@ export const AuthProvider = ({ children }) => {
     // });
 
     // console.log(response)
-
+    console.log(payload);
     const response = await fetch(`${baseURL}/createUser/`, {
       method: 'POST',
       headers: {
@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }) => {
 
     const data = await response.json();
     if (data) {
-      return { success: true };
+      return { success: true, data: response };
     } else {
       return { success: false };
     }
@@ -137,6 +137,42 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
+  const getUser = async (id) => {
+    const response = await fetch(`${baseURL}/userDetail/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = await response.json();
+    return data;
+  };
+
+  const createDailyJues = async (payload) => {
+    const response = await fetch(`${baseURL}/daily_jues/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    return data;
+  };
+
+  const getUserLoan = async (token) => {
+    const response = await fetch(`${baseURL}/loan/user_loan`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token.access}`,
+      },
+    });
+    const data = await response.json();
+    return data;
+  };
+
   const contextData = {
     user: user,
     authTokens: authTokens,
@@ -147,6 +183,9 @@ export const AuthProvider = ({ children }) => {
     changePassword: changePassword,
     createUser: createUser,
     getUsers: getUsers,
+    getUser: getUser,
+    createDailyJues: createDailyJues,
+    getUserLoan: getUserLoan,
   };
 
   useEffect(() => {

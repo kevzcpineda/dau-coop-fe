@@ -8,48 +8,56 @@ export const useLoan = create((set, get) => ({
   loans: [],
   users: [],
   userLoan: {},
+  token: localStorage.getItem('authTokens')
+    ? JSON.parse(localStorage.getItem('authTokens'))
+    : null,
   //computed
   computed: {
     get isloans() {
       return get().loans;
     },
+    get getLoan() {
+      return get().userLoan;
+    },
   },
   // functions
+
   getLoans: async () => {
     const response = await axios.get(`${baseURL}/loan/`);
     set({ loans: response.data });
   },
 
-  createLoan: async () => {
+  createLoan: async (id, amount) => {
     const response = await fetch(`${baseURL}/loan/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ loan: username, amount: password }),
+      body: JSON.stringify({ user: id, loan: amount }),
     });
   },
 
-  getUserLoan: async () => {
-    const response = await fetch(`${baseURL}/loan/user_loan/`, {
+  getUserLoan: async (t) => {
+    const response = await fetch(`${baseURL}/loan/user_loan`, {
       method: 'GET',
       headers: {
+        Accept: 'application/json',
         'Content-Type': 'application/json',
-        // Authorization: `Bearer ${authTokens?.access}`,
+        Authorization: `Bearer ${t.access}`,
       },
     });
     const result = await response.json();
-
+    // console.log(result);
     set({ userLoan: result });
   },
 
-  loanPayment: async (id, amount) => {
+  loanPayment: async (id, amount, ticket) => {
     const response = await fetch(`${baseURL}/loan/payments/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ loan: id, amount: amount }),
+      body: JSON.stringify({ loan: id, amount: amount, ticket: ticket }),
     });
   },
 }));
