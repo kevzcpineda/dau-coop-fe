@@ -1,7 +1,5 @@
 import React from 'react';
 import {
-  Box,
-  Heading,
   Table,
   Thead,
   Tbody,
@@ -10,17 +8,6 @@ import {
   Td,
   TableContainer,
   Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  FormControl,
-  FormLabel,
-  Input,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { useUser } from '../../states/User';
 
@@ -29,9 +16,13 @@ const MemberTable = ({
   handledeleteModal,
   handleLoanModal,
   handleJeepModal,
+  setPage,
+  page,
+  users,
+  setId,
 }) => {
   console.log('member table rendered');
-  const { users } = useUser((state) => state);
+  // const { users } = useUser((state) => state);
 
   return (
     <TableContainer>
@@ -46,26 +37,43 @@ const MemberTable = ({
         </Thead>
         <Tbody>
           {users &&
-            users.map((user) => (
-              <Tr key={user.id} onClick={() => handleUserModal(user.id)}>
-                <Td>{user.id}</Td>
-                <Td>{user.first_name}</Td>
-                <Td>{user.last_name}</Td>
-                <Td>
-                  <Button onClick={(e) => handledeleteModal(e, user.id)}>
-                    delete
-                  </Button>
-                  <Button onClick={(e) => handleLoanModal(e, user.id)}>
-                    Loan
-                  </Button>
-                  <Button onClick={(e) => handleJeepModal(e, user.id)}>
-                    add jeep
-                  </Button>
-                </Td>
-              </Tr>
-            ))}
+            users.results
+              .map((user) => (
+                <Tr key={user.id} onClick={() => handleUserModal(user.id)}>
+                  <Td>{user.id}</Td>
+                  <Td>{user.first_name}</Td>
+                  <Td>{user.last_name}</Td>
+                  <Td>
+                    <Button onClick={(e) => handledeleteModal(e, user.id)}>
+                      delete
+                    </Button>
+                    <Button onClick={(e) => handleLoanModal(e, user.id)}>
+                      Loan
+                    </Button>
+                    <Button
+                      onClick={(e) => handleJeepModal(e, user.id)}
+                      style={{
+                        display:
+                          user.member_status === 'driver' ? 'none' : 'inline',
+                      }}>
+                      add jeep
+                    </Button>
+                  </Td>
+                </Tr>
+              ))
+              .reverse()}
         </Tbody>
       </Table>
+      <Button
+        onClick={() => setPage(page - 1)}
+        isDisabled={users.previous === null ? true : false}>
+        previous
+      </Button>
+      <Button
+        onClick={() => setPage(page + 1)}
+        isDisabled={users.next === null ? true : false}>
+        next
+      </Button>
     </TableContainer>
   );
 };

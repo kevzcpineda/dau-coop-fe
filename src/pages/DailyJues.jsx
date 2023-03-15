@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
 import AdminLayout from '../components/AdminLayout';
-import YearPicker from 'react-year-picker';
 import {
   Box,
   Heading,
@@ -40,19 +39,39 @@ const DailyJues = () => {
   const { getDailyJues } = useDailyJues((state) => state);
   const [listUser, setListUser] = useState([]);
   const [selectedUser, setSelectedUser] = useState([]);
+  const [date, setDate] = useState('2023');
+
+  const queryClient = useQueryClient();
 
   const fetchDailyJues = async () => {
-    await getDailyJues(2023);
+    await getDailyJues(date);
   };
 
-  const { status } = useQuery('dailyJues', fetchDailyJues);
+  const changeDailyJues = async () => {
+    await getDailyJues();
+  };
 
+  const { status } = useQuery(['dailyJues', date], fetchDailyJues);
+  const { isLoading, mutate } = useMutation(getDailyJues, {
+    onSuccess: () => {
+      queryClient.setQueryData(['dailyJues'], date);
+    },
+  });
   console.log(status);
 
+  const handleChange = (datechange) => {
+    setDate(datechange);
+    console.log(date);
+    mutate(date);
+  };
   return (
     <AdminLayout>
       <Box>
-        <Heading>Daily Jues</Heading>
+        <input
+          type='date'
+          onChange={(e) => handleChange(e.target.value.slice(0, 4))}></input>
+        <Heading>Daily Dues</Heading>
+        {/* {isLoading && <Spinner />} */}
         {status === 'loading' && <Spinner />}
         {status === 'error' && <div>error...</div>}
         {status === 'success' && <DailyJuesTable />}

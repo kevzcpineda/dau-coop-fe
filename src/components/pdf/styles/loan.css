@@ -1,0 +1,39 @@
+/* table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+} */
+@media print {
+  /* @page {
+    size: landscape;
+  } */
+  * {
+    font-size: 12px;
+  }
+  table,
+  th,
+  td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  .loan_container {
+    margin: 5px;
+    display: grid;
+    grid-template-columns: 1fr, 1fr;
+    grid-column-gap: 5px;
+  }
+  .loan_left {
+    grid-column: 1/2;
+  }
+  .loan_right {
+    grid-column: 2/3;
+  }
+  .loan_table {
+    width: 100%;
+  }
+  .total_loan_report {
+    margin-top: 10px;
+    width: 200px;
+  }
+}

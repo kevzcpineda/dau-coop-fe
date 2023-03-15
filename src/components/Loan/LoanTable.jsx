@@ -10,17 +10,6 @@ import {
   Td,
   TableContainer,
   Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  FormControl,
-  FormLabel,
-  Input,
-  useDisclosure,
   Tabs,
   TabList,
   TabPanels,
@@ -29,13 +18,19 @@ import {
 } from '@chakra-ui/react';
 import { useLoan } from '../../states/Loan';
 
-const LoanTable = ({ handlePaymentModal, print, filterLoan }) => {
+const LoanTable = ({
+  handlePaymentModal,
+  print,
+  filterLoan,
+  notDoneLoan,
+  handlePaymentLogModal,
+}) => {
   const { loans } = useLoan((state) => state);
   return (
     <Tabs>
       <TabList>
-        <Tab>One</Tab>
-        <Tab>Two</Tab>
+        <Tab>Pending</Tab>
+        <Tab>Fully Paid</Tab>
       </TabList>
 
       <TabPanels>
@@ -44,7 +39,7 @@ const LoanTable = ({ handlePaymentModal, print, filterLoan }) => {
             <Table variant='striped' colorScheme='gray'>
               <Thead>
                 <Tr>
-                  <Th>ID</Th>
+                  <Th>loan ID</Th>
                   <Th>First Name</Th>
                   <Th>Lasr Name</Th>
                   <Th>balance</Th>
@@ -54,25 +49,27 @@ const LoanTable = ({ handlePaymentModal, print, filterLoan }) => {
                 </Tr>
               </Thead>
               <Tbody>
-                {loans &&
-                  loans.map((item) => {
-                    return (
-                      <Tr key={item.id}>
-                        <Td>{item.user}</Td>
-                        <Td>{item.first_name}</Td>
-                        <Td>{item.last_name}</Td>
-                        <Td>{item.balance}</Td>
-                        <Td>{item.penalty}</Td>
-                        <Td>{item.penalty_date}</Td>
-                        <Td>
-                          <Button onClick={() => handlePaymentModal(item.id)}>
-                            Payment
-                          </Button>
-                          <Button onClick={() => print(item)}>Print</Button>
-                        </Td>
-                      </Tr>
-                    );
-                  })}
+                {notDoneLoan &&
+                  notDoneLoan
+                    .map((item) => {
+                      return (
+                        <Tr key={item.id}>
+                          <Td>{item.id}</Td>
+                          <Td>{item.first_name}</Td>
+                          <Td>{item.last_name}</Td>
+                          <Td>{item.balance}</Td>
+                          <Td>{item.penalty}</Td>
+                          <Td>{item.penalty_date}</Td>
+                          <Td>
+                            {/* <Button onClick={() => handlePaymentModal(item.id)}>
+                              Payment
+                            </Button> */}
+                            <Button onClick={() => print(item)}>Print</Button>
+                          </Td>
+                        </Tr>
+                      );
+                    })
+                    .reverse()}
               </Tbody>
             </Table>
           </TableContainer>
@@ -92,18 +89,20 @@ const LoanTable = ({ handlePaymentModal, print, filterLoan }) => {
               </Thead>
               <Tbody>
                 {filterLoan &&
-                  filterLoan.map((item) => {
-                    return (
-                      <Tr key={item.id}>
-                        <Td>{item.id}</Td>
-                        <Td>{item.first_name}</Td>
-                        <Td>{item.last_name}</Td>
-                        <Td>{item.balance}</Td>
-                        <Td>{item.penalty}</Td>
-                        <Td>{item.penalty_date}</Td>
-                      </Tr>
-                    );
-                  })}
+                  filterLoan
+                    .map((item) => {
+                      return (
+                        <Tr key={item.id}>
+                          <Td>{item.id}</Td>
+                          <Td>{item.first_name}</Td>
+                          <Td>{item.last_name}</Td>
+                          <Td>{item.balance}</Td>
+                          <Td>{item.penalty}</Td>
+                          <Td>{item.penalty_date}</Td>
+                        </Tr>
+                      );
+                    })
+                    .reverse()}
               </Tbody>
             </Table>
           </TableContainer>

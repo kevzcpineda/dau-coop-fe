@@ -1,35 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import {
   Box,
   Heading,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  FormControl,
-  FormLabel,
-  Input,
   Spinner,
   useDisclosure,
+  Editable,
+  EditableInput,
+  EditablePreview,
 } from '@chakra-ui/react';
 import AuthContext from '../context/AuthContext';
 import { useUser } from '../states/User';
@@ -38,7 +17,6 @@ import UserModal from '../components/Members/UserModal';
 import DeleteModal from '../components/Members/DeleteModal';
 import LoanModal from '../components/Members/LoanModal';
 import AddJeepModal from '../components/Members/AddJeepModal';
-import EditModal from '../components/Members/EditModal';
 import MemberTable from '../components/Members/MemberTable';
 
 const Members = () => {
@@ -63,26 +41,34 @@ const Members = () => {
     onClose: userOnClose,
   } = useDisclosure();
 
-  // const { getUsers } = useContext(AuthContext);
+  const { getUsers, searchUser } = useContext(AuthContext);
   const [Users, setUsers] = useState([]);
   const [id, setId] = useState(null);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
 
-  const {
-    getUsers,
-    getUser,
-    users,
-    deleteUser,
-    editUser,
-    createJeep,
-    token,
-    setUserId,
-  } = useUser((state) => state);
-
-  const [filterUser, setFilterUser] = useState({});
+  const { users, deleteUser, createJeep, token, setUserId } = useUser(
+    (state) => state
+  );
 
   const { createLoan } = useLoan((state) => state);
 
+  const queryClient = useQueryClient();
   // functions
+  // const { data, isLoading, mutate } = useMutation(getUser, {
+  //   onSuccess: () => {
+  //     queryClient.setQueryData(['user', id]);
+  //     userOnOpen();
+  //   },
+  // });
+
+  // const { isLoading, mutate } = useMutation(deleteUser, {
+  //   onSuccess: () => {
+  //     // queryClient.setQueryData('members');
+  //     queryClient.invalidateQueries('members');
+  //     deleteOnClose();
+  //   },
+  // });
 
   const handleLoanModal = (e, id) => {
     // stopPropagation - para hindi ma trigger yung parent function - handleUserModal
@@ -90,16 +76,13 @@ const Members = () => {
     setId(id);
     loanOnOpen();
   };
-  const handleLoan = (amount) => {
-    createLoan(id, amount);
+  const handleLoan = (amount, voucher, promissory, check) => {
+    createLoan(id, amount, voucher, promissory, check);
     loanOnClose();
   };
-  const handleDeleteUser = () => {
-    deleteUser(id);
-    const newUser = users.filter((user) => user.id !== id);
-    setUsers(newUser);
-    deleteOnClose();
-  };
+  // const handleDeleteUser = () => {
+  //   mutate(id);
+  // };
 
   const handledeleteModal = (e, id) => {
     e.stopPropagation();
@@ -113,16 +96,13 @@ const Members = () => {
     jeepOnOpen();
   };
 
-  const handleUserModal = async (id) => {
-    setId(id);
-    // await setUserId(id);
-    // await getUser(id);
-    const userFind = users.find((item) => item.id === id);
-    console.log(userFind);
-    setFilterUser(userFind);
+  const handleUserModal = async (ids) => {
+    await setId(ids);
     userOnOpen();
+    // mutate(ids);
   };
 
+  console.log('Member render');
   const handleAddJeep = async (crFileNo) => {
     await createJeep(
       id,
@@ -138,12 +118,35 @@ const Members = () => {
     );
   };
 
-  const { data, status } = useQuery('members', getUsers);
+  const handleSearch = async (e) => {
+    await setSearch(e);
+    mutate(e);
+  };
 
+  const { status, data } = useQuery(['members', page], () => getUsers(page), {
+    keepPreviousData: true,
+  });
+
+  const { data: searchData, mutate } = useMutation(searchUser, {
+    onSuccess: () => {
+      queryClient.setQueryData(['search', search]);
+    },
+  });
+  console.log(searchData);
   return (
     <AdminLayout>
       <Box>
+        <Editable
+          defaultValue='Search'
+          onSubmit={(e) => {
+            handleSearch(e);
+          }}>
+          <EditablePreview />
+          <EditableInput />
+        </Editable>
+
         <Heading>Members</Heading>
+
         {status === 'loading' && <Spinner />}
         {status === 'error' && <div>error...</div>}
         {status === 'success' && (
@@ -152,6 +155,10 @@ const Members = () => {
             handledeleteModal={handledeleteModal}
             handleLoanModal={handleLoanModal}
             handleJeepModal={handleJeepModal}
+            users={searchData ? searchData : data}
+            page={page}
+            setPage={setPage}
+            setId={setId}
           />
         )}
       </Box>
@@ -160,7 +167,8 @@ const Members = () => {
           onClose={deleteOnClose}
           onOpen={deleteOnOpen}
           isOpen={deleteIsOpen}
-          handleDeleteUser={handleDeleteUser}
+          users={searchData ? searchData : data}
+          id={id}
         />
       )}
 
@@ -189,7 +197,6 @@ const Members = () => {
           onOpen={userOnOpen}
           isOpen={userIsOpen}
           id={id}
-          filterUser={filterUser}
         />
       )}
     </AdminLayout>

@@ -1,4 +1,11 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
+import dauLogo from '../assets/logo.png';
 import AdminLayout from '../components/AdminLayout';
 import {
   Box,
@@ -11,6 +18,7 @@ import {
   Td,
   TableContainer,
   Button,
+  Input,
   useDisclosure,
   Tabs,
   TabList,
@@ -25,6 +33,7 @@ import Paper from '../components/pdf/Paper';
 import { useReactToPrint } from 'react-to-print';
 import AuthContext from '../context/AuthContext';
 import PaymentModal from '../components/Loan/PaymentModal';
+import PaymentLogModal from '../components/Loan/PaymentLogModal';
 import LoanTable from '../components/Loan/LoanTable';
 import {
   useQuery,
@@ -33,68 +42,182 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
-
+import Papa from 'papaparse';
+import toast, { Toaster } from 'react-hot-toast';
 const Loans = () => {
-  const { getUser } = useContext(AuthContext);
+  const [isPrinting, setIsPrinting] = useState(false);
+  const promiseResolveRef = useRef(null);
+  const { getUser, getLoanPayments, getLoans, postLoanPayments } =
+    useContext(AuthContext);
   const [user, setUser] = useState({});
+  const [loanId, setLoanId] = useState(null);
   const [id, setId] = useState(null);
   const [amount, setAmount] = useState(0);
+  const [csv, setCsv] = useState(null);
+  const [file, setFile] = useState(null);
   const [ticket, setTicket] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { getLoans, loans, loanPayment } = useLoan((state) => state);
-  const filterLoan = loans.filter((item) => item.balance === 0);
+  const {
+    isOpen: isOpenLog,
+    onOpen: onOpenLog,
+    onClose: onCloseLog,
+  } = useDisclosure();
+  const { data, status } = useQuery('loan', getLoans);
+  const { loans, loanPayment } = useLoan((state) => state);
+  const filterLoan = data?.filter((item) => item.is_fully_paid === true);
+  const notDoneLoan = data?.filter((item) => item.is_fully_paid === false);
+  const { mutate: exlLoanPayments } = useMutation(postLoanPayments);
+  const queryClient = useQueryClient();
+
+  const { isLoading, mutate } = useMutation(loanPayment, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('loan');
+    },
+  });
+
+  const {
+    data: loanUserPayments,
+    mutate: mutateLoanUserPayments,
+    isSuccess,
+  } = useMutation(getLoanPayments);
 
   const handlePaymentModal = (id) => {
     onOpen();
     setId(id);
   };
 
+  const payload = {
+    loan: id,
+    amount: amount,
+    ticket: ticket,
+  };
   const handlePayment = async () => {
-    await loanPayment(id, amount, ticket);
+    await mutate(payload);
     onClose();
   };
   const printRef = useRef();
+  // useEffect(() => {
+  //   if (isPrinting && promiseResolveRef.current) {
+  //     // Resolves the Promise, letting `react-to-print` know that the DOM updates are completed
+  //     promiseResolveRef.current();
+  //   }
+  // }, [isPrinting]);
+
+  const reactToPrintContent = useCallback(() => {
+    return printRef.current;
+  }, [printRef.current]);
 
   const toPrint = useReactToPrint({
-    content: () => printRef.current,
+    content: () => reactToPrintContent(),
+    removeAfterPrint: true,
+    onBeforeGetContent: () => {
+      mutateLoanUserPayments();
+      // return new Promise((resolve) => {
+      //   promiseResolveRef.current = resolve;
+      //   setIsPrinting(true);
+      // });
+    },
+    // onAfterPrint: () => {
+    //   // Reset the Promise resolve so we can print again
+    //   promiseResolveRef.current = null;
+    //   setIsPrinting(false);
+    // },
   });
 
   const print = async (user) => {
     // const response = await getUser(id);
+
+    console.log(user.id);
+    await setLoanId(user.id);
     await setUser(user);
-    toPrint();
+
+    await toPrint();
     // console.log(user);
   };
+  const handlePaymentLogModal = (id) => {
+    console.log(id);
+    onOpenLog();
+  };
 
-  const { data, status } = useQuery('loan', getLoans);
+  console.log(data);
+  const unparseConfig = {
+    quotes: false, //or array of booleans
+    quoteChar: '"',
+    escapeChar: '"',
+    delimiter: ',',
+    header: true,
+    newline: '\r\n',
+    skipEmptyLines: true, //other option is 'greedy', meaning skip delimiters, quotes, and whitespace.
+    columns: null, //or array of strings
+  };
+  const parseconfig = {
+    delimiter: '', // auto-detect
+    newline: '', // auto-detect
+    quoteChar: '"',
+    escapeChar: '"',
+    header: true,
+    transformHeader: undefined,
+    dynamicTyping: true,
+    preview: 0,
+    encoding: '',
+    worker: false,
+    comments: false,
+    step: undefined,
+    complete: function (results, file) {
+      console.log('Parsing complete:', results, file);
+      exlLoanPayments(results.data);
+      toast.success('Successfully toasted!');
+    },
+    error: (results, file) => {
+      toast.error('Error');
+    },
+    delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+  };
+  const parsepenaltyconfig = {
+    delimiter: '', // auto-detect
+    newline: '', // auto-detect
+    quoteChar: '"',
+    escapeChar: '"',
+    header: true,
+    transformHeader: undefined,
+    dynamicTyping: true,
+    preview: 0,
+    encoding: '',
+    worker: false,
+    comments: false,
+    step: undefined,
+    complete: function (results, file) {
+      console.log('Parsing complete:', results, file);
+      exlLoanPayments(results.data);
+      toast.success('Successfully toasted!');
+    },
+    error: (results, file) => {
+      toast.error('Error');
+    },
+    delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+  };
 
+  const handleParse = () => {
+    const value = Papa.parse(csv, parseconfig);
+    // console.log(value);
+  };
+  const handleParsePenalty = () => {
+    const value = Papa.parse(csv, parsepenaltyconfig);
+    // console.log(value);
+  };
+  const handleUnparse = () => {
+    const value = Papa.unparse(data, unparseConfig);
+    // const value = Papa.parse(csv, parseconfig);
+    console.log(value);
+  };
   return (
     <AdminLayout>
-      <div style={{ display: 'none' }}>
-        <div ref={printRef}>
-          <TableContainer>
-            <Table variant='striped' colorScheme='gray'>
-              <Thead>
-                <Tr>
-                  <Th>ID</Th>
-                  <Th>First Name</Th>
-                  <Th>Lasr Name</Th>
-                  <Th>Action</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                <Tr>
-                  <Td>kevin</Td>
-                  <Td>sdkjfbsd</Td>
-                  <Td>asdasd</Td>
-                  <Td>asdasd</Td>
-                </Tr>
-              </Tbody>
-            </Table>
-          </TableContainer>
-          {/* <h1>keivn</h1> */}
-        </div>
+      <div>
+        <Toaster position='top-right' reverseOrder={false} />
       </div>
+      {user && (
+        <Paper ref={printRef} user={user} loanUserPayments={loanUserPayments} />
+      )}
 
       {isOpen && (
         <PaymentModal
@@ -106,8 +229,17 @@ const Loans = () => {
         />
       )}
 
+      {isOpenLog && <PaymentLogModal isOpen={isOpenLog} onClose={onCloseLog} />}
+
       <Box>
         <Heading>Loans</Heading>
+        <Button onClick={() => handleParse()}>Import CSV loan payment</Button>
+        <Button onClick={() => handleParsePenalty()}>
+          Import CSV loan penalty
+        </Button>
+        <Button onClick={() => handleUnparse()}>Unparse</Button>
+        <Input type='file' onChange={(e) => setCsv(e.target.files[0])} />
+
         {status === 'loading' && <Spinner />}
         {status === 'error' && <div>error...</div>}
         {status === 'success' && (
@@ -115,6 +247,8 @@ const Loans = () => {
             handlePaymentModal={handlePaymentModal}
             print={print}
             filterLoan={filterLoan}
+            notDoneLoan={notDoneLoan}
+            handlePaymentLogModal={handlePaymentLogModal}
           />
         )}
       </Box>

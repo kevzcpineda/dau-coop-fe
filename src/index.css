@@ -1,0 +1,26 @@
+.logo {
+  height: 100px;
+}
+.header {
+  display: flex;
+  justify-content: center;
+}
+
+.header .info {
+  text-align: center;
+}
+.details {
+  display: flex;
+  justify-content: space-between;
+}
+.voucher_section {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+} */

@@ -8,6 +8,7 @@ import {
   Input,
   FormControl,
   FormLabel,
+  Select,
 } from '@chakra-ui/react';
 import logo from '../assets/noimage.png';
 import AdminLayout from '../components/AdminLayout';
@@ -180,10 +181,19 @@ const Dashboard = () => {
           <GridItem>
             <FormControl>
               <FormLabel>Member Status</FormLabel>
-              <Input
+              <Select
+                placeholder='Select option'
+                onChange={(e) => setMemberStatus(e.target.value)}>
+                <option value='Operator'>Operator</option>
+                <option value='Driver'>Driver</option>
+                <option value='Associate Operator'>Associate Operator</option>
+                <option value='Subtitute Driver'>Subtitute Driver</option>
+                <option value='Barker'>Barker</option>
+              </Select>
+              {/* <Input
                 value={memberStatus}
                 onChange={(e) => setMemberStatus(e.target.value)}
-              />
+              /> */}
             </FormControl>
           </GridItem>
         </Grid>

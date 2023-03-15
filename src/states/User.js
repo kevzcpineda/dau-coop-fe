@@ -15,20 +15,22 @@ export const useUser = create((set, get) => ({
     set({ userId: id });
   },
 
-  getUsers: async () => {
-    const response = await fetch(`${URL}/createUser/`);
+  getUsers: async (page) => {
+    const response = await fetch(`${baseURL}/createUser/`);
     const result = await response.json();
     set({ users: await result });
   },
 
   getUser: async (id) => {
-    const response = await fetch(`${URL}/userDetail/${id}/`);
+    const response = await fetch(`${baseURL}/userDetail/${id}/`);
     const result = await response.json();
 
     set({ user: await result });
   },
 
   editUser: async (id, payload) => {
+    console.log(`id : ${id}`);
+    console.log(`payload : ${payload}`);
     const response = await fetch(`${baseURL}/userDetail/${id}/`, {
       method: 'PUT',
       headers: {
@@ -63,6 +65,8 @@ export const useUser = create((set, get) => ({
       },
       body: JSON.stringify(payload),
     });
+    console.log(response);
+    return response;
   },
 
   createJeep: async (

@@ -37,22 +37,31 @@ export const Sidebar = (props) => {
             <NavLink label='Members' href='/members' icon={BsFillPeopleFill} />
             <NavLink label='Loan' href='/loans' icon={BsFillPeopleFill} />
             <NavLink
-              label='Daily Jues'
+              label='Daily Dues'
               href='/daily-jues'
               icon={BsFillPeopleFill}
             />
             <NavLink
-              label='Add Daily Jues'
+              label='Add Daily Dues'
               href='/add-daily-jues'
               icon={BsFillPeopleFill}
             />
             {/* <NavLink
-            label="Scheduled Viewing"
-            href="/schedule"
-            icon={BsCalendar}
-          />
-          <NavLink label="Reports" href="/reports" icon={FaRegChartBar} />
-          <NavLink label="Setting" href="/settings" icon={AiFillSetting} /> */}
+              label='Scheduled Viewing'
+              href='/schedule'
+              icon={BsCalendar}
+            /> */}
+            <NavLink
+              label='Loan Reports'
+              href='/loan-reports'
+              icon={FaRegChartBar}
+            />
+            <NavLink
+              label='Daily Dues Reports'
+              href='/daily-dues-reports'
+              icon={FaRegChartBar}
+            />
+            {/* <NavLink label='Setting' href='/settings' icon={AiFillSetting} /> */}
             <Button colorScheme='blue' onClick={logoutUser}>
               LogOut
             </Button>

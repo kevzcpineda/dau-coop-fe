@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
+import React, { useState, useContext } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import {
   Box,
@@ -25,83 +25,74 @@ import {
   Select,
   Spinner,
 } from '@chakra-ui/react';
-import { useUser } from '../states/User';
-import { useDailyJues } from '../states/Daily_jues';
 import AuthContext from '../context/AuthContext';
+import LoanDropdown from '../components/AddLoanReport/LoanDropdown';
 import { useQuery, useMutation } from 'react-query';
-import UserDropdown from '../components/AddDailyJues/UserDropdown';
-
-const AddDailyJues = () => {
-  const { getUsers, setUsers, users } = useUser((state) => state);
-  const [selectedUser, setSelectedUser] = useState([]);
-  const [date, setDate] = useState(null);
-  const [ticket, setTicket] = useState('');
+import { useLoan } from '../states/Loan';
+const AddLoanReport = () => {
+  const { getLoans } = useLoan((state) => state);
+  const { postLoanReport } = useContext(AuthContext);
+  const { data, status } = useQuery('addLoanReport', getLoans);
+  const { mutate } = useMutation(postLoanReport);
   const [title, setTitle] = useState('');
-  const { getUser, createDailyJues, postDailyDuesReport } =
-    useContext(AuthContext);
-  const selectRef = useRef('');
-  const ticketRef = useRef('');
-  const { mutate } = useMutation(postDailyDuesReport);
+  const [date, setDate] = useState(null);
+  const [amount, setAmount] = useState(null);
+  const [ticket, setTicket] = useState('');
+  const [selectedUser, setSelectedUser] = useState([]);
+
   const handleChange = (value) => {
     console.log(value);
 
-    // const res = users.find((item) => item.id === value);
-    // console.log(res);
     const item = {
-      user: value?.id,
-      member_status: value?.member_status,
-      fname: value?.first_name,
-      lname: value?.last_name,
-      amount: 50,
+      user: value?.user,
+      loan: value?.id,
+      first_name: value?.first_name,
+      last_name: value?.last_name,
+      amount: amount,
       ticket: ticket,
       date: date,
+      penalty: value?.penalty,
     };
-    // console.log(item);
+
     {
       value && setSelectedUser([...selectedUser, item]);
     }
-    setTitle('');
-    // selectRef.current.value = '';
-    ticketRef.current.value = '';
   };
-
   const handleDelete = (id) => {
     console.log(id);
     const newSelected = selectedUser.filter((item) => item.user !== id);
     setSelectedUser(newSelected);
   };
-
   const handleSubmit = async () => {
     const payload = {
       title: title,
-      daily_dues: selectedUser,
+      payments: selectedUser,
     };
     await mutate(payload);
     setSelectedUser([]);
   };
-
-  const { data, status } = useQuery('addDailyDues', getUsers);
-
   return (
     <AdminLayout>
       {status === 'loading' && <Spinner />}
       {status === 'error' && <div>error...</div>}
       {status === 'success' && (
         <Box>
-          <Heading>Add Daily Dues</Heading>
-          <Input
-            placeholder='Title'
-            onChange={(e) => setTitle(e.target.value)}
-          />
+          <Heading>Add Loan Report</Heading>
+          <Input placeholder='OR#' onChange={(e) => setTitle(e.target.value)} />
 
           <input type='date' onChange={(e) => setDate(e.target.value)}></input>
           <Input
-            ref={ticketRef}
             placeholder='Ticket'
             onChange={(e) => setTicket(e.target.value)}
           />
+          <Input
+            placeholder='Amount'
+            onChange={(e) => setAmount(e.target.value)}
+          />
 
-          <UserDropdown handleChange={handleChange} />
+          <LoanDropdown handleChange={handleChange} />
+          <Button onClick={() => handleSubmit()}>Submit</Button>
+
           <TableContainer>
             <Table variant='striped' colorScheme='gray'>
               <Thead>
@@ -110,6 +101,7 @@ const AddDailyJues = () => {
                   <Th>First Name</Th>
                   <Th>Last Name</Th>
                   <Th>Ticket</Th>
+                  <Th>Amount</Th>
                   <Th>Date</Th>
                   <Th>Action</Th>
                 </Tr>
@@ -120,10 +112,11 @@ const AddDailyJues = () => {
                     .map((item, index) => {
                       return (
                         <Tr key={index}>
-                          <Td>{item.user}</Td>
-                          <Td>{item.fname}</Td>
-                          <Td>{item.lname}</Td>
+                          <Td>{index + 1}</Td>
+                          <Td>{item.first_name}</Td>
+                          <Td>{item.last_name}</Td>
                           <Td>{item.ticket}</Td>
+                          <Td>{item.amount}</Td>
                           <Td>{item.date}</Td>
                           <Td>
                             <Button onClick={() => handleDelete(item.user)}>
@@ -143,4 +136,4 @@ const AddDailyJues = () => {
   );
 };
 
-export default AddDailyJues;
+export default AddLoanReport;

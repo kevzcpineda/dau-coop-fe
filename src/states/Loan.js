@@ -27,13 +27,19 @@ export const useLoan = create((set, get) => ({
     set({ loans: response.data });
   },
 
-  createLoan: async (id, amount) => {
+  createLoan: async (id, amount, voucher, promissory, check) => {
     const response = await fetch(`${baseURL}/loan/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: id, loan: amount }),
+      body: JSON.stringify({
+        user: id,
+        loan: amount,
+        voucher_number: voucher,
+        promissory_note_number: promissory,
+        check_number: check,
+      }),
     });
   },
 
@@ -51,13 +57,13 @@ export const useLoan = create((set, get) => ({
     set({ userLoan: result });
   },
 
-  loanPayment: async (id, amount, ticket) => {
+  loanPayment: async (payload) => {
     const response = await fetch(`${baseURL}/loan/payments/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ loan: id, amount: amount, ticket: ticket }),
+      body: JSON.stringify(payload),
     });
   },
 }));

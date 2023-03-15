@@ -1,7 +1,7 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom/client';
 // import App from './App'
-// import './index.scss'
+import './index.css';
 import { ChakraProvider } from '@chakra-ui/react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -16,14 +16,12 @@ import Loans from './pages/Loans';
 import DailyJues from './pages/DailyJues';
 import AddDailyJues from './pages/AddDailyJues';
 import UserLoan from './pages/UserLoan';
+import LoanReport from './pages/LoanReport';
+import DailyDuesReport from './pages/DailyDuesReport';
+import AddLoanReport from './pages/AddLoanReport';
 
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 
 const queryClient = new QueryClient();
 
@@ -51,11 +49,23 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   exact
                 />
                 <Route path='/daily-jues' element={<DailyJues />} exact />
+                <Route
+                  path='/daily-dues-reports'
+                  element={<DailyDuesReport />}
+                  exact
+                />
+                <Route path='/loan-reports' element={<LoanReport />} exact />
+                <Route
+                  path='/add-loan-reports'
+                  element={<AddLoanReport />}
+                  exact
+                />
               </Route>
               <Route path='/login' element={<Login />} />
             </Routes>
           </AuthProvider>
         </Router>
+        <ReactQueryDevtools />
       </ChakraProvider>
     </QueryClientProvider>
   </React.StrictMode>

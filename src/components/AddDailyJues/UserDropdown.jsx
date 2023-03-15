@@ -1,24 +1,33 @@
-import React from 'react';
-import { Select } from '@chakra-ui/react';
+import React, { useState } from 'react';
 import { useUser } from '../../states/User';
+import Select from 'react-dropdown-select';
 
-const UserDropdown = React.forwardRef((props, ref) => {
+const UserDropdown = ({ handleChange }) => {
   const { users } = useUser((state) => state);
+  // const options = [
+  //   {
+  //     value: 1,
+  //     label: 'Leanne Graham',
+  //   },
+  //   {
+  //     value: 2,
+  //     label: 'Ervin Howell',
+  //   },
+  // ];
+
+  const options = users;
+
   return (
     <Select
-      ref={ref}
-      placeholder='Select option'
-      onChange={(e) => props.handleChange(e.target.value)}>
-      {users &&
-        users.map((item) => {
-          return (
-            <option key={item.id} value={item.id}>
-              {item.first_name}
-            </option>
-          );
-        })}
-    </Select>
+      options={options}
+      labelField='first_name'
+      valueField='id'
+      clearOnSelect='true'
+      clearable='true'
+      searchBy='first_name'
+      onChange={(values) => handleChange(values[0])}
+    />
   );
-});
+};
 
 export default UserDropdown;
