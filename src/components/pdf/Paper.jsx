@@ -2,7 +2,7 @@ import React from 'react';
 import dauLogo from '../../assets/logo.png';
 
 const Paper = React.forwardRef((props, ref) => {
-  console.log('paper');
+  console.log("Paper")
   console.log(props?.loanUserPayments);
   return (
     <div style={{ display: 'none' }}>
@@ -47,8 +47,8 @@ const Paper = React.forwardRef((props, ref) => {
           <p>PROMISSORY NOTE NUMBER: none</p>
         </div>
         {props.loanUserPayments &&
-          props.loanUserPayments.map((item) => {
-            return <p key={item.id}>{item.amount}</p>;
+          props?.loanUserPayments?.map((item) => {
+            return <p key={item.id}>{item?.amount}</p>;
           })}
         {/* ref */}
       </div>

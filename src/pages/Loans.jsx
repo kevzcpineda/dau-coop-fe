@@ -55,6 +55,7 @@ const Loans = () => {
   const [amount, setAmount] = useState(0);
   const [csv, setCsv] = useState(null);
   const [file, setFile] = useState(null);
+  const [userLoanPaymets, setUserLoanPayments] = useState([]);
   const [ticket, setTicket] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -74,12 +75,15 @@ const Loans = () => {
       queryClient.invalidateQueries('loan');
     },
   });
-
-  const {
-    data: loanUserPayments,
-    mutate: mutateLoanUserPayments,
-    isSuccess,
-  } = useMutation(getLoanPayments);
+  const handleGetLoanPayments = async () => {
+    const response = await getLoanPayments(loanId);
+    setUserLoanPayments(response)
+  } 
+  // const {
+  //   data: loanUserPayments,
+  //   mutate: mutateLoanUserPayments,
+  //   isSuccess,
+  // } = useMutation(getLoanPayments);
 
   const handlePaymentModal = (id) => {
     onOpen();
@@ -96,12 +100,12 @@ const Loans = () => {
     onClose();
   };
   const printRef = useRef();
-  // useEffect(() => {
-  //   if (isPrinting && promiseResolveRef.current) {
-  //     // Resolves the Promise, letting `react-to-print` know that the DOM updates are completed
-  //     promiseResolveRef.current();
-  //   }
-  // }, [isPrinting]);
+  useEffect(() => {
+    if (isPrinting && promiseResolveRef.current) {
+      // Resolves the Promise, letting `react-to-print` know that the DOM updates are completed
+      promiseResolveRef.current();
+    }
+  }, [isPrinting]);
 
   const reactToPrintContent = useCallback(() => {
     return printRef.current;
@@ -110,28 +114,35 @@ const Loans = () => {
   const toPrint = useReactToPrint({
     content: () => reactToPrintContent(),
     removeAfterPrint: true,
-    onBeforeGetContent: () => {
-      mutateLoanUserPayments();
-      // return new Promise((resolve) => {
-      //   promiseResolveRef.current = resolve;
-      //   setIsPrinting(true);
-      // });
+    onBeforeGetContent: async () => {
+      console.log("onBeforeGetContent")
+      console.log(mes)
+      await handleGetLoanPayments()
+      return new Promise((resolve) => {
+        promiseResolveRef.current = resolve;
+        setIsPrinting(true);
+      });
     },
-    // onAfterPrint: () => {
-    //   // Reset the Promise resolve so we can print again
-    //   promiseResolveRef.current = null;
-    //   setIsPrinting(false);
-    // },
+    onBeforePrint:() => {
+      console.log("onBeforePrint")
+    },
+    onAfterPrint: () => {
+      console.log("onAfterPrint")
+      // Reset the Promise resolve so we can print again
+      promiseResolveRef.current = null;
+      setIsPrinting(false);
+    },
+    
   });
 
   const print = async (user) => {
     // const response = await getUser(id);
 
     console.log(user.id);
-    await setLoanId(user.id);
-    await setUser(user);
-
-    await toPrint();
+    setLoanId(user.id);
+    setUser(user);
+    // await mutateLoanUserPayments();
+    toPrint("toprint");
     // console.log(user);
   };
   const handlePaymentLogModal = (id) => {
@@ -215,8 +226,8 @@ const Loans = () => {
       <div>
         <Toaster position='top-right' reverseOrder={false} />
       </div>
-      {user && (
-        <Paper ref={printRef} user={user} loanUserPayments={loanUserPayments} />
+      {userLoanPaymets && (
+        <Paper ref={printRef} user={user} loanUserPayments={userLoanPaymets} />
       )}
 
       {isOpen && (
