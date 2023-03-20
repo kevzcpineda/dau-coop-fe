@@ -1,2 +1,25 @@
 @media print {
+    .user_loan_container{
+        margin: 20px;
+    }
+    .logo {
+        height: 100px;
+        }
+        .header {
+        display: flex;
+        justify-content: center;
+        }
+        
+        .header .info {
+        text-align: center;
+        }
+        .details {
+        display: flex;
+        justify-content: space-between;
+        }
+        .voucher_section {
+        display: flex;
+        justify-content: space-between;
+        }
+      
 }

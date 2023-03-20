@@ -75,8 +75,8 @@ const Loans = () => {
       queryClient.invalidateQueries('loan');
     },
   });
-  const handleGetLoanPayments = async () => {
-    const response = await getLoanPayments(loanId);
+  const handleGetLoanPayments = async (id) => {
+    const response = await getLoanPayments(id);
     setUserLoanPayments(response)
   } 
   // const {
@@ -116,8 +116,8 @@ const Loans = () => {
     removeAfterPrint: true,
     onBeforeGetContent: async () => {
       console.log("onBeforeGetContent")
-      console.log(mes)
-      await handleGetLoanPayments()
+
+      // await handleGetLoanPayments(loanId)
       return new Promise((resolve) => {
         promiseResolveRef.current = resolve;
         setIsPrinting(true);
@@ -139,9 +139,10 @@ const Loans = () => {
     // const response = await getUser(id);
 
     console.log(user.id);
-    setLoanId(user.id);
-    setUser(user);
+    await setLoanId(user.id);
+    await setUser(user);
     // await mutateLoanUserPayments();
+    await handleGetLoanPayments(user.id)
     toPrint("toprint");
     // console.log(user);
   };

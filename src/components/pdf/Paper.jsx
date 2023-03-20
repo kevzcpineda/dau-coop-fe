@@ -1,12 +1,14 @@
 import React from 'react';
 import dauLogo from '../../assets/logo.png';
+import userLoan from '../pdf/styles/userLoan.css'
 
 const Paper = React.forwardRef((props, ref) => {
   console.log("Paper")
-  console.log(props?.loanUserPayments);
+  // console.log(props?.loanUserPayments);
+  console.log(props?.user);
   return (
     <div style={{ display: 'none' }}>
-      <div ref={ref}>
+      <div ref={ref} className="user_loan_container">
         <div className='header'>
           <div>
             <img src={dauLogo} className='logo' />
@@ -31,7 +33,7 @@ const Paper = React.forwardRef((props, ref) => {
             <p>LOAN GRANTED: {` ${props?.user?.loan}`}</p>
             <p>ADDRESS:{` ${props?.user?.address}`}</p>
             <p>DAILY PAYMENT: none</p>
-            <p>DUE DATE: none</p>
+            <p>DUE DATE: {props?.user?.penalty_date}</p>
           </div>
           <div className='sec2'>
             <p>DATE DRANTED: {` ${props?.user?.date}`}</p>
@@ -42,9 +44,9 @@ const Paper = React.forwardRef((props, ref) => {
           </div>
         </div>
         <div className='voucher_section'>
-          <p>VOUCHER NUMBER: none</p>
-          <p>CHECK NUMBER: none-</p>
-          <p>PROMISSORY NOTE NUMBER: none</p>
+          <p>VOUCHER NUMBER: {props?.user?.voucher_number}</p>
+          <p>CHECK NUMBER: {props?.user?.check_number}</p>
+          <p>PROMISSORY NOTE NUMBER: {props?.user?.promissory_note_number}</p>
         </div>
         {props.loanUserPayments &&
           props?.loanUserPayments?.map((item) => {
