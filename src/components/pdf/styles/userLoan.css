@@ -21,5 +21,8 @@
         display: flex;
         justify-content: space-between;
         }
+        .loan_payments_table{
+            width: 100%;
+        }
       
 }

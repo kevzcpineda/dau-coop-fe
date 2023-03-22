@@ -4,7 +4,7 @@ import userLoan from '../pdf/styles/userLoan.css'
 
 const Paper = React.forwardRef((props, ref) => {
   console.log("Paper")
-  // console.log(props?.loanUserPayments);
+  console.log(props?.loanUserPayments);
   console.log(props?.user);
   return (
     <div style={{ display: 'none' }}>
@@ -48,10 +48,52 @@ const Paper = React.forwardRef((props, ref) => {
           <p>CHECK NUMBER: {props?.user?.check_number}</p>
           <p>PROMISSORY NOTE NUMBER: {props?.user?.promissory_note_number}</p>
         </div>
-        {props.loanUserPayments &&
-          props?.loanUserPayments?.map((item) => {
-            return <p key={item.id}>{item?.amount}</p>;
-          })}
+        <table className='loan_payments_table'>
+            <tr>
+              <th>Date Payments</th>
+              <th>CR number</th>
+              <th>Loan granted</th>
+              <th>Interest</th>
+              <th>Service fee</th>
+              <th>PENALTY</th>
+              <th>PENALTY</th>
+              <th>Peyment</th>
+              <th>loan balance</th>
+              <th>take home</th>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>{props?.user?.loan}</td>
+              <td>{props?.user?.interest}</td>
+              <td>{props?.user?.service_fee}</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>{props?.user?.net_amount}</td>
+            </tr>
+            {props?.loanUserPayments?.map(item => {
+              return(
+                <tr>
+                  <td>{item.date}</td>
+                  <td>{item.ticket}</td>
+                  <td>{item.date}</td>
+                  <td>{item.date}</td>
+                  <td>{item.date}</td>
+                  <td>{item.date}</td>
+                  <td>{item.date}</td>
+                  <td>{item.amount}</td>
+                  <td>{item.date}</td>
+                  <td>{item.date}</td>
+                  
+                </tr>
+              )
+            })}
+             
+               
+              
+        </table>
         {/* ref */}
       </div>
     </div>
