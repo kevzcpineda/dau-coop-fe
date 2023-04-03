@@ -55,11 +55,11 @@ const Paper = React.forwardRef((props, ref) => {
               <th>Loan granted</th>
               <th>Interest</th>
               <th>Service fee</th>
-              <th>PENALTY</th>
-              <th>PENALTY</th>
+              <th>Penalty</th>
+              <th>Daily Payment</th>
               <th>Peyment</th>
-              <th>loan balance</th>
-              <th>take home</th>
+              <th>Loan balance</th>
+              <th>Take home</th>
             </tr>
             <tr>
               <td></td>
@@ -78,14 +78,14 @@ const Paper = React.forwardRef((props, ref) => {
                 <tr>
                   <td>{item.date}</td>
                   <td>{item.ticket}</td>
-                  <td>{item.date}</td>
-                  <td>{item.date}</td>
-                  <td>{item.date}</td>
-                  <td>{item.date}</td>
-                  <td>{item.date}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
                   <td>{item.amount}</td>
-                  <td>{item.date}</td>
-                  <td>{item.date}</td>
+                  <td></td>
+                  <td></td>
                   
                 </tr>
               )

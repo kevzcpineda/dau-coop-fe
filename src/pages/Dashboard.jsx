@@ -13,6 +13,8 @@ import {
 import logo from '../assets/noimage.png';
 import AdminLayout from '../components/AdminLayout';
 import AuthContext from '../context/AuthContext';
+import { z } from "zod";
+import toast, { Toaster } from 'react-hot-toast';
 
 const Dashboard = () => {
   const { createUser } = useContext(AuthContext);
@@ -36,34 +38,83 @@ const Dashboard = () => {
   const [sssNumber, setSSSNumber] = useState('');
   const [memberStatus, setMemberStatus] = useState('');
 
+  const UserSchema = z.object({
+    firstName: z.string(),
+    lastName: z.string(),
+    middleName: z.string(),
+    age: z.string(),
+    dateOfBirth: z.string().optional().nullable(),
+    gender: z.string().max(4).optional(),
+    address: z.string().optional(),
+    phone: z.string().optional(),
+    dateOfMembership: z.date().optional().nullable(),
+    civilStatus: z.string().optional(),
+    driverLicenseNumber: z.string(),
+    height: z.string().optional(),
+    weight: z.string().optional(),
+    bloodType: z.string().optional(),
+    philhealthNumber: z.string().optional(),
+    sssNumber: z.string().optional(),
+    memberStatus: z.string(),
+  });
+
   const handleCreateUser = async (e) => {
     e.preventDefault();
-    const response = await createUser({
-      first_name: firstName,
-      last_name: lastName,
-      middle_name: middleName,
-      // image
+    const userValidate = UserSchema.safeParse({
+      firstName: firstName,
+      lastName: lastName,
+      middleName: middleName,
       age: age,
-      birth_date: dateOfBirth,
+      dateOfBirth: dateOfBirth,
       gender: gender,
       address: address,
-      phone_no: phone,
-      date_of_membership: dateOfMembership,
-      civil_status: civilStatus,
-      driver_license_no: driverLicenseNumber,
+      phone: phone,
+      dateOfMembership: dateOfMembership,
+      civilStatus: civilStatus,
+      driverLicenseNumber: driverLicenseNumber,
       height: height,
       weight: weight,
-      blood_type: bloodType,
-      philhealth_no: philhealthNumber,
-      sss_no: sssNumber,
-      member_status: memberStatus,
-    });
+      bloodType: bloodType,
+      philhealthNumber: philhealthNumber,
+      sssNumber: sssNumber,
+      memberStatus: memberStatus})
 
-    console.log('response', response);
+      console.log(userValidate)
+    // if(!userValidate.success){
+    //   toast.error(userValidate.error)
+    // }else{
+    //   const response = await createUser({
+    //     first_name: userValidate.data.firstName,
+    //     last_name: userValidate.data.lastName,
+    //     middle_name: userValidate.data.middleName,
+    //     // image
+    //     age: userValidate.data.age,
+    //     birth_date: userValidate.data.dateOfBirth,
+    //     gender: userValidate.data.gender,
+    //     address: userValidate.data.address,
+    //     phone_no: userValidate.data.phone,
+    //     date_of_membership: userValidate.data.dateOfMembership,
+    //     civil_status: userValidate.data.civilStatus,
+    //     driver_license_no: userValidate.data.driverLicenseNumber,
+    //     height: userValidate.data.height,
+    //     weight: userValidate.data.weight,
+    //     blood_type: userValidate.data.bloodType,
+    //     philhealth_no: userValidate.data.philhealthNumber,
+    //     sss_no: userValidate.data.sssNumber,
+    //     member_status: userValidate.data.memberStatus,
+    //   });
+  
+    //   console.log('response', response);
+    // }
+    
   };
 
   return (
     <AdminLayout>
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+      />
       <Box as='form' onSubmit={handleCreateUser}>
         <Grid templateColumns='repeat(4, 1fr)' gap={5}>
           <GridItem colSpan={1}>
