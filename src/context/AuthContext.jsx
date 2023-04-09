@@ -283,9 +283,9 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
-  const getLoanPayments = async () => {
-    // console.log(id);
-    const response = await fetch(`${baseURL}/loan/user_payments/?loan_id=9`, {
+  const getLoanPayments = async (id) => {
+    console.log(id);
+    const response = await fetch(`${baseURL}/loan/user_payments/?loan_id=${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

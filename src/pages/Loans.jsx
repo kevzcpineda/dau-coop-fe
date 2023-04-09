@@ -55,6 +55,7 @@ const Loans = () => {
   const [amount, setAmount] = useState(0);
   const [csv, setCsv] = useState(null);
   const [file, setFile] = useState(null);
+  const [userLoanPaymets, setUserLoanPayments] = useState([]);
   const [ticket, setTicket] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {
@@ -74,12 +75,15 @@ const Loans = () => {
       queryClient.invalidateQueries('loan');
     },
   });
-
-  const {
-    data: loanUserPayments,
-    mutate: mutateLoanUserPayments,
-    isSuccess,
-  } = useMutation(getLoanPayments);
+  const handleGetLoanPayments = async (id) => {
+    const response = await getLoanPayments(id);
+    setUserLoanPayments(response);
+  };
+  // const {
+  //   data: loanUserPayments,
+  //   mutate: mutateLoanUserPayments,
+  //   isSuccess,
+  // } = useMutation(getLoanPayments);
 
   const handlePaymentModal = (id) => {
     onOpen();
@@ -110,15 +114,13 @@ const Loans = () => {
   const toPrint = useReactToPrint({
     content: () => reactToPrintContent(),
     removeAfterPrint: true,
-    onBeforePrint: () => {
+    onBeforeGetContent: () => {
       mutateLoanUserPayments();
+      // return new Promise((resolve) => {
+      //   promiseResolveRef.current = resolve;
+      //   setIsPrinting(true);
+      // });
     },
-    // onBeforeGetContent: () => {
-    //   return new Promise((resolve) => {
-    //     promiseResolveRef.current = resolve;
-    //     setIsPrinting(true);
-    //   });
-    // },
     // onAfterPrint: () => {
     //   // Reset the Promise resolve so we can print again
     //   promiseResolveRef.current = null;
@@ -132,8 +134,9 @@ const Loans = () => {
     console.log(user.id);
     await setLoanId(user.id);
     await setUser(user);
-
-    await toPrint();
+    // await mutateLoanUserPayments();
+    await handleGetLoanPayments(user.id);
+    toPrint('toprint');
     // console.log(user);
   };
   const handlePaymentLogModal = (id) => {
@@ -217,8 +220,8 @@ const Loans = () => {
       <div>
         <Toaster position='top-right' reverseOrder={false} />
       </div>
-      {user && (
-        <Paper ref={printRef} user={user} loanUserPayments={loanUserPayments} />
+      {userLoanPaymets && (
+        <Paper ref={printRef} user={user} loanUserPayments={userLoanPaymets} />
       )}
 
       {isOpen && (
