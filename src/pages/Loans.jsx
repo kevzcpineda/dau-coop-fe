@@ -96,12 +96,12 @@ const Loans = () => {
     onClose();
   };
   const printRef = useRef();
-  // useEffect(() => {
-  //   if (isPrinting && promiseResolveRef.current) {
-  //     // Resolves the Promise, letting `react-to-print` know that the DOM updates are completed
-  //     promiseResolveRef.current();
-  //   }
-  // }, [isPrinting]);
+  useEffect(() => {
+    if (isPrinting && promiseResolveRef.current) {
+      // Resolves the Promise, letting `react-to-print` know that the DOM updates are completed
+      promiseResolveRef.current();
+    }
+  }, [isPrinting]);
 
   const reactToPrintContent = useCallback(() => {
     return printRef.current;
@@ -110,13 +110,15 @@ const Loans = () => {
   const toPrint = useReactToPrint({
     content: () => reactToPrintContent(),
     removeAfterPrint: true,
-    onBeforeGetContent: () => {
+    onBeforePrint: () => {
       mutateLoanUserPayments();
-      // return new Promise((resolve) => {
-      //   promiseResolveRef.current = resolve;
-      //   setIsPrinting(true);
-      // });
     },
+    // onBeforeGetContent: () => {
+    //   return new Promise((resolve) => {
+    //     promiseResolveRef.current = resolve;
+    //     setIsPrinting(true);
+    //   });
+    // },
     // onAfterPrint: () => {
     //   // Reset the Promise resolve so we can print again
     //   promiseResolveRef.current = null;
