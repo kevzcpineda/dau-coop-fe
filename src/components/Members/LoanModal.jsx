@@ -20,6 +20,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Select,
   useDisclosure,
 } from '@chakra-ui/react';
 const LoanModal = (props) => {
@@ -61,6 +62,13 @@ const LoanModal = (props) => {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
               />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Status</FormLabel>
+              <Select placeholder='Select status'>
+                <option value='PENDING'>Pending</option>
+                <option value='GRANTED'>Granted</option>
+              </Select>
             </FormControl>
           </ModalBody>
           <ModalFooter>

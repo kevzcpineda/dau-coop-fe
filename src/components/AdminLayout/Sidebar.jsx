@@ -46,6 +46,11 @@ export const Sidebar = (props) => {
               href='/add-daily-jues'
               icon={BsFillPeopleFill}
             />
+            <NavLink
+              label='Daily Dues Reports'
+              href='/daily-dues-reports'
+              icon={FaRegChartBar}
+            />
             {/* <NavLink
               label='Scheduled Viewing'
               href='/schedule'
@@ -57,10 +62,11 @@ export const Sidebar = (props) => {
               icon={FaRegChartBar}
             />
             <NavLink
-              label='Daily Dues Reports'
-              href='/daily-dues-reports'
+              label='Add Loan Reports'
+              href='/add-loan-reports'
               icon={FaRegChartBar}
             />
+
             {/* <NavLink label='Setting' href='/settings' icon={AiFillSetting} /> */}
             <Button colorScheme='blue' onClick={logoutUser}>
               LogOut

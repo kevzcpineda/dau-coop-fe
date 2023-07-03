@@ -84,7 +84,8 @@ const LoanTable = ({
                   <Th>Lasr Name</Th>
                   <Th>balance</Th>
                   <Th>penalty</Th>
-                  <Th>date of Penalty</Th>
+                  <Th>Date</Th>
+                  {/* <Th>date of Penalty</Th> */}
                 </Tr>
               </Thead>
               <Tbody>
@@ -98,7 +99,8 @@ const LoanTable = ({
                           <Td>{item.last_name}</Td>
                           <Td>{item.balance}</Td>
                           <Td>{item.penalty}</Td>
-                          <Td>{item.penalty_date}</Td>
+                          <Td>{item.date}</Td>
+                          {/* <Td>{item.penalty_date}</Td> */}
                         </Tr>
                       );
                     })

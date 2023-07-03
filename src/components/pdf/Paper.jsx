@@ -1,14 +1,14 @@
 import React from 'react';
 import dauLogo from '../../assets/logo.png';
-import userLoan from '../pdf/styles/userLoan.css'
+import userLoan from '../pdf/styles/userLoan.css';
 
 const Paper = React.forwardRef((props, ref) => {
-  console.log("Paper")
+  console.log('Paper');
   console.log(props?.loanUserPayments);
   console.log(props?.user);
   return (
     <div style={{ display: 'none' }}>
-      <div ref={ref} className="user_loan_container">
+      <div ref={ref} className='user_loan_container'>
         <div className='header'>
           <div>
             <img src={dauLogo} className='logo' />
@@ -49,50 +49,46 @@ const Paper = React.forwardRef((props, ref) => {
           <p>PROMISSORY NOTE NUMBER: {props?.user?.promissory_note_number}</p>
         </div>
         <table className='loan_payments_table'>
-            <tr>
-              <th>Date Payments</th>
-              <th>CR number</th>
-              <th>Loan granted</th>
-              <th>Interest</th>
-              <th>Service fee</th>
-              <th>Penalty</th>
-              <th>Daily Payment</th>
-              <th>Peyment</th>
-              <th>Loan balance</th>
-              <th>Take home</th>
-            </tr>
-            <tr>
-              <td></td>
-              <td></td>
-              <td>{props?.user?.loan}</td>
-              <td>{props?.user?.interest}</td>
-              <td>{props?.user?.service_fee}</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>{props?.user?.net_amount}</td>
-            </tr>
-            {props?.loanUserPayments?.map(item => {
-              return(
-                <tr>
-                  <td>{item.date}</td>
-                  <td>{item.ticket}</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td>{item.amount}</td>
-                  <td></td>
-                  <td></td>
-                  
-                </tr>
-              )
-            })}
-             
-               
-              
+          <tr>
+            <th>Date Payments</th>
+            <th>CR number</th>
+            <th>Loan granted</th>
+            <th>Interest</th>
+            <th>Service fee</th>
+            <th>Penalty</th>
+            <th>Daily Payment</th>
+            <th>Peyment</th>
+            <th>Loan balance</th>
+            <th>Take home</th>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td>{props?.user?.loan}</td>
+            <td>{props?.user?.interest}</td>
+            <td>{props?.user?.service_fee}</td>
+            <td>{props?.user?.penalty}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{props?.user?.net_amount}</td>
+          </tr>
+          {props?.loanUserPayments?.map((item) => {
+            return (
+              <tr>
+                <td>{item.date}</td>
+                <td>{item.ticket}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>{item.amount}</td>
+                <td></td>
+                <td></td>
+              </tr>
+            );
+          })}
         </table>
         {/* ref */}
       </div>

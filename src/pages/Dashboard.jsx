@@ -13,7 +13,7 @@ import {
 import logo from '../assets/noimage.png';
 import AdminLayout from '../components/AdminLayout';
 import AuthContext from '../context/AuthContext';
-import { z } from "zod";
+import { z } from 'zod';
 import toast, { Toaster } from 'react-hot-toast';
 
 const Dashboard = () => {
@@ -77,9 +77,10 @@ const Dashboard = () => {
       bloodType: bloodType,
       philhealthNumber: philhealthNumber,
       sssNumber: sssNumber,
-      memberStatus: memberStatus})
+      memberStatus: memberStatus,
+    });
 
-      console.log(userValidate)
+    console.log(userValidate);
     // if(!userValidate.success){
     //   toast.error(userValidate.error)
     // }else{
@@ -103,18 +104,14 @@ const Dashboard = () => {
     //     sss_no: userValidate.data.sssNumber,
     //     member_status: userValidate.data.memberStatus,
     //   });
-  
+
     //   console.log('response', response);
     // }
-    
   };
 
   return (
     <AdminLayout>
-      <Toaster
-        position="top-right"
-        reverseOrder={false}
-      />
+      <Toaster position='top-right' reverseOrder={false} />
       <Box as='form' onSubmit={handleCreateUser}>
         <Grid templateColumns='repeat(4, 1fr)' gap={5}>
           <GridItem colSpan={1}>
@@ -235,11 +232,11 @@ const Dashboard = () => {
               <Select
                 placeholder='Select option'
                 onChange={(e) => setMemberStatus(e.target.value)}>
-                <option value='Operator'>Operator</option>
-                <option value='Driver'>Driver</option>
-                <option value='Associate Operator'>Associate Operator</option>
-                <option value='Subtitute Driver'>Subtitute Driver</option>
-                <option value='Barker'>Barker</option>
+                <option value='OPERATOR'>Operator</option>
+                <option value='DRIVER'>Driver</option>
+                <option value='ASSOCIATE_OPERATOR'>Associate Operator</option>
+                <option value='SUBTITUTE_DRIVER'>Subtitute Driver</option>
+                <option value='BARKER'>Barker</option>
               </Select>
               {/* <Input
                 value={memberStatus}

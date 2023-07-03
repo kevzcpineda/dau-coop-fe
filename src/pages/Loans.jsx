@@ -115,17 +115,17 @@ const Loans = () => {
     content: () => reactToPrintContent(),
     removeAfterPrint: true,
     onBeforeGetContent: () => {
-      mutateLoanUserPayments();
-      // return new Promise((resolve) => {
-      //   promiseResolveRef.current = resolve;
-      //   setIsPrinting(true);
-      // });
+      // mutateLoanUserPayments();
+      return new Promise((resolve) => {
+        promiseResolveRef.current = resolve;
+        setIsPrinting(true);
+      });
     },
-    // onAfterPrint: () => {
-    //   // Reset the Promise resolve so we can print again
-    //   promiseResolveRef.current = null;
-    //   setIsPrinting(false);
-    // },
+    onAfterPrint: () => {
+      // Reset the Promise resolve so we can print again
+      promiseResolveRef.current = null;
+      setIsPrinting(false);
+    },
   });
 
   const print = async (user) => {
