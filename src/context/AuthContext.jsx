@@ -285,12 +285,15 @@ export const AuthProvider = ({ children }) => {
 
   const getLoanPayments = async (id) => {
     console.log(id);
-    const response = await fetch(`${baseURL}/loan/user_payments/?loan_id=${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${baseURL}/loan/user_payments/?loan_id=${id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
     const data = response.json();
     // console.log(data);
     return data;
@@ -340,6 +343,18 @@ export const AuthProvider = ({ children }) => {
     const data = await response.json();
     return data;
   };
+  const updateLoanStatus = async ({ id, ...payload }) => {
+    console.log('payload', payload);
+    const response = await fetch(`${baseURL}/loan/${id}/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    return response;
+  };
 
   const contextData = {
     user: user,
@@ -368,18 +383,19 @@ export const AuthProvider = ({ children }) => {
     getLoans: getLoans,
     postLoanPayments: postLoanPayments,
     postLoanPenalty: postLoanPenalty,
+    updateLoanStatus: updateLoanStatus,
   };
 
   useEffect(() => {
     console.log('useEffect');
-    // if (accessToken) {
-    //   const { is_superuser } = jwt_decode(accessToken);
-    //   if (!is_superuser) {
-    //     navigate('/');
-    //   } else {
-    //     navigate('/dashboard');
-    //   }
-    // }
+    if (accessToken) {
+      const { is_superuser } = jwt_decode(accessToken);
+      if (!is_superuser) {
+        navigate('/');
+      } else {
+        navigate('/dashboard');
+      }
+    }
 
     if (loading) {
       updateToken();
