@@ -43,10 +43,7 @@ const AddDailyJues = () => {
   const ticketRef = useRef('');
   const { mutate } = useMutation(postDailyDuesReport);
   const handleChange = (value) => {
-    console.log(value);
-
     // const res = users.find((item) => item.id === value);
-    // console.log(res);
     const item = {
       user: value?.id,
       member_status: value?.member_status,
@@ -56,7 +53,6 @@ const AddDailyJues = () => {
       ticket: ticket,
       date: date,
     };
-    // console.log(item);
     {
       value && setSelectedUser([...selectedUser, item]);
     }
@@ -66,7 +62,6 @@ const AddDailyJues = () => {
   };
 
   const handleDelete = (id) => {
-    console.log(id);
     const newSelected = selectedUser.filter((item) => item.user !== id);
     setSelectedUser(newSelected);
   };
@@ -116,24 +111,22 @@ const AddDailyJues = () => {
               </Thead>
               <Tbody>
                 {selectedUser &&
-                  selectedUser
-                    .map((item, index) => {
-                      return (
-                        <Tr key={index}>
-                          <Td>{item.user}</Td>
-                          <Td>{item.fname}</Td>
-                          <Td>{item.lname}</Td>
-                          <Td>{item.ticket}</Td>
-                          <Td>{item.date}</Td>
-                          <Td>
-                            <Button onClick={() => handleDelete(item.user)}>
-                              Delete
-                            </Button>
-                          </Td>
-                        </Tr>
-                      );
-                    })
-                    .reverse()}
+                  selectedUser.map((item, index) => {
+                    return (
+                      <Tr key={index}>
+                        <Td>{item.user}</Td>
+                        <Td>{item.fname}</Td>
+                        <Td>{item.lname}</Td>
+                        <Td>{item.ticket}</Td>
+                        <Td>{item.date}</Td>
+                        <Td>
+                          <Button onClick={() => handleDelete(item.user)}>
+                            Delete
+                          </Button>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
               </Tbody>
             </Table>
           </TableContainer>

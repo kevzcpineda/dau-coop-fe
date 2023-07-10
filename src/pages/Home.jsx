@@ -40,8 +40,7 @@ const Home = () => {
     'getUserLoan',
     getUserInfo
   );
-  // console.log(status);
-  console.log(loanData);
+
   // let api = useAxios();
 
   // useEffect(() => {

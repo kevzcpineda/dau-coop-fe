@@ -131,20 +131,16 @@ const Loans = () => {
   const print = async (user) => {
     // const response = await getUser(id);
 
-    console.log(user.id);
     await setLoanId(user.id);
     await setUser(user);
     // await mutateLoanUserPayments();
     await handleGetLoanPayments(user.id);
     toPrint('toprint');
-    // console.log(user);
   };
   const handlePaymentLogModal = (id) => {
-    console.log(id);
     onOpenLog();
   };
 
-  console.log(data);
   const unparseConfig = {
     quotes: false, //or array of booleans
     quoteChar: '"',
@@ -169,7 +165,6 @@ const Loans = () => {
     comments: false,
     step: undefined,
     complete: function (results, file) {
-      console.log('Parsing complete:', results, file);
       exlLoanPayments(results.data);
       toast.success('Successfully toasted!');
     },
@@ -192,7 +187,6 @@ const Loans = () => {
     comments: false,
     step: undefined,
     complete: function (results, file) {
-      console.log('Parsing complete:', results, file);
       exlLoanPayments(results.data);
       toast.success('Successfully toasted!');
     },
@@ -204,16 +198,13 @@ const Loans = () => {
 
   const handleParse = () => {
     const value = Papa.parse(csv, parseconfig);
-    // console.log(value);
   };
   const handleParsePenalty = () => {
     const value = Papa.parse(csv, parsepenaltyconfig);
-    // console.log(value);
   };
   const handleUnparse = () => {
     const value = Papa.unparse(data, unparseConfig);
     // const value = Papa.parse(csv, parseconfig);
-    console.log(value);
   };
   return (
     <AdminLayout>
@@ -238,12 +229,12 @@ const Loans = () => {
 
       <Box>
         <Heading>Loans</Heading>
-        <Button onClick={() => handleParse()}>Import CSV loan payment</Button>
+        {/* <Button onClick={() => handleParse()}>Import CSV loan payment</Button>
         <Button onClick={() => handleParsePenalty()}>
           Import CSV loan penalty
         </Button>
         <Button onClick={() => handleUnparse()}>Unparse</Button>
-        <Input type='file' onChange={(e) => setCsv(e.target.files[0])} />
+        <Input type='file' onChange={(e) => setCsv(e.target.files[0])} /> */}
 
         {status === 'loading' && <Spinner />}
         {status === 'error' && <div>error...</div>}

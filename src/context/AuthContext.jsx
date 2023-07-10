@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import { Spinner, Flex } from '@chakra-ui/react';
 const AuthContext = createContext();
 
 export default AuthContext;
@@ -122,29 +122,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const createUser = async (payload) => {
-    // console.log(payload)
-    // const response = await axios({
-    //     method: 'post',
-    //     url: `${baseURL}/createUser/`,
-    //     data: payload,
-    // });
-
-    // console.log(response)
-    console.log(payload);
-    const response = await fetch(`${baseURL}/createUser/`, {
+    return fetch(`${baseURL}/createUser/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(payload),
     });
-
-    const data = await response.json();
-    if (data) {
-      return { success: true, data: response };
-    } else {
-      return { success: false };
-    }
   };
 
   const getUsers = async (page) => {
@@ -417,7 +401,19 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={contextData}>
-      {loading ? null : children}
+      {loading ? (
+        <Flex alignItems='center' justifyContent='center' height='100vh'>
+          <Spinner
+            thickness='10px'
+            speed='0.65s'
+            emptyColor='gray.200'
+            color='blue.500'
+            style={{ width: '150px', height: '150px' }}
+          />
+        </Flex>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };

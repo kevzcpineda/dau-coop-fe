@@ -68,7 +68,7 @@ const LoanReport = () => {
     setLoanReports(data);
     handlePrint();
   };
-  // console.log(loanReports);
+
   return (
     <AdminLayout>
       {loanReports && <LoanReportPdf ref={printRef} data={loanReports} />}

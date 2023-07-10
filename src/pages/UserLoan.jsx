@@ -10,7 +10,6 @@ const UserLoan = () => {
   const getLoan = async () => {
     const userLoan = await getUserLoan(token);
     setUserLoan(userLoan);
-    console.log(userLoan);
   };
   useEffect(() => {
     getLoan();

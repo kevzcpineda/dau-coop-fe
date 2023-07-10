@@ -29,8 +29,6 @@ export const useUser = create((set, get) => ({
   },
 
   editUser: async (id, payload) => {
-    console.log(`id : ${id}`);
-    console.log(`payload : ${payload}`);
     const response = await fetch(`${baseURL}/userDetail/${id}/`, {
       method: 'PUT',
       headers: {
@@ -65,7 +63,7 @@ export const useUser = create((set, get) => ({
       },
       body: JSON.stringify(payload),
     });
-    console.log(response);
+
     return response;
   },
 

@@ -3,9 +3,6 @@ import dauLogo from '../../assets/logo.png';
 import userLoan from '../pdf/styles/userLoan.css';
 
 const Paper = React.forwardRef((props, ref) => {
-  console.log('Paper');
-  console.log(props?.loanUserPayments);
-  console.log(props?.user);
   return (
     <div style={{ display: 'none' }}>
       <div ref={ref} className='user_loan_container'>

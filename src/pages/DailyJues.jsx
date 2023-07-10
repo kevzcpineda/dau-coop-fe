@@ -57,11 +57,9 @@ const DailyJues = () => {
       queryClient.setQueryData(['dailyJues'], date);
     },
   });
-  console.log(status);
 
   const handleChange = (datechange) => {
     setDate(datechange);
-    console.log(date);
     mutate(date);
   };
   return (

@@ -2,7 +2,6 @@ import React from 'react';
 import './styles/loan.css/';
 
 const LoanReportPdf = React.forwardRef((props, ref) => {
-  console.log(props.data);
   return (
     <div style={{ display: 'none' }}>
       <div ref={ref} className='loan_container'>

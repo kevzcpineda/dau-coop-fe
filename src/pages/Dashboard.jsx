@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useRef } from 'react';
 import {
   Image,
   Box,
@@ -10,103 +10,134 @@ import {
   FormLabel,
   Select,
 } from '@chakra-ui/react';
+import { useMutation } from 'react-query';
 import logo from '../assets/noimage.png';
 import AdminLayout from '../components/AdminLayout';
 import AuthContext from '../context/AuthContext';
 import { z } from 'zod';
 import toast, { Toaster } from 'react-hot-toast';
-
+import axios from 'axios';
+const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
 const Dashboard = () => {
   const { createUser } = useContext(AuthContext);
+  const mutation = useMutation({
+    mutationFn: (payload) => {
+      return axios.post(`${baseURL}/createUser/`, payload);
+    },
+    onSuccess: (data, variables, context) => {
+      ('OnSUCCESS');
+      firstName.current.value = '';
+      lastName.current.value = '';
+      middleName.current.value = '';
+      memberStatus.current.value = '';
+      age.current.value = '';
+      dateOfBirth.current.value = '';
+      gender.current.value = '';
+      address.current.value = '';
+      phone.current.value = '';
+      dateOfMembership.current.value = '';
+      civilStatus.current.value = '';
+      driverLicenseNumber.current.value = '';
+      height.current.value = '';
+      weight.current.value = '';
+      bloodType.current.value = '';
+      philhealthNumber.current.value = '';
+      sssNumber.current.value = '';
+      toast.success('Added Successfully!');
+    },
+    onError: (error, variables, context) => {
+      ('Onerror');
+      toast.error(`Error ${error} `);
+    },
+  });
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [middleName, setMiddleName] = useState('');
-  const [image, setImage] = useState('');
-  const [age, setAge] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState(null);
-  const [gender, setGender] = useState('');
-  const [address, setAddress] = useState('');
-  const [phone, setPhone] = useState('');
-  const [dateOfMembership, setDateOfMembership] = useState(null);
-  const [civilStatus, setCivilStatus] = useState('');
-  const [driverLicenseNumber, setDriverLicenseNumber] = useState('');
-  const [height, setHeight] = useState('');
-  const [weight, setWeight] = useState('');
-  const [bloodType, setBloodType] = useState('');
-  const [philhealthNumber, setPhilhealthNumber] = useState('');
-  const [sssNumber, setSSSNumber] = useState('');
-  const [memberStatus, setMemberStatus] = useState('');
+  const firstName = useRef();
+  const lastName = useRef();
+  const middleName = useRef();
+  const age = useRef();
+  const dateOfBirth = useRef();
+  const gender = useRef();
+  const address = useRef();
+  const phone = useRef();
+  const dateOfMembership = useRef();
+  const civilStatus = useRef();
+  const driverLicenseNumber = useRef();
+  const height = useRef();
+  const weight = useRef();
+  const bloodType = useRef();
+  const philhealthNumber = useRef();
+  const sssNumber = useRef();
+  const memberStatus = useRef();
 
   const UserSchema = z.object({
-    firstName: z.string(),
-    lastName: z.string(),
-    middleName: z.string(),
-    age: z.string(),
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
+    middleName: z.string().optional().nullable(),
+    age: z.string().optional().nullable(),
     dateOfBirth: z.string().optional().nullable(),
-    gender: z.string().max(4).optional(),
-    address: z.string().optional(),
-    phone: z.string().optional(),
-    dateOfMembership: z.date().optional().nullable(),
-    civilStatus: z.string().optional(),
-    driverLicenseNumber: z.string(),
-    height: z.string().optional(),
-    weight: z.string().optional(),
-    bloodType: z.string().optional(),
-    philhealthNumber: z.string().optional(),
-    sssNumber: z.string().optional(),
-    memberStatus: z.string(),
+    gender: z.string().max(4).optional().nullable(),
+    address: z.string().optional().nullable(),
+    phone: z.string().optional().nullable(),
+    dateOfMembership: z.string().optional().nullable(),
+    civilStatus: z.string().optional().nullable(),
+    driverLicenseNumber: z.string().optional().nullable(),
+    height: z.string().optional().nullable(),
+    weight: z.string().optional().nullable(),
+    bloodType: z.string().optional().nullable(),
+    philhealthNumber: z.string().optional().nullable(),
+    sssNumber: z.string().optional().nullable(),
+    memberStatus: z.string().min(1),
   });
 
   const handleCreateUser = async (e) => {
     e.preventDefault();
     const userValidate = UserSchema.safeParse({
-      firstName: firstName,
-      lastName: lastName,
-      middleName: middleName,
-      age: age,
-      dateOfBirth: dateOfBirth,
-      gender: gender,
-      address: address,
-      phone: phone,
-      dateOfMembership: dateOfMembership,
-      civilStatus: civilStatus,
-      driverLicenseNumber: driverLicenseNumber,
-      height: height,
-      weight: weight,
-      bloodType: bloodType,
-      philhealthNumber: philhealthNumber,
-      sssNumber: sssNumber,
-      memberStatus: memberStatus,
+      firstName: firstName.current.value,
+      lastName: lastName.current.value,
+      middleName: middleName.current.value,
+      age: age.current.value === '' ? null : age.current.value,
+      dateOfBirth: dateOfBirth.current.value === '' ? null : age.current.value,
+      gender: gender.current.value,
+      address: address.current.value,
+      phone: phone.current.value,
+      dateOfMembership:
+        dateOfMembership.current.value === '' ? null : age.current.value,
+      civilStatus: civilStatus.current.value,
+      driverLicenseNumber: driverLicenseNumber.current.value,
+      height: height.current.value,
+      weight: weight.current.value,
+      bloodType: bloodType.current.value,
+      philhealthNumber: philhealthNumber.current.value,
+      sssNumber: sssNumber.current.value,
+      memberStatus: memberStatus.current.value,
     });
 
-    console.log(userValidate);
-    // if(!userValidate.success){
-    //   toast.error(userValidate.error)
-    // }else{
-    //   const response = await createUser({
-    //     first_name: userValidate.data.firstName,
-    //     last_name: userValidate.data.lastName,
-    //     middle_name: userValidate.data.middleName,
-    //     // image
-    //     age: userValidate.data.age,
-    //     birth_date: userValidate.data.dateOfBirth,
-    //     gender: userValidate.data.gender,
-    //     address: userValidate.data.address,
-    //     phone_no: userValidate.data.phone,
-    //     date_of_membership: userValidate.data.dateOfMembership,
-    //     civil_status: userValidate.data.civilStatus,
-    //     driver_license_no: userValidate.data.driverLicenseNumber,
-    //     height: userValidate.data.height,
-    //     weight: userValidate.data.weight,
-    //     blood_type: userValidate.data.bloodType,
-    //     philhealth_no: userValidate.data.philhealthNumber,
-    //     sss_no: userValidate.data.sssNumber,
-    //     member_status: userValidate.data.memberStatus,
-    //   });
-
-    //   console.log('response', response);
-    // }
+    if (!userValidate.success) {
+      userValidate.error.issues.map((item) => {
+        toast.error(`Error in ${item.path[0]} ${item.message}:`);
+      });
+    } else {
+      mutation.mutate({
+        first_name: userValidate.data.firstName,
+        last_name: userValidate.data.lastName,
+        middle_name: userValidate.data.middleName,
+        // image
+        age: userValidate.data.age,
+        birth_date: userValidate.data.dateOfBirth,
+        gender: userValidate.data.gender,
+        address: userValidate.data.address,
+        phone_no: userValidate.data.phone,
+        date_of_membership: userValidate.data.dateOfMembership,
+        civil_status: userValidate.data.civilStatus,
+        driver_license_no: userValidate.data.driverLicenseNumber,
+        height: userValidate.data.height,
+        weight: userValidate.data.weight,
+        blood_type: userValidate.data.bloodType,
+        philhealth_no: userValidate.data.philhealthNumber,
+        sss_no: userValidate.data.sssNumber,
+        member_status: userValidate.data.memberStatus,
+      });
+    }
   };
 
   return (
@@ -124,19 +155,13 @@ const Dashboard = () => {
               <GridItem>
                 <FormControl>
                   <FormLabel>First Name</FormLabel>
-                  <Input
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
+                  <Input ref={firstName} />
                 </FormControl>
               </GridItem>
               <GridItem>
                 <FormControl>
                   <FormLabel>Last Name</FormLabel>
-                  <Input
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
+                  <Input ref={lastName} />
                 </FormControl>
               </GridItem>
             </Grid>
@@ -145,16 +170,13 @@ const Dashboard = () => {
               <GridItem>
                 <FormControl>
                   <FormLabel>Middle Name</FormLabel>
-                  <Input
-                    value={middleName}
-                    onChange={(e) => setMiddleName(e.target.value)}
-                  />
+                  <Input ref={middleName} />
                 </FormControl>
               </GridItem>
               <GridItem>
                 <FormControl>
                   <FormLabel>Age</FormLabel>
-                  <Input value={age} onChange={(e) => setAge(e.target.value)} />
+                  <Input ref={age} />
                 </FormControl>
               </GridItem>
             </Grid>
@@ -163,19 +185,13 @@ const Dashboard = () => {
               <GridItem>
                 <FormControl>
                   <FormLabel>Gender</FormLabel>
-                  <Input
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                  />
+                  <Input ref={gender} />
                 </FormControl>
               </GridItem>
               <GridItem>
                 <FormControl>
                   <FormLabel>Date of Birth</FormLabel>
-                  <Input
-                    type='date'
-                    onChange={(e) => setDateOfBirth(e.target.value)}
-                  />
+                  <Input type='date' ref={dateOfBirth} />
                 </FormControl>
               </GridItem>
             </Grid>
@@ -185,25 +201,19 @@ const Dashboard = () => {
           <GridItem>
             <FormControl>
               <FormLabel>Full Address</FormLabel>
-              <Input
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
+              <Input ref={address} />
             </FormControl>
           </GridItem>
           <GridItem>
             <FormControl>
               <FormLabel>Phone Number</FormLabel>
-              <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <Input ref={phone} />
             </FormControl>
           </GridItem>
           <GridItem>
             <FormControl>
               <FormLabel>Civil Status</FormLabel>
-              <Input
-                value={civilStatus}
-                onChange={(e) => setCivilStatus(e.target.value)}
-              />
+              <Input ref={civilStatus} />
             </FormControl>
           </GridItem>
         </Grid>
@@ -211,27 +221,19 @@ const Dashboard = () => {
           <GridItem>
             <FormControl>
               <FormLabel>Date of Membership</FormLabel>
-              <Input
-                type='date'
-                onChange={(e) => setDateOfMembership(e.target.value)}
-              />
+              <Input type='date' ref={dateOfMembership} />
             </FormControl>
           </GridItem>
           <GridItem>
             <FormControl>
               <FormLabel>Driver Licinse Number</FormLabel>
-              <Input
-                value={driverLicenseNumber}
-                onChange={(e) => setDriverLicenseNumber(e.target.value)}
-              />
+              <Input ref={driverLicenseNumber} />
             </FormControl>
           </GridItem>
           <GridItem>
             <FormControl>
               <FormLabel>Member Status</FormLabel>
-              <Select
-                placeholder='Select option'
-                onChange={(e) => setMemberStatus(e.target.value)}>
+              <Select ref={memberStatus} placeholder='Select option'>
                 <option value='OPERATOR'>Operator</option>
                 <option value='DRIVER'>Driver</option>
                 <option value='ASSOCIATE_OPERATOR'>Associate Operator</option>
@@ -249,28 +251,19 @@ const Dashboard = () => {
           <GridItem>
             <FormControl>
               <FormLabel>Height</FormLabel>
-              <Input
-                value={height}
-                onChange={(e) => setHeight(e.target.value)}
-              />
+              <Input ref={height} />
             </FormControl>
           </GridItem>
           <GridItem>
             <FormControl>
               <FormLabel>Weight</FormLabel>
-              <Input
-                value={weight}
-                onChange={(e) => setWeight(e.target.value)}
-              />
+              <Input ref={weight} />
             </FormControl>
           </GridItem>
           <GridItem>
             <FormControl>
               <FormLabel>Blood Type</FormLabel>
-              <Input
-                value={bloodType}
-                onChange={(e) => setBloodType(e.target.value)}
-              />
+              <Input ref={bloodType} />
             </FormControl>
           </GridItem>
         </Grid>
@@ -278,25 +271,31 @@ const Dashboard = () => {
           <GridItem>
             <FormControl>
               <FormLabel>Philhealth No.</FormLabel>
-              <Input
-                value={philhealthNumber}
-                onChange={(e) => setPhilhealthNumber(e.target.value)}
-              />
+              <Input ref={philhealthNumber} />
             </FormControl>
           </GridItem>
           <GridItem>
             <FormControl>
               <FormLabel>SSS</FormLabel>
-              <Input
-                value={sssNumber}
-                onChange={(e) => setSSSNumber(e.target.value)}
-              />
+              <Input ref={sssNumber} />
             </FormControl>
           </GridItem>
         </Grid>
-        <Button type='submit' colorScheme='blue'>
-          Submit
-        </Button>
+        {mutation.isLoading ? (
+          <Button
+            isLoading
+            type='submit'
+            colorScheme='blue'
+            loadingText='Loading'
+            variant='outline'
+            spinnerPlacement='start'>
+            Submit
+          </Button>
+        ) : (
+          <Button type='submit' colorScheme='blue'>
+            Submit
+          </Button>
+        )}
       </Box>
     </AdminLayout>
   );

@@ -2,7 +2,6 @@ import React from 'react';
 import '../pdf/styles/dailyDues.css';
 
 const DailyDuesPdf = React.forwardRef((props, ref) => {
-  console.log(props.data);
   return (
     <div style={{ display: 'none' }}>
       <div ref={ref}>
