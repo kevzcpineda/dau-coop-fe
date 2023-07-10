@@ -27,7 +27,7 @@ export const useLoan = create((set, get) => ({
     set({ loans: response.data });
   },
 
-  createLoan: async (id, amount, voucher, promissory, check) => {
+  createLoan: async (id, amount, voucher, promissory, check, status) => {
     const response = await fetch(`${baseURL}/loan/`, {
       method: 'POST',
       headers: {
@@ -39,6 +39,7 @@ export const useLoan = create((set, get) => ({
         voucher_number: voucher,
         promissory_note_number: promissory,
         check_number: check,
+        status: status,
       }),
     });
   },
@@ -53,7 +54,7 @@ export const useLoan = create((set, get) => ({
       },
     });
     const result = await response.json();
-    // console.log(result);
+
     set({ userLoan: result });
   },
 

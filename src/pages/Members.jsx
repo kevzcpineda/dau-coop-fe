@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AdminLayout from '../components/AdminLayout';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
+import toast, { Toaster } from 'react-hot-toast';
 import {
   Box,
   Heading,
@@ -76,8 +77,8 @@ const Members = () => {
     setId(id);
     loanOnOpen();
   };
-  const handleLoan = (amount, voucher, promissory, check) => {
-    createLoan(id, amount, voucher, promissory, check);
+  const handleLoan = (amount, voucher, promissory, check, status) => {
+    createLoan(id, amount, voucher, promissory, check, status);
     loanOnClose();
   };
   // const handleDeleteUser = () => {
@@ -102,7 +103,6 @@ const Members = () => {
     // mutate(ids);
   };
 
-  console.log('Member render');
   const handleAddJeep = async (crFileNo) => {
     await createJeep(
       id,
@@ -132,9 +132,10 @@ const Members = () => {
       queryClient.setQueryData(['search', search]);
     },
   });
-  console.log(searchData);
+
   return (
     <AdminLayout>
+      <Toaster position='top-right' reverseOrder={false} />
       <Box>
         <Editable
           defaultValue='Search'
@@ -178,6 +179,7 @@ const Members = () => {
           onOpen={loanOnOpen}
           isOpen={loanIsOpen}
           handleLoan={handleLoan}
+          id={id}
         />
       )}
 

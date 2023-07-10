@@ -21,7 +21,6 @@ const MemberTable = ({
   users,
   setId,
 }) => {
-  console.log('member table rendered');
   // const { users } = useUser((state) => state);
 
   return (
@@ -37,31 +36,29 @@ const MemberTable = ({
         </Thead>
         <Tbody>
           {users &&
-            users.results
-              .map((user) => (
-                <Tr key={user.id} onClick={() => handleUserModal(user.id)}>
-                  <Td>{user.id}</Td>
-                  <Td>{user.first_name}</Td>
-                  <Td>{user.last_name}</Td>
-                  <Td>
-                    <Button onClick={(e) => handledeleteModal(e, user.id)}>
-                      delete
-                    </Button>
-                    <Button onClick={(e) => handleLoanModal(e, user.id)}>
-                      Loan
-                    </Button>
-                    <Button
-                      onClick={(e) => handleJeepModal(e, user.id)}
-                      style={{
-                        display:
-                          user.member_status === 'driver' ? 'none' : 'inline',
-                      }}>
-                      add jeep
-                    </Button>
-                  </Td>
-                </Tr>
-              ))
-              .reverse()}
+            users.results.map((user) => (
+              <Tr key={user.id} onClick={() => handleUserModal(user.id)}>
+                <Td>{user.id}</Td>
+                <Td>{user.first_name}</Td>
+                <Td>{user.last_name}</Td>
+                <Td>
+                  <Button onClick={(e) => handledeleteModal(e, user.id)}>
+                    delete
+                  </Button>
+                  <Button onClick={(e) => handleLoanModal(e, user.id)}>
+                    Loan
+                  </Button>
+                  <Button
+                    onClick={(e) => handleJeepModal(e, user.id)}
+                    style={{
+                      display:
+                        user.member_status === 'OPERATOR' ? 'inline' : 'none',
+                    }}>
+                    add jeep
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
         </Tbody>
       </Table>
       <Button

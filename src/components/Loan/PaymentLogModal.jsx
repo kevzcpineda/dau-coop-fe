@@ -23,7 +23,6 @@ import {
 } from '@chakra-ui/react';
 
 const PaymentLogModal = ({ isOpen, onClose }) => {
-  console.log('PaymentLogModal Render');
   return (
     <Modal isOpen={isOpen} onClose={onClose} size='xl'>
       <ModalOverlay />

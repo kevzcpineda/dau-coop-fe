@@ -15,7 +15,6 @@ export const useDailyJues = create((set) => ({
   },
 
   createDailyJuess: async (data) => {
-    console.log(data);
     const response = await fetch(`${baseURL}/daily_jues/add`, {
       method: 'POST',
       headers: {
@@ -23,6 +22,5 @@ export const useDailyJues = create((set) => ({
       },
       body: JSON.stringify(data),
     });
-    console.log(response);
   },
 }));

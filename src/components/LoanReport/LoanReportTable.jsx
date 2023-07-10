@@ -31,19 +31,17 @@ const LoanReportTable = ({ data, print }) => {
         </Thead>
         <Tbody>
           {data &&
-            data
-              .map((item) => {
-                return (
-                  <Tr key={item.id}>
-                    <Td>{item.id}</Td>
-                    <Td>{item.title}</Td>
-                    <Td>
-                      <Button onClick={() => print(item)}>Print</Button>
-                    </Td>
-                  </Tr>
-                );
-              })
-              .reverse()}
+            data.map((item) => {
+              return (
+                <Tr key={item.id}>
+                  <Td>{item.id}</Td>
+                  <Td>{item.title}</Td>
+                  <Td>
+                    <Button onClick={() => print(item)}>Print</Button>
+                  </Td>
+                </Tr>
+              );
+            })}
         </Tbody>
       </Table>
     </TableContainer>

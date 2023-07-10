@@ -41,8 +41,6 @@ const AddLoanReport = () => {
   const [selectedUser, setSelectedUser] = useState([]);
 
   const handleChange = (value) => {
-    console.log(value);
-
     const item = {
       user: value?.user,
       loan: value?.id,
@@ -59,7 +57,6 @@ const AddLoanReport = () => {
     }
   };
   const handleDelete = (id) => {
-    console.log(id);
     const newSelected = selectedUser.filter((item) => item.user !== id);
     setSelectedUser(newSelected);
   };
@@ -108,25 +105,23 @@ const AddLoanReport = () => {
               </Thead>
               <Tbody>
                 {selectedUser &&
-                  selectedUser
-                    .map((item, index) => {
-                      return (
-                        <Tr key={index}>
-                          <Td>{index + 1}</Td>
-                          <Td>{item.first_name}</Td>
-                          <Td>{item.last_name}</Td>
-                          <Td>{item.ticket}</Td>
-                          <Td>{item.amount}</Td>
-                          <Td>{item.date}</Td>
-                          <Td>
-                            <Button onClick={() => handleDelete(item.user)}>
-                              Delete
-                            </Button>
-                          </Td>
-                        </Tr>
-                      );
-                    })
-                    .reverse()}
+                  selectedUser.map((item, index) => {
+                    return (
+                      <Tr key={index}>
+                        <Td>{index + 1}</Td>
+                        <Td>{item.first_name}</Td>
+                        <Td>{item.last_name}</Td>
+                        <Td>{item.ticket}</Td>
+                        <Td>{item.amount}</Td>
+                        <Td>{item.date}</Td>
+                        <Td>
+                          <Button onClick={() => handleDelete(item.user)}>
+                            Delete
+                          </Button>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
               </Tbody>
             </Table>
           </TableContainer>
