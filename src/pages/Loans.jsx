@@ -252,9 +252,13 @@ const Loans = () => {
         <Button onClick={() => handleUnparse()}>Unparse</Button>
         <Input type='file' onChange={(e) => setCsv(e.target.files[0])} /> */}
 
-        {pendingLoanStatus === 'loading' && <Spinner />}
-        {pendingLoanStatus === 'error' && <div>error...</div>}
-        {pendingLoanStatus === 'success' && (
+        {pendingLoanStatus === 'loading' && loanDoneStatus === 'loading' && (
+          <Spinner />
+        )}
+        {pendingLoanStatus === 'error' && loanDoneStatus === 'error' && (
+          <div>error...</div>
+        )}
+        {pendingLoanStatus === 'success' && loanDoneStatus === 'success' && (
           <LoanTable
             handlePaymentModal={handlePaymentModal}
             print={print}
