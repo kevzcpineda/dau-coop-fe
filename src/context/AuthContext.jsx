@@ -20,11 +20,7 @@ export const AuthProvider = ({ children }) => {
       ? JSON.parse(localStorage.getItem('accessToken'))
       : null
   );
-  const [refreshToken, setRefreshToken] = useState(() =>
-    localStorage.getItem('refreshToken')
-      ? JSON.parse(localStorage.getItem('refreshToken'))
-      : null
-  );
+  const [refreshToken, setRefreshToken] = useState();
   const [user, setUser] = useState(() =>
     localStorage.getItem('authTokens')
       ? jwt_decode(localStorage.getItem('authTokens'))
@@ -34,19 +30,21 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const loginUser = async (username, password) => {
-    const response = await fetch(`${baseURL}/token/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username: username, password: password }),
-    });
+  const loginUser = async (payload) => {
+    const response = axios.post(`${baseURL}/token/`, payload);
+    // const response = await fetch(`${baseURL}/token/`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({ username: username, password: password }),
+    // });
 
     const data = await response.json();
-    console.log(data);
+
     if (response.status === 200) {
       // setAuthTokens(data);
+      console.log('data', data);
       setAccessToken(data.access);
       setRefreshToken(data.refresh);
       setUser(jwt_decode(data.access));
@@ -55,8 +53,7 @@ export const AuthProvider = ({ children }) => {
       const { is_superuser, is_change_password, user_id } = jwt_decode(
         data.access
       );
-      console.log(is_superuser);
-      console.log(is_change_password);
+
       if (!is_superuser) {
         if (is_change_password) {
           navigate('/');
@@ -83,18 +80,22 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateToken = async () => {
+    const refresh = localStorage.getItem('refreshToken');
     console.log('refresh');
+
     const response = await fetch(`${baseURL}/token/refresh/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ refresh: refreshToken }),
+      body: JSON.stringify({
+        refresh: JSON.parse(localStorage.getItem('refreshToken')),
+      }),
     });
     const data = await response.json();
-
+    console.log('refresh data', data);
     if (response.status === 200) {
-      setAccessToken(data);
+      setAccessToken(data.access);
       setUser(jwt_decode(data.access));
       localStorage.setItem('accessToken', JSON.stringify(data.access));
     } else {
@@ -152,21 +153,13 @@ export const AuthProvider = ({ children }) => {
     });
 
     const data = await response.json();
-    // console.log(data);
+
     return data;
   };
 
   const getUserInfo = async () => {
-    const response = await fetch(`${baseURL}/user/`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const data = await response.json();
-    return data;
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    return axios.get(`${baseURL}/user/`, { headers: headers });
   };
 
   const searchUser = async (search) => {
@@ -179,12 +172,11 @@ export const AuthProvider = ({ children }) => {
     });
 
     const data = response.json();
-    // console.log(data);
+
     return data;
   };
 
   const editUser = async ({ id, ...payload }) => {
-    console.log(`edit user ${id} and ${payload}`);
     const response = await fetch(`${baseURL}/userDetail/${id}/`, {
       method: 'PUT',
       headers: {
@@ -204,7 +196,7 @@ export const AuthProvider = ({ children }) => {
       },
       body: JSON.stringify(payload),
     });
-    console.log(response);
+
     return response;
   };
 
@@ -233,15 +225,16 @@ export const AuthProvider = ({ children }) => {
   };
 
   const postDailyDuesReport = async (payload) => {
-    const response = await fetch(`${baseURL}/daily_jues/report/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-    const data = await response.json();
-    return data;
+    return axios.post(`${baseURL}/daily_jues/report/`, payload);
+    // const response = await fetch(`${baseURL}/daily_jues/report/`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(payload),
+    // });
+    // const data = await response.json();
+    // return data;
   };
 
   const postLoanPayments = async (payload) => {
@@ -268,7 +261,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const getLoanPayments = async (id) => {
-    console.log(id);
     const response = await fetch(
       `${baseURL}/loan/user_payments/?loan_id=${id}`,
       {
@@ -279,20 +271,23 @@ export const AuthProvider = ({ children }) => {
       }
     );
     const data = response.json();
-    // console.log(data);
+
     return data;
   };
 
   const getUserLoan = async () => {
-    const response = await fetch(`${baseURL}/loan/user_loan`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${authTokens?.access}`,
-      },
-    });
-    const data = await response.json();
-    return data;
+    console.log('accessToken', accessToken);
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    return axios.get(`${baseURL}/loan/user_loan`, { headers: headers });
+    // const response = await fetch(`${baseURL}/loan/user_loan`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${authTokens?.access}`,
+    //   },
+    // });
+    // const data = await response.json();
+    // return data;
   };
 
   const getLoanReport = async () => {
@@ -328,7 +323,6 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
   const updateLoanStatus = async ({ id, ...payload }) => {
-    console.log('payload', payload);
     const response = await fetch(`${baseURL}/loan/${id}/`, {
       method: 'PUT',
       headers: {
@@ -339,6 +333,12 @@ export const AuthProvider = ({ children }) => {
 
     return response;
   };
+  const pendingLoan = async () => {
+    return axios.get(`${baseURL}/loan/filter/?filter=GRANTED`);
+  };
+  const filterDoneLoan = async () => {
+    return axios.get(`${baseURL}/loan/filter/?filter=DONE`);
+  };
 
   const contextData = {
     user: user,
@@ -346,8 +346,12 @@ export const AuthProvider = ({ children }) => {
     setUser: setUser,
     accessToken: accessToken,
     refreshToken: refreshToken,
+    setRefreshToken: setRefreshToken,
+    setAccessToken: setAccessToken,
     // setAuthTokens: setAuthTokens,
     loginUser: loginUser,
+    pendingLoan: pendingLoan,
+    filterDoneLoan: filterDoneLoan,
     logoutUser: logoutUser,
     changePassword: changePassword,
     createUser: createUser,
@@ -371,7 +375,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log('useEffect');
     if (accessToken) {
       const { is_superuser } = jwt_decode(accessToken);
       if (!is_superuser) {
@@ -384,10 +387,12 @@ export const AuthProvider = ({ children }) => {
     if (loading) {
       updateToken();
     }
-    const fourMinute = 1000 * 60 * 4;
+    const fourMinute = 1000 * 60 * 0.5;
 
     let interval = setInterval(() => {
-      if (accessToken) {
+      console.log('interval');
+
+      if (localStorage.getItem('refreshToken')) {
         updateToken();
       }
     }, fourMinute);

@@ -14,15 +14,66 @@ import { Logo } from '../components/Login/Logo';
 import { PasswordField } from '../components/Login/PasswordField';
 import AuthContext from '../context/AuthContext';
 import { useUser } from '../states/User';
+import { useMutation } from 'react-query';
+import { z } from 'zod';
+import toast, { Toaster } from 'react-hot-toast';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
 const Login = () => {
+  const navigate = useNavigate();
+  const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
   const { getUser, user, deleteUser } = useUser((state) => state);
-  const { loginUser } = useContext(AuthContext);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const { setAccessToken, setRefreshToken, setUser } = useContext(AuthContext);
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: async (payload) => {
+      const response = await axios.post(`${baseURL}/token/`, payload);
+      return response;
+    },
+    onSuccess: (data) => {
+      console.log('data', data);
+      setAccessToken(data.data.access);
+      setRefreshToken(data.data.refresh);
+      setUser(jwt_decode(data.data.access));
+      localStorage.setItem('accessToken', JSON.stringify(data.data.access));
+      localStorage.setItem('refreshToken', JSON.stringify(data.data.refresh));
+      const { is_superuser, is_change_password, user_id } = jwt_decode(
+        data.data.access
+      );
+      if (!is_superuser) {
+        if (is_change_password) {
+          navigate('/');
+        } else {
+          navigate('/change-password');
+        }
+      } else {
+        return navigate('/dashboard');
+      }
+    },
+    onError: (error) => {
+      toast.error(`Error ${error} `);
+    },
+  });
+  const loginSchema = z.object({
+    username: z.string(),
+    password: z.string(),
+  });
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    loginUser(username, password);
+  const handleLogin = () => {
+    const loginValidate = loginSchema.safeParse({
+      username: username,
+      password: password,
+    });
+    if (!loginValidate.success) {
+      loginValidate.error.issues.map((item) => {
+        toast.error(`Error in ${item.path[0]} ${item.message}:`);
+      });
+    } else {
+      console.log('murare');
+      mutate(loginValidate.data);
+    }
   };
   //className='vh-100 gray-900'
   return (
@@ -35,8 +86,8 @@ const Login = () => {
       px={{
         base: '0',
         sm: '8',
-      }}
-    >
+      }}>
+      <Toaster position='top-right' reverseOrder={false} />
       <Stack spacing='8'>
         <Stack spacing='6'>
           <Logo />
@@ -61,9 +112,8 @@ const Login = () => {
           borderRadius={{
             base: 'none',
             sm: 'xl',
-          }}
-        >
-          <Stack as='form' onSubmit={handleLogin} spacing='6'>
+          }}>
+          <Stack as='form' spacing='6'>
             <Stack spacing='5'>
               <FormControl>
                 <FormLabel htmlFor='username'>Username</FormLabel>
@@ -80,9 +130,22 @@ const Login = () => {
               />
             </Stack>
             <Stack spacing='6'>
-              <Button type='submit' colorScheme='blue' variant='solid'>
-                Sign in
-              </Button>
+              {isLoading ? (
+                <Button
+                  isLoading
+                  colorScheme='blue'
+                  variant='solid'
+                  loadingText='Submitting'>
+                  Sign in
+                </Button>
+              ) : (
+                <Button
+                  colorScheme='blue'
+                  variant='solid'
+                  onClick={() => handleLogin()}>
+                  Sign in
+                </Button>
+              )}
             </Stack>
           </Stack>
         </Box>

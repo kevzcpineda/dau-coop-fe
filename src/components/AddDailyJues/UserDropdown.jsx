@@ -1,31 +1,22 @@
 import React, { useState } from 'react';
 import { useUser } from '../../states/User';
-import Select from 'react-dropdown-select';
+import Select from 'react-select';
 
-const UserDropdown = ({ handleChange }) => {
-  const { users } = useUser((state) => state);
-  // const options = [
-  //   {
-  //     value: 1,
-  //     label: 'Leanne Graham',
-  //   },
-  //   {
-  //     value: 2,
-  //     label: 'Ervin Howell',
-  //   },
-  // ];
-
-  const options = users;
+const UserDropdown = ({ handleChange, data }) => {
+  const options = data.map((item) => {
+    return {
+      value: item.id,
+      label: item.first_name + ' ' + item.last_name,
+      ...item,
+    };
+  });
 
   return (
     <Select
       options={options}
-      labelField='first_name'
-      valueField='id'
-      clearOnSelect='true'
-      clearable='true'
-      searchBy='first_name'
-      onChange={(values) => handleChange(values[0])}
+      value={data.id}
+      label={data.first_name}
+      onChange={(e) => handleChange(e)}
     />
   );
 };
