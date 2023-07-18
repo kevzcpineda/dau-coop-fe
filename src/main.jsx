@@ -19,6 +19,7 @@ import UserLoan from './pages/UserLoan';
 import LoanReport from './pages/LoanReport';
 import DailyDuesReport from './pages/DailyDuesReport';
 import AddLoanReport from './pages/AddLoanReport';
+import UserPayments from './pages/UserPayments';
 
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -60,6 +61,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   element={<AddLoanReport />}
                   exact
                 />
+                <Route path='/userpayments/:id' element={<UserPayments />} />
               </Route>
               <Route path='/login' element={<Login />} />
             </Routes>

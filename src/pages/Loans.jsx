@@ -47,8 +47,14 @@ import toast, { Toaster } from 'react-hot-toast';
 const Loans = () => {
   const [isPrinting, setIsPrinting] = useState(false);
   const promiseResolveRef = useRef(null);
-  const { getUser, getLoanPayments, getLoans, postLoanPayments } =
-    useContext(AuthContext);
+  const {
+    getUser,
+    getLoanPayments,
+    getLoans,
+    postLoanPayments,
+    pendingLoan,
+    filterDoneLoan,
+  } = useContext(AuthContext);
   const [user, setUser] = useState({});
   const [loanId, setLoanId] = useState(null);
   const [id, setId] = useState(null);
@@ -63,10 +69,18 @@ const Loans = () => {
     onOpen: onOpenLog,
     onClose: onCloseLog,
   } = useDisclosure();
-  const { data, status } = useQuery('loan', getLoans);
+
+  const { data: pendingLoanData, status: pendingLoanStatus } = useQuery({
+    queryKey: ['loans'],
+    queryFn: pendingLoan,
+  });
+  const { data: loanDoneData, status: loanDoneStatus } = useQuery({
+    queryKey: ['doneloans'],
+    queryFn: filterDoneLoan,
+  });
+
   const { loans, loanPayment } = useLoan((state) => state);
-  const filterLoan = data?.filter((item) => item.is_fully_paid === true);
-  const notDoneLoan = data?.filter((item) => item.is_fully_paid === false);
+
   const { mutate: exlLoanPayments } = useMutation(postLoanPayments);
   const queryClient = useQueryClient();
 
@@ -206,6 +220,8 @@ const Loans = () => {
     const value = Papa.unparse(data, unparseConfig);
     // const value = Papa.parse(csv, parseconfig);
   };
+  // console.log(pendingLoanData);
+  console.log('loanDoneData', loanDoneData);
   return (
     <AdminLayout>
       <div>
@@ -236,14 +252,14 @@ const Loans = () => {
         <Button onClick={() => handleUnparse()}>Unparse</Button>
         <Input type='file' onChange={(e) => setCsv(e.target.files[0])} /> */}
 
-        {status === 'loading' && <Spinner />}
-        {status === 'error' && <div>error...</div>}
-        {status === 'success' && (
+        {pendingLoanStatus === 'loading' && <Spinner />}
+        {pendingLoanStatus === 'error' && <div>error...</div>}
+        {pendingLoanStatus === 'success' && (
           <LoanTable
             handlePaymentModal={handlePaymentModal}
             print={print}
-            filterLoan={filterLoan}
-            notDoneLoan={notDoneLoan}
+            filterLoan={loanDoneData.data}
+            notDoneLoan={pendingLoanData.data}
             handlePaymentLogModal={handlePaymentLogModal}
           />
         )}

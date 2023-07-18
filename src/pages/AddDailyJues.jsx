@@ -30,35 +30,84 @@ import { useDailyJues } from '../states/Daily_jues';
 import AuthContext from '../context/AuthContext';
 import { useQuery, useMutation } from 'react-query';
 import UserDropdown from '../components/AddDailyJues/UserDropdown';
+import { z } from 'zod';
+import toast, { Toaster } from 'react-hot-toast';
+import axios from 'axios';
 
 const AddDailyJues = () => {
+  const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
   const { getUsers, setUsers, users } = useUser((state) => state);
   const [selectedUser, setSelectedUser] = useState([]);
-  const [date, setDate] = useState(null);
-  const [ticket, setTicket] = useState('');
-  const [title, setTitle] = useState('');
+  const [date, setDate] = useState();
+  const [ticket, setTicket] = useState();
+  const [title, setTitle] = useState();
   const { getUser, createDailyJues, postDailyDuesReport } =
     useContext(AuthContext);
-  const selectRef = useRef('');
-  const ticketRef = useRef('');
-  const { mutate } = useMutation(postDailyDuesReport);
+
+  const dateRef = useRef();
+  const ticketRef = useRef();
+  const titleRef = useRef();
+  const { mutate, isLoading } = useMutation({
+    mutationFn: postDailyDuesReport,
+    onSuccess: () => {
+      toast.success('Added Successfully!');
+      titleRef.current.value = '';
+      setTitle(null);
+      setSelectedUser([]);
+    },
+    onError: (error) => {
+      toast.error(`Error ${error} `);
+    },
+  });
+
+  const dailyDuesReportSchema = z.object({
+    user: z.number(),
+    member_status: z.string(),
+    fname: z.string(),
+    lname: z.string(),
+    amount: z.number(),
+    ticket: z.string(),
+    date: z.string(),
+  });
+  const submitDailyDuesReportSchema = z.object({
+    title: z.string(),
+    daily_dues: z.array(dailyDuesReportSchema).nonempty(),
+  });
   const handleChange = (value) => {
+    console.log(value);
     // const res = users.find((item) => item.id === value);
-    const item = {
-      user: value?.id,
-      member_status: value?.member_status,
-      fname: value?.first_name,
-      lname: value?.last_name,
+    const dailyDuesReportValidate = dailyDuesReportSchema.safeParse({
+      user: value.id,
+      member_status: value.member_status,
+      fname: value.first_name,
+      lname: value.last_name,
       amount: 50,
       ticket: ticket,
       date: date,
-    };
-    {
-      value && setSelectedUser([...selectedUser, item]);
+    });
+    console.log(dailyDuesReportValidate);
+    if (!dailyDuesReportValidate.success) {
+      dailyDuesReportValidate.error.issues.map((item) => {
+        toast.error(`Error in ${item.path[0]} ${item.message}:`);
+      });
+    } else {
+      setSelectedUser([...selectedUser, dailyDuesReportValidate.data]);
+      ticketRef.current.value = '';
+      dateRef.current.value = '';
+      setDate(null);
+      setTicket(null);
     }
-    setTitle('');
-    // selectRef.current.value = '';
-    ticketRef.current.value = '';
+    // const item = {
+    //   user: value?.id,
+    //   member_status: value?.member_status,
+    //   fname: value?.first_name,
+    //   lname: value?.last_name,
+    //   amount: 50,
+    //   ticket: ticket,
+    //   date: date,
+    // };
+
+    // value && setSelectedUser([...selectedUser, item]);
   };
 
   const handleDelete = (id) => {
@@ -67,36 +116,59 @@ const AddDailyJues = () => {
   };
 
   const handleSubmit = async () => {
-    const payload = {
+    const validateSubmit = submitDailyDuesReportSchema.safeParse({
       title: title,
       daily_dues: selectedUser,
-    };
-    await mutate(payload);
-    setSelectedUser([]);
+    });
+    if (!validateSubmit.success) {
+      validateSubmit.error.issues.map((item) => {
+        toast.error(`Error in ${item.path[0]} ${item.message}:`);
+      });
+    } else {
+      mutate(validateSubmit.data);
+    }
   };
 
-  const { data, status } = useQuery('addDailyDues', getUsers);
-
+  const { data, status } = useQuery({
+    queryKey: ['addDailyDues'],
+    queryFn: () => {
+      return axios.get(`${baseURL}/createUser/`);
+    },
+  });
+  console.log('data', data);
   return (
     <AdminLayout>
+      <Toaster position='top-right' reverseOrder={false} />
       {status === 'loading' && <Spinner />}
       {status === 'error' && <div>error...</div>}
       {status === 'success' && (
         <Box>
           <Heading>Add Daily Dues</Heading>
           <Input
+            ref={titleRef}
             placeholder='Title'
             onChange={(e) => setTitle(e.target.value)}
           />
 
-          <input type='date' onChange={(e) => setDate(e.target.value)}></input>
+          <input
+            type='date'
+            ref={dateRef}
+            onChange={(e) => setDate(e.target.value)}></input>
           <Input
             ref={ticketRef}
             placeholder='Ticket'
             onChange={(e) => setTicket(e.target.value)}
           />
 
-          <UserDropdown handleChange={handleChange} />
+          <UserDropdown handleChange={handleChange} data={data.data} />
+          {isLoading ? (
+            <Button isLoading loadingText='Submitting'>
+              Submit
+            </Button>
+          ) : (
+            <Button onClick={() => handleSubmit()}>Submit</Button>
+          )}
+
           <TableContainer>
             <Table variant='striped' colorScheme='gray'>
               <Thead>

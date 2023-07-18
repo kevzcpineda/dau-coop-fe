@@ -74,7 +74,7 @@ const LoanTable = ({
                         <Td>
                           {
                             <Select
-                              placeholder={item.penalty}
+                              placeholder={item.status}
                               onChange={(e) =>
                                 handleChangeStatus(item.id, e.target.value)
                               }>

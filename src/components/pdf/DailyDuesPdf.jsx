@@ -2,6 +2,20 @@ import React from 'react';
 import '../pdf/styles/dailyDues.css';
 
 const DailyDuesPdf = React.forwardRef((props, ref) => {
+  console.log('data', props.data);
+  const operator = props.data.daily_dues.filter(
+    (item) => item.member_status === 'OPERATOR'
+  );
+  const associateOperator = props.data.daily_dues.filter(
+    (item) => item.member_status === 'ASSOCIATE_OPERATOR'
+  );
+  const driver = props.data.daily_dues.filter(
+    (item) => item.member_status === 'DRIVER'
+  );
+  const subDriver = props.data.daily_dues.filter(
+    (item) => item.member_status === 'SUBTITUTE_DRIVER'
+  );
+
   return (
     <div style={{ display: 'none' }}>
       <div ref={ref}>
@@ -17,31 +31,21 @@ const DailyDuesPdf = React.forwardRef((props, ref) => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
+                {operator &&
+                  operator.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{`${item.last_name} ${item.first_name}`}</td>
+                        <td>{item.amount}</td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
           <div className='table2'>
-            <h1>REGULAR OPERATOR</h1>
+            <h1>ASSOCIATE OPERATOR</h1>
             <table className='table'>
               <thead>
                 <tr>
@@ -51,31 +55,21 @@ const DailyDuesPdf = React.forwardRef((props, ref) => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
+                {associateOperator &&
+                  associateOperator.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{`${item.last_name} ${item.first_name}`}</td>
+                        <td>{item.amount}</td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
           <div className='table3'>
-            <h1>REGULAR OPERATOR</h1>
+            <h1>REGULAR DRIVER</h1>
             <table className='table'>
               <thead>
                 <tr>
@@ -85,31 +79,21 @@ const DailyDuesPdf = React.forwardRef((props, ref) => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
+                {driver &&
+                  driver.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{`${item.last_name} ${item.first_name}`}</td>
+                        <td>{item.amount}</td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
           <div className='table4'>
-            <h1>REGULAR OPERATOR</h1>
+            <h1>SUBTITUTE DRIVER</h1>
             <table className='table'>
               <thead>
                 <tr>
@@ -119,26 +103,16 @@ const DailyDuesPdf = React.forwardRef((props, ref) => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td>kevin chester</td>
-                  <td>50</td>
-                </tr>
+                {subDriver &&
+                  subDriver.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{`${item.last_name} ${item.first_name}`}</td>
+                        <td>{item.amount}</td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
