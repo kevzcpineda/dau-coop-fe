@@ -61,7 +61,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   element={<AddLoanReport />}
                   exact
                 />
-                <Route path='/userpayments/:id' element={<UserPayments />} />
+                <Route
+                  path='/user-payments/:id'
+                  element={<UserPayments />}
+                  exact
+                />
               </Route>
               <Route path='/login' element={<Login />} />
             </Routes>

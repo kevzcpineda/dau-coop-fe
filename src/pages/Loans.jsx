@@ -42,9 +42,17 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
+import axios from 'axios';
 import Papa from 'papaparse';
 import toast, { Toaster } from 'react-hot-toast';
 const Loans = () => {
+  const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
+  const mutation = useMutation({
+    mutationFn: (payload) => {
+      return axios.post(`${baseURL}/createUser/`, payload);
+    },
+  });
+
   const [isPrinting, setIsPrinting] = useState(false);
   const promiseResolveRef = useRef(null);
   const {
@@ -81,7 +89,7 @@ const Loans = () => {
 
   const { loans, loanPayment } = useLoan((state) => state);
 
-  const { mutate: exlLoanPayments } = useMutation(postLoanPayments);
+  // const { mutate: exlLoanPayments } = useMutation(postLoanPayments);
   const queryClient = useQueryClient();
 
   const { isLoading, mutate } = useMutation(loanPayment, {
@@ -179,13 +187,18 @@ const Loans = () => {
     comments: false,
     step: undefined,
     complete: function (results, file) {
-      exlLoanPayments(results.data);
+      const a = results.data.filter((item) => {
+        return item.first_name !== null;
+      });
+      console.log(a);
+      mutation.mutate(a);
       toast.success('Successfully toasted!');
     },
     error: (results, file) => {
       toast.error('Error');
     },
     delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+    skipEmptyLines: true,
   };
   const parsepenaltyconfig = {
     delimiter: '', // auto-detect
@@ -213,15 +226,15 @@ const Loans = () => {
   const handleParse = () => {
     const value = Papa.parse(csv, parseconfig);
   };
-  const handleParsePenalty = () => {
-    const value = Papa.parse(csv, parsepenaltyconfig);
-  };
-  const handleUnparse = () => {
-    const value = Papa.unparse(data, unparseConfig);
-    // const value = Papa.parse(csv, parseconfig);
-  };
+  // const handleParsePenalty = () => {
+  //   const value = Papa.parse(csv, parsepenaltyconfig);
+  // };
+  // const handleUnparse = () => {
+  //   const value = Papa.unparse(data, unparseConfig);
+  //   // const value = Papa.parse(csv, parseconfig);
+  // };
   // console.log(pendingLoanData);
-  console.log('loanDoneData', loanDoneData);
+  // console.log('loanDoneData', loanDoneData);
   return (
     <AdminLayout>
       <div>
@@ -245,12 +258,12 @@ const Loans = () => {
 
       <Box>
         <Heading>Loans</Heading>
-        {/* <Button onClick={() => handleParse()}>Import CSV loan payment</Button>
-        <Button onClick={() => handleParsePenalty()}>
+        <Button onClick={() => handleParse()}>Import CSV loan payment</Button>
+        {/* <Button onClick={() => handleParsePenalty()}>
           Import CSV loan penalty
-        </Button>
-        <Button onClick={() => handleUnparse()}>Unparse</Button>
-        <Input type='file' onChange={(e) => setCsv(e.target.files[0])} /> */}
+        </Button> */}
+        {/* <Button onClick={() => handleUnparse()}>Unparse</Button> */}
+        <Input type='file' onChange={(e) => setCsv(e.target.files[0])} />
 
         {pendingLoanStatus === 'loading' && loanDoneStatus === 'loading' && (
           <Spinner />

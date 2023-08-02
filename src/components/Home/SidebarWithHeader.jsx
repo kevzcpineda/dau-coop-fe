@@ -34,18 +34,18 @@ import {
   FiChevronDown,
 } from 'react-icons/fi';
 import AuthContext from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome },
-  { name: 'Trending', icon: FiTrendingUp },
-  { name: 'Explore', icon: FiCompass },
-  { name: 'Favourites', icon: FiStar },
-  { name: 'Settings', icon: FiSettings },
+  { name: 'Daily Dues', icon: FiTrendingUp },
+  // { name: 'Explore', icon: FiCompass },
+  // { name: 'Favourites', icon: FiStar },
+  // { name: 'Settings', icon: FiSettings },
 ];
 
 export default function SidebarWithHeader({ children, userData, loanData }) {
-  console.log('userData', userData);
-  console.log('loandata', loanData);
+  const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH='100vh' bg={useColorModeValue('white', 'gray.50')}>
@@ -79,7 +79,8 @@ export default function SidebarWithHeader({ children, userData, loanData }) {
                   boxShadow='xl'
                   h='150'
                   w='90%'
-                  borderRadius='15px'>
+                  borderRadius='15px'
+                  onClick={() => navigate(`/user-payments/${item.id}`)}>
                   <Stack p='20px' spacing={3} h='150' direction='row'>
                     <Stack w='100%' spacing='4'>
                       <Flex align='center'>

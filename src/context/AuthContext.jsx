@@ -106,20 +106,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const changePassword = async (password) => {
-    const response = await fetch(`${baseURL}/change-password/`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ password: password }),
+  const changePassword = async (payload) => {
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    return axios.post(`${baseURL}/change-password/`, {
+      headers: headers,
+      body: payload,
     });
+    // const response = await fetch(`${baseURL}/change-password/`, {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${accessToken}`,
+    //   },
+    //   body: JSON.stringify(payload),
+    // });
 
-    const { is_change_password } = await response.json();
-    if (is_change_password) {
-      navigate('/');
-    }
+    // const { is_change_password } = await response.json();
+    // if (is_change_password) {
+    //   navigate('/');
+    // }
   };
 
   const createUser = async (payload) => {
@@ -339,6 +344,9 @@ export const AuthProvider = ({ children }) => {
   const filterDoneLoan = async () => {
     return axios.get(`${baseURL}/loan/filter/?filter=DONE`);
   };
+  const getUserLoanPayments = async (id) => {
+    return axios.get(`${baseURL}/loan/user_payments/?loan_id=${id}`);
+  };
 
   const contextData = {
     user: user,
@@ -372,9 +380,13 @@ export const AuthProvider = ({ children }) => {
     postLoanPayments: postLoanPayments,
     postLoanPenalty: postLoanPenalty,
     updateLoanStatus: updateLoanStatus,
+    getUserLoanPayments: getUserLoanPayments,
   };
 
   useEffect(() => {
+    if (loading) {
+      updateToken();
+    }
     if (accessToken) {
       const { is_superuser } = jwt_decode(accessToken);
       if (!is_superuser) {
@@ -384,9 +396,6 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    if (loading) {
-      updateToken();
-    }
     const fourMinute = 1000 * 60 * 0.5;
 
     let interval = setInterval(() => {
