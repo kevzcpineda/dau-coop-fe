@@ -22,9 +22,13 @@ import { useMutation, useQueryClient } from 'react-query';
 const LoanTable = ({
   handlePaymentModal,
   print,
-  filterLoan,
-  notDoneLoan,
+  doneLoan,
+  grantedLoan,
   handlePaymentLogModal,
+  setGrantedLoanPage,
+  setDoneLoanPage,
+  grantedLoanPage,
+  doneLoanPage,
 }) => {
   const { updateLoanStatus } = useContext(AuthContext);
   const queryClient = useQueryClient();
@@ -37,6 +41,7 @@ const LoanTable = ({
   const handleChangeStatus = async (id, status) => {
     await mutate({ id: id, status: status });
   };
+  console.log('grantedLoantable', grantedLoan);
   return (
     <Tabs>
       <TabList>
@@ -61,8 +66,8 @@ const LoanTable = ({
                 </Tr>
               </Thead>
               <Tbody>
-                {notDoneLoan &&
-                  notDoneLoan.map((item) => {
+                {grantedLoan &&
+                  grantedLoan.results.map((item) => {
                     return (
                       <Tr key={item.id}>
                         <Td>{item.id}</Td>
@@ -93,6 +98,16 @@ const LoanTable = ({
                   })}
               </Tbody>
             </Table>
+            <Button
+              onClick={() => setGrantedLoanPage(grantedLoanPage - 1)}
+              isDisabled={grantedLoan.previous === null ? true : false}>
+              previous
+            </Button>
+            <Button
+              onClick={() => setGrantedLoanPage(grantedLoanPage + 1)}
+              isDisabled={grantedLoan.next === null ? true : false}>
+              next
+            </Button>
           </TableContainer>
         </TabPanel>
         <TabPanel>
@@ -110,8 +125,8 @@ const LoanTable = ({
                 </Tr>
               </Thead>
               <Tbody>
-                {filterLoan &&
-                  filterLoan.map((item) => {
+                {doneLoan &&
+                  doneLoan.results.map((item) => {
                     return (
                       <Tr key={item.id}>
                         <Td>{item.id}</Td>
@@ -126,6 +141,16 @@ const LoanTable = ({
                   })}
               </Tbody>
             </Table>
+            <Button
+              onClick={() => setDoneLoanPage(doneLoanPage - 1)}
+              isDisabled={doneLoan.previous === null ? true : false}>
+              previous
+            </Button>
+            <Button
+              onClick={() => setDoneLoanPage(doneLoanPage + 1)}
+              isDisabled={doneLoan.next === null ? true : false}>
+              next
+            </Button>
           </TableContainer>
         </TabPanel>
       </TabPanels>

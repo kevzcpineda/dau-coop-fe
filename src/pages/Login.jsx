@@ -33,15 +33,16 @@ const Login = () => {
       return response;
     },
     onSuccess: (data) => {
-      console.log('data', data);
+      console.log('dataasdasd', data);
       setAccessToken(data.data.access);
       setRefreshToken(data.data.refresh);
       setUser(jwt_decode(data.data.access));
       localStorage.setItem('accessToken', JSON.stringify(data.data.access));
       localStorage.setItem('refreshToken', JSON.stringify(data.data.refresh));
-      const { is_superuser, is_change_password, user_id } = jwt_decode(
+      const { is_superuser, is_change_password, user_id, exp } = jwt_decode(
         data.data.access
       );
+      localStorage.setItem('tokenExp', JSON.stringify(exp));
       if (!is_superuser) {
         if (is_change_password) {
           navigate('/');

@@ -22,6 +22,23 @@ import {
   Heading,
   StackDivider,
   Stack,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  Spinner,
+  TableContainer,
+  FormControl,
+  FormLabel,
+  Input,
+  FormErrorMessage,
+  FormHelperText,
+  Grid,
+  GridItem,
 } from '@chakra-ui/react';
 import {
   FiHome,
@@ -33,8 +50,10 @@ import {
   FiBell,
   FiChevronDown,
 } from 'react-icons/fi';
-import AuthContext from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { ArrowBackIcon } from '@chakra-ui/icons';
+import AuthContext from '../context/AuthContext';
+import { useQuery } from 'react-query';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const LinkItems = [
   { name: 'Home', icon: FiHome, route: '/' },
@@ -44,8 +63,15 @@ const LinkItems = [
   // { name: 'Settings', icon: FiSettings },
 ];
 
-export default function SidebarWithHeader({ children, userData, loanData }) {
+export default function UserProfile({ children, userData, loanData }) {
+  const { getUserInfo } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { id } = useParams();
+  const { data, status } = useQuery({
+    queryKey: ['userInfo'],
+    queryFn: () => getUserInfo(),
+  });
+  console.log('data', data);
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH='100vh' bg={useColorModeValue('white', 'gray.50')}>
@@ -69,64 +95,42 @@ export default function SidebarWithHeader({ children, userData, loanData }) {
       <MobileNav onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p='4'>
         {children}
-
-        <VStack divider={<StackDivider borderColor='gray.200' />} spacing={4}>
-          {loanData &&
-            loanData.map((item, index) => {
-              return (
-                <Box
-                  key={index}
-                  boxShadow='xl'
-                  h='150'
-                  w='90%'
-                  borderRadius='15px'
-                  onClick={() => navigate(`/user-payments/${item.id}`)}>
-                  <Stack p='20px' spacing={3} h='150' direction='row'>
-                    <Stack w='100%' spacing='4'>
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm' pr='3px'>
-                          Loan:
-                        </Heading>
-                        <Text fontSize='md'>{item.loan}</Text>
-                      </Flex>
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm' pr='3px'>
-                          Balance:
-                        </Heading>
-                        <Text>{item.balance}</Text>
-                      </Flex>
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm' pr='3px'>
-                          Penalty:
-                        </Heading>
-                        <Text>{item.penalty}</Text>
-                      </Flex>
-                    </Stack>
-                    <Stack w='100%' spacing='4'>
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm'>
-                          Date:
-                        </Heading>
-                        <Text>{item.date}</Text>
-                      </Flex>{' '}
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm'>
-                          Voucher # :
-                        </Heading>
-                        <Text>{item.voucher_number}</Text>
-                      </Flex>{' '}
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm'>
-                          Status:
-                        </Heading>
-                        <Text>{item.status}</Text>
-                      </Flex>
-                    </Stack>
-                  </Stack>
-                </Box>
-              );
-            })}
-        </VStack>
+        {status === 'loading' && (
+          <Flex alignItems='center' justifyContent='center' height='100vh'>
+            <Spinner
+              thickness='10px'
+              speed='0.65s'
+              emptyColor='gray.200'
+              color='blue.500'
+              style={{ width: '150px', height: '150px' }}
+            />
+          </Flex>
+        )}
+        {status === 'error' && <div>error...</div>}
+        {status === 'success' && (
+          <Grid templateColumns='repeat(2, 1fr)' gap={6}>
+            <FormControl isReadOnly={true}>
+              <FormLabel>First Name</FormLabel>
+              <Input placeholder={data.data.first_name} />
+            </FormControl>
+            <FormControl isReadOnly={true}>
+              <FormLabel>Last Name</FormLabel>
+              <Input placeholder={data.data.last_name} />
+            </FormControl>
+            <FormControl isReadOnly={true}>
+              <FormLabel>Middle Name</FormLabel>
+              <Input placeholder={data.data.middle_name} />
+            </FormControl>
+            <FormControl isReadOnly={true}>
+              <FormLabel>Member Status</FormLabel>
+              <Input placeholder={data.data.member_status} />
+            </FormControl>
+            <FormControl isReadOnly={true}>
+              <FormLabel>Driver Licence #</FormLabel>
+              <Input placeholder={data.data.driver_license_no} />
+            </FormControl>
+          </Grid>
+        )}
       </Box>
     </Box>
   );
@@ -199,8 +203,8 @@ const NavItem = ({ icon, children, ...rest }) => {
 };
 
 const MobileNav = ({ onOpen, ...rest }) => {
-  const { logoutUser } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { logoutUser } = useContext(AuthContext);
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
