@@ -7,6 +7,14 @@ import {
   Heading,
   useColorModeValue as mode,
   Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
 } from '@chakra-ui/react';
 import { FaRegChartBar } from 'react-icons/fa';
 import { AiFillHome, AiFillSetting } from 'react-icons/ai';
@@ -36,6 +44,7 @@ export const Sidebar = (props) => {
             <NavLink label='Home' href='/dashboard' icon={AiFillHome} />
             <NavLink label='Members' href='/members' icon={BsFillPeopleFill} />
             <NavLink label='Loan' href='/loans' icon={BsFillPeopleFill} />
+
             <NavLink
               label='Daily Dues'
               href='/daily-jues'

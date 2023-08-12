@@ -441,6 +441,20 @@
   dependencies:
     "@chakra-ui/shared-utils" "2.0.2"
 
+"@chakra-ui/icon@3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/icon/-/icon-3.1.0.tgz#48312c071b3a0ed20ce807c8bd24d5f3e9cfdb7f"
+  integrity sha512-t6v0lGCXRbwUJycN8A/nDTuLktMP+LRjKbYJnd2oL6Pm2vOl99XwEQ5cAEyEa4XoseYNEgXiLR+2TfvgfNFvcw==
+  dependencies:
+    "@chakra-ui/shared-utils" "2.0.5"
+
+"@chakra-ui/icons@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/icons/-/icons-2.1.0.tgz#52677939e02f9d6b902bd2c2931e5f18d3c8b523"
+  integrity sha512-pGFxFfQ/P5VnSRnTzK8zGAJxoxkxpHo/Br9ohRZdOpuhnIHSW7va0P53UoycEO5/vNJ/7BN0oDY0k9qurChcew==
+  dependencies:
+    "@chakra-ui/icon" "3.1.0"
+
 "@chakra-ui/image@2.0.11":
   version "2.0.11"
   resolved "https://registry.yarnpkg.com/@chakra-ui/image/-/image-2.0.11.tgz#eb880ecd2fce47f22ef50bbbba66cbb027c0304c"
@@ -829,6 +843,11 @@
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@chakra-ui/shared-utils/-/shared-utils-2.0.2.tgz#1df08133194c12ac4df9302604ec37784c2bb026"
   integrity sha512-wC58Fh6wCnFFQyiebVZ0NI7PFW9+Vch0QE6qN7iR+bLseOzQY9miYuzPJ1kMYiFd6QTOmPJkI39M3wHqrPYiOg==
+
+"@chakra-ui/shared-utils@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/shared-utils/-/shared-utils-2.0.5.tgz#cb2b49705e113853647f1822142619570feba081"
+  integrity sha512-4/Wur0FqDov7Y0nCXl7HbHzCg4aq86h+SXdoUeuCMD3dSj7dpsVnStLYhng1vxvlbUnLpdF4oz5Myt3i/a7N3Q==
 
 "@chakra-ui/skeleton@2.0.17":
   version "2.0.17"
@@ -2076,6 +2095,11 @@ minimatch@^3.1.1:
   dependencies:
     brace-expansion "^1.1.7"
 
+moment@^2.29.4:
+  version "2.29.4"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
+  integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
+
 ms@2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
@@ -2265,6 +2289,11 @@ react-icons@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-4.6.0.tgz#f83eda179af5d02c047449a20b702c858653d397"
   integrity sha512-rR/L9m9340yO8yv1QT1QurxWQvWpbNHqVX0fzMln2HEb9TEIrQRGsqiNFQfiv9/JEUbyHmHPlNTB2LWm2Ttz0g==
+
+react-idle-timer@^5.7.2:
+  version "5.7.2"
+  resolved "https://registry.yarnpkg.com/react-idle-timer/-/react-idle-timer-5.7.2.tgz#f506db28a86645dd1b87987116501703e512142b"
+  integrity sha512-+BaPfc7XEUU5JFkwZCx6fO1bLVK+RBlFH+iY4X34urvIzZiZINP6v2orePx3E6pAztJGE7t4DzvL7if2SL/0GQ==
 
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"

@@ -17,9 +17,10 @@ import AuthContext from '../context/AuthContext';
 import { z } from 'zod';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
+import { useIdleTimer } from 'react-idle-timer';
 const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
 const Dashboard = () => {
-  const { createUser } = useContext(AuthContext);
+  const { createUser, logoutUser } = useContext(AuthContext);
   const mutation = useMutation({
     mutationFn: (payload) => {
       return axios.post(`${baseURL}/createUser/`, payload);
@@ -138,6 +139,17 @@ const Dashboard = () => {
         member_status: userValidate.data.memberStatus,
       });
     }
+    // const onIdle = () => {
+    //   setState('Idle');
+    //   console.log('idleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+    //   logoutUser();
+    // };
+
+    // const { getRemainingTime } = useIdleTimer({
+    //   onIdle,
+    //   timeout: 10_000,
+    //   throttle: 500,
+    // });
   };
 
   return (

@@ -64,13 +64,16 @@ const AddLoanReport = () => {
   const [ticket, setTicket] = useState(null);
   const [selectedUser, setSelectedUser] = useState([]);
 
+  const total = selectedUser.reduce((total, item) => {
+    return total + item.amount;
+  }, 0);
   const loanReportSchema = z.object({
     user: z.number(),
     first_name: z.string(),
     last_name: z.string(),
     loan: z.number(),
     amount: z.number(),
-    ticket: z.string().min(1),
+    ticket: z.number(),
     date: z.string(),
     penalty: z.number(),
   });
@@ -80,7 +83,11 @@ const AddLoanReport = () => {
   });
 
   const handleChange = (value) => {
-    console.log('value', value);
+    const lastItem = selectedUser.findLast(
+      (item) => parseInt(item.ticket) >= 0
+    );
+    // console.log(typeof lastItem.ticket);
+
     const loanReportValidate = loanReportSchema.safeParse({
       user: value.user,
       loan: value.id,
@@ -88,22 +95,25 @@ const AddLoanReport = () => {
       last_name: value.last_name,
       penalty: value.penalty,
       amount: parseInt(amount) == null ? '' : parseInt(amount),
-      ticket: ticket,
+      ticket: lastItem ? lastItem.ticket + 1 : parseInt(ticket),
       date: date,
     });
-    console.log('loanReportValidate', loanReportValidate);
     if (!loanReportValidate.success) {
       loanReportValidate.error.issues.map((item) => {
         toast.error(`Error in ${item.path[0]} ${item.message}:`);
       });
     } else {
       setSelectedUser([...selectedUser, loanReportValidate.data]);
-      ticketRef.current.value = '';
+      console.log(
+        'last item',
+        selectedUser.findLast((item) => parseInt(item.ticket) >= 0)
+      );
+      // ticketRef.current.value = '';
       amountRef.current.value = '';
-      dataRef.current.value = '';
+      // dataRef.current.value = '';
       setAmount(null);
-      setDate(null);
-      setTicket(null);
+      // setDate(null);
+      // setTicket(null);
       // dropdownRef.current.clearValue();
       // console.log('dropsdown', dropdownRef.current);
     }
@@ -126,12 +136,6 @@ const AddLoanReport = () => {
     } else {
       mutate(orValidate.data);
     }
-    // const payload = {
-    //   title: title,
-    //   payments: selectedUser,
-    // };
-    // await mutate(payload);
-    // setSelectedUser([]);
   };
   return (
     <AdminLayout>
@@ -164,7 +168,7 @@ const AddLoanReport = () => {
             ref={dropdownRef}
           />
           <Button onClick={() => handleSubmit()}>Submit</Button>
-
+          <h1>Total: {total}</h1>
           <TableContainer>
             <Table variant='striped' colorScheme='gray'>
               <Thead>

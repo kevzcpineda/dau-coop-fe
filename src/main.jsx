@@ -1,34 +1,37 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom/client';
-// import App from './App'
-import './index.css';
-import { ChakraProvider } from '@chakra-ui/react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import PrivateRoutes from './utils/PrivateRoutes';
+import App from './App';
+// import './index.css';
+// import { ChakraProvider } from '@chakra-ui/react';
+// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// import { AuthProvider } from './context/AuthContext';
+// import PrivateRoutes from './utils/PrivateRoutes';
 
-import Login from './pages/Login';
-import ChangePassword from './pages/ChangePassword';
-import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
-import Members from './pages/Members';
-import Loans from './pages/Loans';
-import DailyJues from './pages/DailyJues';
-import AddDailyJues from './pages/AddDailyJues';
-import UserLoan from './pages/UserLoan';
-import LoanReport from './pages/LoanReport';
-import DailyDuesReport from './pages/DailyDuesReport';
-import AddLoanReport from './pages/AddLoanReport';
-import UserPayments from './pages/UserPayments';
+// import Login from './pages/Login';
+// import ChangePassword from './pages/ChangePassword';
+// import Home from './pages/Home';
+// import Dashboard from './pages/Dashboard';
+// import Members from './pages/Members';
+// import Loans from './pages/Loans';
+// import DailyJues from './pages/DailyJues';
+// import AddDailyJues from './pages/AddDailyJues';
+// import UserLoan from './pages/UserLoan';
+// import LoanReport from './pages/LoanReport';
+// import DailyDuesReport from './pages/DailyDuesReport';
+// import AddLoanReport from './pages/AddLoanReport';
+// import UserPayments from './pages/UserPayments';
+// import UserProfile from './pages/UserProfile';
+// import UserJeep from './pages/UserJeep';
 
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+// import { QueryClient, QueryClientProvider } from 'react-query';
+// import { ReactQueryDevtools } from 'react-query/devtools';
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <App />
+    {/* <QueryClientProvider client={queryClient}>
       <ChakraProvider>
         <Router>
           <AuthProvider>
@@ -61,7 +64,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   element={<AddLoanReport />}
                   exact
                 />
-                <Route path='/userpayments/:id' element={<UserPayments />} />
+                <Route
+                  path='/user-payments/:id'
+                  element={<UserPayments />}
+                  exact
+                />
+                <Route path='/user-jeep' element={<UserJeep />} exact />
+                <Route path='/user-profile' element={<UserProfile />} exact />
               </Route>
               <Route path='/login' element={<Login />} />
             </Routes>
@@ -69,6 +78,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </Router>
         <ReactQueryDevtools />
       </ChakraProvider>
-    </QueryClientProvider>
+    </QueryClientProvider> */}
   </React.StrictMode>
 );

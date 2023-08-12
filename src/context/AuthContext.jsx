@@ -2,7 +2,9 @@ import { createContext, useState, useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useIdleTimer } from 'react-idle-timer';
 import { Spinner, Flex } from '@chakra-ui/react';
+import moment from 'moment';
 const AuthContext = createContext();
 
 export default AuthContext;
@@ -44,7 +46,7 @@ export const AuthProvider = ({ children }) => {
 
     if (response.status === 200) {
       // setAuthTokens(data);
-      console.log('data', data);
+      console.log('datasdasda', data);
       setAccessToken(data.access);
       setRefreshToken(data.refresh);
       setUser(jwt_decode(data.access));
@@ -95,9 +97,11 @@ export const AuthProvider = ({ children }) => {
     const data = await response.json();
     console.log('refresh data', data);
     if (response.status === 200) {
+      const { exp } = jwt_decode(data.access);
       setAccessToken(data.access);
       setUser(jwt_decode(data.access));
       localStorage.setItem('accessToken', JSON.stringify(data.access));
+      localStorage.setItem('tokenExp', JSON.stringify(exp));
     } else {
       logoutUser();
     }
@@ -106,20 +110,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const changePassword = async (password) => {
-    const response = await fetch(`${baseURL}/change-password/`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ password: password }),
+  const changePassword = async (payload) => {
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    return axios.post(`${baseURL}/change-password/`, {
+      headers: headers,
+      body: payload,
     });
+    // const response = await fetch(`${baseURL}/change-password/`, {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: `Bearer ${accessToken}`,
+    //   },
+    //   body: JSON.stringify(payload),
+    // });
 
-    const { is_change_password } = await response.json();
-    if (is_change_password) {
-      navigate('/');
-    }
+    // const { is_change_password } = await response.json();
+    // if (is_change_password) {
+    //   navigate('/');
+    // }
   };
 
   const createUser = async (payload) => {
@@ -333,11 +342,14 @@ export const AuthProvider = ({ children }) => {
 
     return response;
   };
-  const pendingLoan = async () => {
-    return axios.get(`${baseURL}/loan/filter/?filter=GRANTED`);
+  const grantedLoan = async (page) => {
+    return axios.get(`${baseURL}/loan/genericGrantedLoanView/?page=${page}`);
   };
-  const filterDoneLoan = async () => {
-    return axios.get(`${baseURL}/loan/filter/?filter=DONE`);
+  const filterDoneLoan = async (page) => {
+    return axios.get(`${baseURL}/loan/genericDoneLoanView/?page=${page}`);
+  };
+  const getUserLoanPayments = async (id) => {
+    return axios.get(`${baseURL}/loan/user_payments/?loan_id=${id}`);
   };
 
   const contextData = {
@@ -350,7 +362,7 @@ export const AuthProvider = ({ children }) => {
     setAccessToken: setAccessToken,
     // setAuthTokens: setAuthTokens,
     loginUser: loginUser,
-    pendingLoan: pendingLoan,
+    grantedLoan: grantedLoan,
     filterDoneLoan: filterDoneLoan,
     logoutUser: logoutUser,
     changePassword: changePassword,
@@ -372,9 +384,20 @@ export const AuthProvider = ({ children }) => {
     postLoanPayments: postLoanPayments,
     postLoanPenalty: postLoanPenalty,
     updateLoanStatus: updateLoanStatus,
+    getUserLoanPayments: getUserLoanPayments,
   };
 
   useEffect(() => {
+    const dateNow = moment();
+    const expTime = localStorage.getItem('tokenExp');
+    console.log('dateNow', dateNow / 1000);
+    console.log('expTime', expTime * 1000);
+    if (dateNow > expTime * 1000) {
+      logoutUser();
+    }
+    if (loading) {
+      updateToken();
+    }
     if (accessToken) {
       const { is_superuser } = jwt_decode(accessToken);
       if (!is_superuser) {
@@ -384,9 +407,6 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    if (loading) {
-      updateToken();
-    }
     const fourMinute = 1000 * 60 * 0.5;
 
     let interval = setInterval(() => {
@@ -403,6 +423,17 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
     return () => clearInterval(interval);
   }, [loading]);
+
+  // const onIdle = () => {
+  //   console.log('fires after 10 minutes');
+  //   //insert any custom logout logic here
+  // };
+
+  // const { getRemainingTime } = useIdleTimer({
+  //   timeout: 1 * 60 * 1000, //10 minute idle timeout
+  //   onIdle: onIdle,
+  //   debounce: 500,
+  // });
 
   return (
     <AuthContext.Provider value={contextData}>

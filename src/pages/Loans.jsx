@@ -42,9 +42,34 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
+import axios from 'axios';
 import Papa from 'papaparse';
 import toast, { Toaster } from 'react-hot-toast';
 const Loans = () => {
+  const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
+  const mutation = useMutation({
+    mutationFn: (payload) => {
+      return axios.post(`${baseURL}/createUser/`, payload);
+    },
+  });
+
+  const { mutate: loanMutate } = useMutation({
+    mutationFn: (payload) => {
+      return axios.post(`${baseURL}/loan/`, payload);
+    },
+  });
+
+  const { mutate: penaltyLoanMutate } = useMutation({
+    mutationFn: (payload) => {
+      return axios.post(`${baseURL}/loan/penalty/`, payload);
+    },
+  });
+  const { mutate: paymentsLoanMutate } = useMutation({
+    mutationFn: (payload) => {
+      return axios.post(`${baseURL}/loan/payments/`, payload);
+    },
+  });
+
   const [isPrinting, setIsPrinting] = useState(false);
   const promiseResolveRef = useRef(null);
   const {
@@ -52,7 +77,7 @@ const Loans = () => {
     getLoanPayments,
     getLoans,
     postLoanPayments,
-    pendingLoan,
+    grantedLoan,
     filterDoneLoan,
   } = useContext(AuthContext);
   const [user, setUser] = useState({});
@@ -69,19 +94,30 @@ const Loans = () => {
     onOpen: onOpenLog,
     onClose: onCloseLog,
   } = useDisclosure();
+  const [doneLoanPage, setDoneLoanPage] = useState(1);
+  const [grantedLoanPage, setGrantedLoanPage] = useState(1);
 
-  const { data: pendingLoanData, status: pendingLoanStatus } = useQuery({
-    queryKey: ['loans'],
-    queryFn: pendingLoan,
+  const { data: grantedLoanData, status: pendingLoanStatus } = useQuery({
+    queryKey: ['loans', grantedLoanPage],
+    queryFn: () => grantedLoan(grantedLoanPage),
+    keepPreviousData: true,
   });
   const { data: loanDoneData, status: loanDoneStatus } = useQuery({
-    queryKey: ['doneloans'],
-    queryFn: filterDoneLoan,
+    queryKey: ['doneloans', doneLoanPage],
+    queryFn: () => filterDoneLoan(doneLoanPage),
+    keepPreviousData: true,
+  });
+  const { data: usersData, status: userStatus } = useQuery({
+    queryKey: ['usersData'],
+    queryFn: () => {
+      return axios.get(`${baseURL}/createUser/`);
+    },
   });
 
+  console.log('grantedLoanData', grantedLoanData);
   const { loans, loanPayment } = useLoan((state) => state);
 
-  const { mutate: exlLoanPayments } = useMutation(postLoanPayments);
+  // const { mutate: exlLoanPayments } = useMutation(postLoanPayments);
   const queryClient = useQueryClient();
 
   const { isLoading, mutate } = useMutation(loanPayment, {
@@ -179,15 +215,20 @@ const Loans = () => {
     comments: false,
     step: undefined,
     complete: function (results, file) {
-      exlLoanPayments(results.data);
+      const a = results.data.filter((item) => {
+        return item.first_name !== null;
+      });
+      console.log(a);
+      mutation.mutate(a);
       toast.success('Successfully toasted!');
     },
     error: (results, file) => {
       toast.error('Error');
     },
     delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+    skipEmptyLines: true,
   };
-  const parsepenaltyconfig = {
+  const importUserLoanconfig = {
     delimiter: '', // auto-detect
     newline: '', // auto-detect
     quoteChar: '"',
@@ -201,27 +242,158 @@ const Loans = () => {
     comments: false,
     step: undefined,
     complete: function (results, file) {
-      exlLoanPayments(results.data);
+      console.log(results.data);
+      loanMutate(results.data);
       toast.success('Successfully toasted!');
     },
     error: (results, file) => {
       toast.error('Error');
     },
     delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+    skipEmptyLines: true,
   };
+  const importLoanPenaltyconfig = {
+    delimiter: '', // auto-detect
+    newline: '', // auto-detect
+    quoteChar: '"',
+    escapeChar: '"',
+    header: true,
+    transformHeader: undefined,
+    dynamicTyping: true,
+    preview: 0,
+    encoding: '',
+    worker: false,
+    comments: false,
+    step: undefined,
+    complete: function (results, file) {
+      const a = results.data.filter((item) => {
+        return item.loan_id !== null;
+      });
+      console.log(a);
+      penaltyLoanMutate(a);
+      toast.success('Successfully toasted!');
+    },
+    error: (results, file) => {
+      toast.error('Error');
+    },
+    delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+    skipEmptyLines: true,
+  };
+  const importLoanPeymentsconfig = {
+    delimiter: '', // auto-detect
+    newline: '', // auto-detect
+    quoteChar: '"',
+    escapeChar: '"',
+    header: true,
+    transformHeader: undefined,
+    dynamicTyping: true,
+    preview: 0,
+    encoding: '',
+    worker: false,
+    comments: false,
+    step: undefined,
+    complete: function (results, file) {
+      console.log(results);
+      paymentsLoanMutate(results.data);
+      toast.success('Successfully toasted!');
+    },
+    error: (results, file) => {
+      toast.error('Error');
+    },
+    delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+    skipEmptyLines: true,
+  };
+  // const parsepenaltyconfig = {
+  //   delimiter: '', // auto-detect
+  //   newline: '', // auto-detect
+  //   quoteChar: '"',
+  //   escapeChar: '"',
+  //   header: true,
+  //   transformHeader: undefined,
+  //   dynamicTyping: true,
+  //   preview: 0,
+  //   encoding: '',
+  //   worker: false,
+  //   comments: false,
+  //   step: undefined,
+  //   complete: function (results, file) {
+  //     exlLoanPayments(results.data);
+  //     toast.success('Successfully toasted!');
+  //   },
+  //   error: (results, file) => {
+  //     toast.error('Error');
+  //   },
+  //   delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+  // };
 
   const handleParse = () => {
     const value = Papa.parse(csv, parseconfig);
   };
-  const handleParsePenalty = () => {
-    const value = Papa.parse(csv, parsepenaltyconfig);
+  const handleImportUserLoan = () => {
+    const value = Papa.parse(csv, importUserLoanconfig);
   };
+  const handleImportLoanPenalty = () => {
+    const value = Papa.parse(csv, importLoanPenaltyconfig);
+  };
+  const handleImportLoanPayments = () => {
+    const value = Papa.parse(csv, importLoanPeymentsconfig);
+  };
+  // const handleParsePenalty = () => {
+  //   const value = Papa.parse(csv, parsepenaltyconfig);
+  // };
   const handleUnparse = () => {
-    const value = Papa.unparse(data, unparseConfig);
-    // const value = Papa.parse(csv, parseconfig);
+    const userDataFiltered = usersData.data.map((obj) => {
+      const {
+        password,
+        is_active,
+        is_staff,
+        is_change_password,
+        sss_no,
+        philhealth_no,
+        blood_type,
+        weight,
+        height,
+        driver_license_no,
+        civil_status,
+        date_of_membership,
+        phone_no,
+        home_address,
+        gender,
+        image,
+        birth_date,
+        age,
+        is_superuser,
+        last_login,
+        daily_jues,
+        jeep_id,
+        user_permissions,
+        groups,
+        ...rest
+      } = obj;
+      return rest;
+    });
+    const value = Papa.unparse(userDataFiltered, unparseConfig);
+    console.log('unparse', value);
+  };
+  const handleUnparseLoan = () => {
+    const userDataFiltered = grantedLoanData.data.map((obj) => {
+      const {
+        interest,
+        service_fee,
+        net_amount,
+        loan,
+        voucher_number,
+        check_number,
+        promissory_note_number,
+        ...rest
+      } = obj;
+      return rest;
+    });
+    const value = Papa.unparse(userDataFiltered, unparseConfig);
+    console.log('unparse', value);
   };
   // console.log(pendingLoanData);
-  console.log('loanDoneData', loanDoneData);
+  // console.log('loanDoneData', loanDoneData);
   return (
     <AdminLayout>
       <div>
@@ -245,12 +417,26 @@ const Loans = () => {
 
       <Box>
         <Heading>Loans</Heading>
-        {/* <Button onClick={() => handleParse()}>Import CSV loan payment</Button>
-        <Button onClick={() => handleParsePenalty()}>
+        <Button onClick={() => handleParse()}>Import CSV Users</Button>
+        {/* <Button onClick={() => handleParsePenalty()}>
           Import CSV loan penalty
+        </Button> */}
+        {userStatus === 'success' && (
+          <Button onClick={() => handleUnparse()}>Unparse Users</Button>
+        )}
+        {pendingLoanStatus === 'success' && (
+          <Button onClick={() => handleUnparseLoan()}>Unparse Loan</Button>
+        )}
+        <Button onClick={() => handleImportUserLoan()}>
+          Import users loan
         </Button>
-        <Button onClick={() => handleUnparse()}>Unparse</Button>
-        <Input type='file' onChange={(e) => setCsv(e.target.files[0])} /> */}
+        <Button onClick={() => handleImportLoanPenalty()}>
+          Import loan penalty
+        </Button>
+        <Button onClick={() => handleImportLoanPayments()}>
+          Import loan Payments
+        </Button>
+        <Input type='file' onChange={(e) => setCsv(e.target.files[0])} />
 
         {pendingLoanStatus === 'loading' && loanDoneStatus === 'loading' && (
           <Spinner />
@@ -262,9 +448,13 @@ const Loans = () => {
           <LoanTable
             handlePaymentModal={handlePaymentModal}
             print={print}
-            filterLoan={loanDoneData.data}
-            notDoneLoan={pendingLoanData.data}
+            doneLoan={loanDoneData.data}
+            grantedLoan={grantedLoanData.data}
             handlePaymentLogModal={handlePaymentLogModal}
+            setGrantedLoanPage={setGrantedLoanPage}
+            setDoneLoanPage={setDoneLoanPage}
+            grantedLoanPage={grantedLoanPage}
+            doneLoanPage={doneLoanPage}
           />
         )}
       </Box>
