@@ -20,6 +20,9 @@ import {
   Button,
   Input,
   useDisclosure,
+  Editable,
+  EditableInput,
+  EditablePreview,
   Tabs,
   TabList,
   TabPanels,
@@ -71,6 +74,7 @@ const Loans = () => {
   });
 
   const [isPrinting, setIsPrinting] = useState(false);
+  const [search, setSearch] = useState('');
   const promiseResolveRef = useRef(null);
   const {
     getUser,
@@ -79,6 +83,7 @@ const Loans = () => {
     postLoanPayments,
     grantedLoan,
     filterDoneLoan,
+    searchGrantedLoan,
   } = useContext(AuthContext);
   const [user, setUser] = useState({});
   const [loanId, setLoanId] = useState(null);
@@ -242,8 +247,11 @@ const Loans = () => {
     comments: false,
     step: undefined,
     complete: function (results, file) {
-      console.log(results.data);
-      loanMutate(results.data);
+      const data = results.data.filter((item) => {
+        return item.loan !== null;
+      });
+      console.log(data);
+      loanMutate(data);
       toast.success('Successfully toasted!');
     },
     error: (results, file) => {
@@ -293,8 +301,11 @@ const Loans = () => {
     comments: false,
     step: undefined,
     complete: function (results, file) {
-      console.log(results);
-      paymentsLoanMutate(results.data);
+      const data = results.data.filter((item) => {
+        return item.amount !== null;
+      });
+      console.log(data);
+      paymentsLoanMutate(data);
       toast.success('Successfully toasted!');
     },
     error: (results, file) => {
@@ -394,6 +405,19 @@ const Loans = () => {
   };
   // console.log(pendingLoanData);
   // console.log('loanDoneData', loanDoneData);
+  const { data: searchData, mutate: mutateSearch } = useMutation(
+    searchGrantedLoan,
+    {
+      onSuccess: (data, variables, context) => {
+        queryClient.setQueryData(['grantedLoanSearch', search]);
+      },
+    }
+  );
+  const handleSearch = (e) => {
+    setSearch(e);
+    mutateSearch(e);
+  };
+
   return (
     <AdminLayout>
       <div>
@@ -416,7 +440,15 @@ const Loans = () => {
       {isOpenLog && <PaymentLogModal isOpen={isOpenLog} onClose={onCloseLog} />}
 
       <Box>
-        <Heading>Loans</Heading>
+        <Heading>Granted Loans</Heading>
+        <Editable
+          defaultValue='Search'
+          onSubmit={(e) => {
+            handleSearch(e);
+          }}>
+          <EditablePreview />
+          <EditableInput />
+        </Editable>
         <Button onClick={() => handleParse()}>Import CSV Users</Button>
         {/* <Button onClick={() => handleParsePenalty()}>
           Import CSV loan penalty
@@ -448,8 +480,7 @@ const Loans = () => {
           <LoanTable
             handlePaymentModal={handlePaymentModal}
             print={print}
-            doneLoan={loanDoneData.data}
-            grantedLoan={grantedLoanData.data}
+            loanData={searchData ? searchData.data : grantedLoanData.data}
             handlePaymentLogModal={handlePaymentLogModal}
             setGrantedLoanPage={setGrantedLoanPage}
             setDoneLoanPage={setDoneLoanPage}
@@ -457,6 +488,26 @@ const Loans = () => {
             doneLoanPage={doneLoanPage}
           />
         )}
+        {/* {mutateSearch.isLoading ? (
+          <Spinner />
+        ) : (
+          <>
+            <Spinner />
+            {mutateSearch.isError ? <div>error</div> : null}{' '}
+            {mutateSearch.isSuccess ? (
+              <LoanTable
+                handlePaymentModal={handlePaymentModal}
+                print={print}
+                loanData={grantedLoanData.data}
+                handlePaymentLogModal={handlePaymentLogModal}
+                setGrantedLoanPage={setGrantedLoanPage}
+                setDoneLoanPage={setDoneLoanPage}
+                grantedLoanPage={grantedLoanPage}
+                doneLoanPage={doneLoanPage}
+              />
+            ) : null}
+          </>
+        )} */}
       </Box>
     </AdminLayout>
   );

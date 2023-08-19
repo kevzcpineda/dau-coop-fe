@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import {
   Box,
   Button,
+  Center,
   Container,
   FormControl,
   FormLabel,
@@ -20,6 +21,8 @@ import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
+import { Image } from '@chakra-ui/react';
+import logo from '../assets/logo.png';
 const Login = () => {
   const navigate = useNavigate();
   const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
@@ -91,7 +94,10 @@ const Login = () => {
       <Toaster position='top-right' reverseOrder={false} />
       <Stack spacing='8'>
         <Stack spacing='6'>
-          <Logo />
+          {/* <Logo /> */}
+          <Center>
+            <Image src={logo} alt='logo' boxSize='100px' align='center' />
+          </Center>
         </Stack>
         <Box
           py={{

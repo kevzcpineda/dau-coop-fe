@@ -11,7 +11,8 @@ import ChangePassword from './pages/ChangePassword';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Members from './pages/Members';
-import Loans from './pages/Loans';
+import GrantedLoan from './pages/GrantedLoan';
+import DoneLoan from './pages/DoneLoan';
 import DailyJues from './pages/DailyJues';
 import AddDailyJues from './pages/AddDailyJues';
 import UserLoan from './pages/UserLoan';
@@ -44,7 +45,8 @@ function App() {
                 />
                 <Route path='/dashboard' element={<Dashboard />} exact />
                 <Route path='/members' element={<Members />} exact />
-                <Route path='/loans' element={<Loans />} exact />
+                <Route path='/grantedLoan' element={<GrantedLoan />} exact />
+                <Route path='/doneLoan' element={<DoneLoan />} exact />
                 <Route
                   path='/add-daily-jues'
                   element={<AddDailyJues />}
