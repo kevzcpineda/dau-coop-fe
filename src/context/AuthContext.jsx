@@ -351,6 +351,12 @@ export const AuthProvider = ({ children }) => {
   const getUserLoanPayments = async (id) => {
     return axios.get(`${baseURL}/loan/user_payments/?loan_id=${id}`);
   };
+  const searchGrantedLoan = async (search) => {
+    return axios.get(`${baseURL}/loan/searchGrantedLoan/?search=${search}`);
+  };
+  const searchDoneLoan = async (search) => {
+    return axios.get(`${baseURL}/loan/searchDoneLoan/?search=${search}`);
+  };
 
   const contextData = {
     user: user,
@@ -385,6 +391,8 @@ export const AuthProvider = ({ children }) => {
     postLoanPenalty: postLoanPenalty,
     updateLoanStatus: updateLoanStatus,
     getUserLoanPayments: getUserLoanPayments,
+    searchGrantedLoan: searchGrantedLoan,
+    searchDoneLoan: searchDoneLoan,
   };
 
   useEffect(() => {

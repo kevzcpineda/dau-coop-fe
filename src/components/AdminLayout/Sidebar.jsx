@@ -15,16 +15,18 @@ import {
   MenuGroup,
   MenuOptionGroup,
   MenuDivider,
+  useDisclosure,
+  Collapse,
 } from '@chakra-ui/react';
 import { FaRegChartBar } from 'react-icons/fa';
 import { AiFillHome, AiFillSetting } from 'react-icons/ai';
 import { BsFillPeopleFill, BsCalendar } from 'react-icons/bs';
-
 import { NavLink } from './NavLink';
 import AuthContext from '../../context/AuthContext';
 
 export const Sidebar = (props) => {
   const { logoutUser } = useContext(AuthContext);
+  const { isOpen, onToggle } = useDisclosure();
   return (
     <Flex
       bg={mode('gray.50', 'gray.800')}
@@ -43,7 +45,11 @@ export const Sidebar = (props) => {
           <Stack spacing='1'>
             <NavLink label='Home' href='/dashboard' icon={AiFillHome} />
             <NavLink label='Members' href='/members' icon={BsFillPeopleFill} />
-            <NavLink label='Loan' href='/loans' icon={BsFillPeopleFill} />
+            <NavLink label='Loan' icon={BsFillPeopleFill} onClick={onToggle} />
+            <Collapse in={isOpen} animateOpacity>
+              <NavLink label='Granted Loan' href='/grantedLoan' ml={3} />
+              <NavLink label='Done Loan' href='/doneLoan' ml={3} />
+            </Collapse>
 
             <NavLink
               label='Daily Dues'
