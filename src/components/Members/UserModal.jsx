@@ -71,6 +71,7 @@ const UserModal = ({ id, isOpen, onClose }) => {
   });
 
   'USERS', data;
+  const TabRef = useRef();
   const userTabRef = useRef();
   const jeepTabRef = useRef();
   const [userPayload, setUserPayload] = useState({
@@ -101,13 +102,19 @@ const UserModal = ({ id, isOpen, onClose }) => {
             {status === 'error' && <div>error...</div>}
             {status === 'success' && (
               <Tabs onChange={(index) => setTabIndex(index)}>
-                <TabList>
+                <TabList ref={TabRef}>
                   <Tab>User</Tab>
                   {data &&
                     data.data?.jeep_id?.map((item, index) => {
+                      console.log('id', item.id);
                       return (
-                        <Tab key={item.id} value={item.id} ref={jeepTabRef}>
-                          jeep{index + 1}
+                        <Tab
+                          ref={jeepTabRef}
+                          key={item.id}
+                          value={item.id}
+                          id={item.id}
+                          panelId={item.id}>
+                          {item.plate_no}
                         </Tab>
                       );
                     })}
@@ -120,12 +127,23 @@ const UserModal = ({ id, isOpen, onClose }) => {
                       handleOnChange={handleOnChangeUser}
                     />
                   </TabPanel>
-                  {data?.data?.jeep_id ? (
+                  {data?.data?.jeep_id.map((item, index) => {
+                    // console.log('jeepppp', item);
+                    return (
+                      <TabPanel key={item.id}>
+                        <JeepTab
+                          data={item}
+                          handleOnChange={handleOnChangeJeep}
+                        />
+                      </TabPanel>
+                    );
+                  })}
+                  {/* {data?.data?.jeep_id ? (
                     <JeepTab
                       data={data.data.jeep_id}
                       handleOnChange={handleOnChangeJeep}
                     />
-                  ) : null}
+                  ) : null} */}
                 </TabPanels>
               </Tabs>
             )}
@@ -136,7 +154,14 @@ const UserModal = ({ id, isOpen, onClose }) => {
             ) : (
               <Button
                 onClick={() =>
-                  jeepMutate({ id: jeepTabRef.current.value, ...jeepPayload })
+                  // console.log(
+                  //   'jeepTabRef',
+                  //   parseInt(TabRef.current.childNodes[tabIndex].value)
+                  // )
+                  jeepMutate({
+                    id: parseInt(TabRef.current.childNodes[tabIndex].value),
+                    ...jeepPayload,
+                  })
                 }>
                 Save Jeep
               </Button>
