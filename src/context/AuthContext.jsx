@@ -415,7 +415,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    const fourMinute = 1000 * 60 * 0.5;
+    const fourMinute = 1000 * 60 * 4;
 
     let interval = setInterval(() => {
       console.log('interval');
