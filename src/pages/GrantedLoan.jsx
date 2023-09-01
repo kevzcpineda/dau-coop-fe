@@ -119,6 +119,13 @@ const Loans = () => {
     },
   });
 
+  const { data: unparseLoan, status: unParseStatus } = useQuery({
+    queryKey: ['unparseLoan'],
+    queryFn: () => {
+      return axios.get(`${baseURL}/loan/`);
+    },
+  });
+
   console.log('grantedLoanData', grantedLoanData);
   const { loans, loanPayment } = useLoan((state) => state);
 
@@ -387,7 +394,7 @@ const Loans = () => {
     console.log('unparse', value);
   };
   const handleUnparseLoan = () => {
-    const userDataFiltered = grantedLoanData.data.map((obj) => {
+    const userDataFiltered = unparseLoan.data.map((obj) => {
       const {
         interest,
         service_fee,
