@@ -38,10 +38,7 @@ import { useNavigate } from 'react-router-dom';
 import userImage from '../../assets/default_user_image.png';
 const LinkItems = [
   { name: 'Home', icon: FiHome, route: '/' },
-  { name: 'Daily Dues', icon: FiTrendingUp, route: '/dailyDues' },
-  // { name: 'Explore', icon: FiCompass },
-  // { name: 'Favourites', icon: FiStar },
-  // { name: 'Settings', icon: FiSettings },
+  { name: 'Daily Dues', icon: FiTrendingUp, route: '/user-share-capital' },
 ];
 
 export default function SidebarWithHeader({ children, userData, loanData }) {

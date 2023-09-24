@@ -22,7 +22,10 @@ import AddLoanReport from './pages/AddLoanReport';
 import UserPayments from './pages/UserPayments';
 import UserProfile from './pages/UserProfile';
 import UserJeep from './pages/UserJeep';
-
+import DailyCapitalShare from './pages/DailyCapitalShare';
+import MonthlyCapitalShare from './pages/MonthlyCapitalShare';
+import UserShareCapital from './pages/UserShareCapital';
+import UserDayShareCapital from './pages/UserDayShareCapital';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
@@ -71,6 +74,25 @@ function App() {
                 />
                 <Route path='/user-jeep' element={<UserJeep />} exact />
                 <Route path='/user-profile' element={<UserProfile />} exact />
+                <Route
+                  path='/user-share-capital'
+                  element={<UserShareCapital />}
+                  exact
+                />
+                <Route
+                  path='/user-day-share-capital'
+                  element={<UserDayShareCapital />}
+                  exact
+                />
+                <Route
+                  path='/daily-capital-share'
+                  element={<DailyCapitalShare />}
+                />
+                <Route
+                  path='/monthly-capital-share'
+                  element={<MonthlyCapitalShare />}
+                />
+                {/* <Route path='/user-profile' element={<UserProfile />} exact /> */}
               </Route>
               <Route path='/login' element={<Login />} />
             </Routes>

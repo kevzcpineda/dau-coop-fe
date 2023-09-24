@@ -10,7 +10,7 @@ const LoanDropdown = forwardRef((props, ref) => {
   const options = props.data.map((item) => {
     return {
       value: item.id,
-      label: item.first_name + ' ' + item.last_name,
+      label: item.first_name + ' ' + item.last_name + ' --- ' + item.balance,
       ...item,
     };
   });

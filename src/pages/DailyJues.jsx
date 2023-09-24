@@ -13,6 +13,10 @@ import {
   Button,
   Modal,
   ModalOverlay,
+  Editable,
+  EditableInput,
+  EditableTextarea,
+  EditablePreview,
   ModalContent,
   ModalHeader,
   ModalFooter,
@@ -34,37 +38,70 @@ import {
   QueryClient,
   QueryClientProvider,
 } from 'react-query';
+import AuthContext from '../context/AuthContext';
+import axios from 'axios';
+import moment from 'moment';
 
 const DailyJues = () => {
-  const { getDailyJues } = useDailyJues((state) => state);
+  const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
+  const { getLedger } = useContext(AuthContext);
+  const dateNow = moment().format('L').split('/');
+  const yearNow = dateNow[2];
   const [listUser, setListUser] = useState([]);
   const [selectedUser, setSelectedUser] = useState([]);
-  const [date, setDate] = useState('2023');
+  const [year, setYear] = useState(yearNow);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
 
   const queryClient = useQueryClient();
 
-  const fetchDailyJues = async () => {
-    await getDailyJues(date);
-  };
+  const { data, status } = useQuery({
+    queryKey: ['legger', { year: year, page: page, search: search }],
+    queryFn: () => getLedger(year, page, search),
+    keepPreviousData: true,
+  });
 
-  const changeDailyJues = async () => {
-    await getDailyJues();
-  };
-
-  const { status } = useQuery(['dailyJues', date], fetchDailyJues);
-  const { isLoading, mutate } = useMutation(getDailyJues, {
+  const { isLoading, mutate } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/daily_jues/ledger/?year=${year}&page=${page}&search=${search}`
+      );
+    },
     onSuccess: () => {
-      queryClient.setQueryData(['dailyJues'], date);
+      queryClient.setQueryData(
+        ['legger', { year: year, page: page, search: search }],
+        data
+      );
     },
   });
 
   const handleChange = (datechange) => {
-    setDate(datechange);
-    mutate(date);
+    setYear(datechange);
+    mutate();
+  };
+  const handleNextPage = () => {
+    setPage((prev) => {
+      return prev + 1;
+    });
+    mutate();
+  };
+  const handlePrevPage = () => {
+    setPage((prev) => {
+      return prev - 1;
+    });
+    mutate();
+  };
+  const handleSearch = (e) => {
+    setSearch(e);
+    mutate();
   };
   return (
     <AdminLayout>
       <Box>
+        <Editable defaultValue='Search' onSubmit={(e) => handleSearch(e)}>
+          <EditablePreview />
+          <EditableInput />
+        </Editable>
         <input
           type='date'
           onChange={(e) => handleChange(e.target.value.slice(0, 4))}></input>
@@ -72,8 +109,20 @@ const DailyJues = () => {
         {/* {isLoading && <Spinner />} */}
         {status === 'loading' && <Spinner />}
         {status === 'error' && <div>error...</div>}
-        {status === 'success' && <DailyJuesTable />}
+        {status === 'success' && <DailyJuesTable data={data.data.results} />}
       </Box>
+      <Button
+        onClick={() => handlePrevPage()}
+        isLoading={isLoading}
+        isDisabled={data?.data?.previous === null}>
+        Previous
+      </Button>
+      <Button
+        onClick={() => handleNextPage()}
+        isLoading={isLoading}
+        isDisabled={data?.data?.next === null}>
+        Next
+      </Button>
     </AdminLayout>
   );
 };

@@ -357,11 +357,59 @@ export const AuthProvider = ({ children }) => {
   const searchDoneLoan = async (search) => {
     return axios.get(`${baseURL}/loan/searchDoneLoan/?search=${search}`);
   };
+  const adminChangePassword = async ({ id, ...payload }) => {
+    return axios.put(`${baseURL}/adminChangePassword/${id}/`, payload);
+  };
+  const getDailyCapitalShare = async () => {
+    return axios.get(`${baseURL}/daily_jues/days/?year=2023&month=01`);
+  };
+  const getDailyCapitalShareTotal = async () => {
+    return axios.get(
+      `${baseURL}/daily_jues/daily_jues_total/?year=2023&month=01&member_status=OPERATOR`
+    );
+  };
+  const paginateDayShareCapital = async (year, month, page, search) => {
+    return axios.get(
+      `${baseURL}/daily_jues/paginated-day-capital-share/?year=${year}&month=${month}&page=${page}&search=${search}`
+    );
+  };
+  const paginateMonthShareCapital = async (year, page, search) => {
+    return axios.get(
+      `${baseURL}/daily_jues/paginated-monthly-capital-share/?year=${year}&page=${page}&search=${search}`
+    );
+  };
+  const userMonthShareCapital = async (year) => {
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    return axios.get(
+      `${baseURL}/daily_jues/user-monthly-capital-share/?year=${year}`,
+      { headers: headers }
+    );
+  };
+  const userDayShareCapital = async (year, month) => {
+    const headers = { Authorization: `Bearer ${accessToken}` };
+    return axios.get(
+      `${baseURL}/daily_jues/user-day-capital-share/?year=${year}&month=${month}`,
+      { headers: headers }
+    );
+  };
+  const getLedger = async (year, page, search) => {
+    return axios.get(
+      `${baseURL}/daily_jues/ledger/?year=${year}&page=${page}&search=${search}`
+    );
+  };
 
   const contextData = {
     user: user,
+    getLedger: getLedger,
+    userDayShareCapital: userDayShareCapital,
+    userMonthShareCapital: userMonthShareCapital,
+    paginateMonthShareCapital: paginateMonthShareCapital,
+    paginateDayShareCapital: paginateDayShareCapital,
+    getDailyCapitalShare: getDailyCapitalShare,
+    getDailyCapitalShareTotal: getDailyCapitalShareTotal,
     // authTokens: authTokens,
     setUser: setUser,
+    adminChangePassword: adminChangePassword,
     accessToken: accessToken,
     refreshToken: refreshToken,
     setRefreshToken: setRefreshToken,
@@ -403,7 +451,7 @@ export const AuthProvider = ({ children }) => {
     if (dateNow > expTime * 1000) {
       logoutUser();
     }
-    if (loading) {
+    if (loading && localStorage.getItem('refreshToken')) {
       updateToken();
     }
     if (accessToken) {
@@ -431,17 +479,6 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
     return () => clearInterval(interval);
   }, [loading]);
-
-  // const onIdle = () => {
-  //   console.log('fires after 10 minutes');
-  //   //insert any custom logout logic here
-  // };
-
-  // const { getRemainingTime } = useIdleTimer({
-  //   timeout: 1 * 60 * 1000, //10 minute idle timeout
-  //   onIdle: onIdle,
-  //   debounce: 500,
-  // });
 
   return (
     <AuthContext.Provider value={contextData}>

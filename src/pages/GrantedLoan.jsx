@@ -37,6 +37,7 @@ import { useReactToPrint } from 'react-to-print';
 import AuthContext from '../context/AuthContext';
 import PaymentModal from '../components/Loan/PaymentModal';
 import PaymentLogModal from '../components/Loan/PaymentLogModal';
+import ReducePenaltyModal from '../components/Loan/ReducePenaltyModal';
 import LoanTable from '../components/Loan/LoanTable';
 import {
   useQuery,
@@ -412,19 +413,25 @@ const Loans = () => {
   };
   // console.log(pendingLoanData);
   // console.log('loanDoneData', loanDoneData);
-  const { data: searchData, mutate: mutateSearch } = useMutation(
-    searchGrantedLoan,
-    {
-      onSuccess: (data, variables, context) => {
-        queryClient.setQueryData(['grantedLoanSearch', search]);
-      },
-    }
-  );
+  const {
+    data: searchData,
+    mutate: mutateSearch,
+    status: searchStatus,
+  } = useMutation(searchGrantedLoan, {
+    onSuccess: (data, variables, context) => {
+      queryClient.setQueryData(['grantedLoanSearch', search]);
+    },
+  });
   const handleSearch = (e) => {
     setSearch(e);
     mutateSearch(e);
   };
-
+  const {
+    isOpen: reducePenaltyIsOpen,
+    onOpen: reducePenaltyOnOpen,
+    onClose: reducePenaltyOnClose,
+  } = useDisclosure();
+  console.log('loadingggg', searchStatus);
   return (
     <AdminLayout>
       <div>
@@ -480,6 +487,8 @@ const Loans = () => {
         {pendingLoanStatus === 'loading' && loanDoneStatus === 'loading' && (
           <Spinner />
         )}
+        {searchStatus === 'loading' && <Spinner />}
+
         {pendingLoanStatus === 'error' && loanDoneStatus === 'error' && (
           <div>error...</div>
         )}
@@ -493,6 +502,8 @@ const Loans = () => {
             setDoneLoanPage={setDoneLoanPage}
             grantedLoanPage={grantedLoanPage}
             doneLoanPage={doneLoanPage}
+            setLoanId={setLoanId}
+            reducePenaltyOnOpen={reducePenaltyOnOpen}
           />
         )}
         {/* {mutateSearch.isLoading ? (
@@ -516,6 +527,14 @@ const Loans = () => {
           </>
         )} */}
       </Box>
+      {reducePenaltyIsOpen && (
+        <ReducePenaltyModal
+          onClose={reducePenaltyOnClose}
+          onOpen={reducePenaltyOnOpen}
+          isOpen={reducePenaltyIsOpen}
+          id={id}
+        />
+      )}
     </AdminLayout>
   );
 };

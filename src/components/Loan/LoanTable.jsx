@@ -29,6 +29,8 @@ const LoanTable = ({
   setDoneLoanPage,
   grantedLoanPage,
   doneLoanPage,
+  setLoanId,
+  reducePenaltyOnOpen,
 }) => {
   const { updateLoanStatus } = useContext(AuthContext);
   const queryClient = useQueryClient();
@@ -41,7 +43,10 @@ const LoanTable = ({
   const handleChangeStatus = async (id, status) => {
     await mutate({ id: id, status: status });
   };
-  console.log('grantedLoantable', loanData);
+  const handleReducePenaltyModal = (id) => {
+    setLoanId(id);
+    reducePenaltyOnOpen();
+  };
   return (
     <TableContainer>
       <Table variant='striped' colorScheme='gray'>
@@ -52,6 +57,7 @@ const LoanTable = ({
             <Th>Lasr Name</Th>
             <Th>balance</Th>
             <Th>penalty</Th>
+            <Th>Total</Th>
             <Th>date of Penalty</Th>
             <Th>Status</Th>
             <Th>Action</Th>
@@ -67,6 +73,7 @@ const LoanTable = ({
                   <Td>{item.last_name}</Td>
                   <Td>{item.balance}</Td>
                   <Td>{item.penalty}</Td>
+                  <Td>{item.total}</Td>
                   <Td>{item.penalty_date}</Td>
                   <Td>
                     {
@@ -84,6 +91,9 @@ const LoanTable = ({
                               Payment
                             </Button> */}
                     <Button onClick={() => print(item)}>Print</Button>
+                    <Button onClick={() => handleReducePenaltyModal(item.id)}>
+                      Reduce Penalty
+                    </Button>
                   </Td>
                 </Tr>
               );

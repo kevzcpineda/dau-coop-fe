@@ -16,6 +16,7 @@ import { useUser } from '../states/User';
 import { useLoan } from '../states/Loan';
 import UserModal from '../components/Members/UserModal';
 import DeleteModal from '../components/Members/DeleteModal';
+import ChangePasswordModal from '../components/Members/ChangePasswordModal';
 import LoanModal from '../components/Members/LoanModal';
 import AddJeepModal from '../components/Members/AddJeepModal';
 import MemberTable from '../components/Members/MemberTable';
@@ -25,6 +26,11 @@ const Members = () => {
     isOpen: deleteIsOpen,
     onOpen: deleteOnOpen,
     onClose: deleteOnClose,
+  } = useDisclosure();
+  const {
+    isOpen: changePasswordIsOpen,
+    onOpen: changePasswordOnOpen,
+    onClose: changePasswordOnClose,
   } = useDisclosure();
   const {
     isOpen: loanIsOpen,
@@ -88,6 +94,11 @@ const Members = () => {
   const handledeleteModal = (e, id) => {
     e.stopPropagation();
     deleteOnOpen();
+    setId(id);
+  };
+  const handleChangePasswordModal = (e, id) => {
+    e.stopPropagation();
+    changePasswordOnOpen();
     setId(id);
   };
 
@@ -156,6 +167,7 @@ const Members = () => {
             handledeleteModal={handledeleteModal}
             handleLoanModal={handleLoanModal}
             handleJeepModal={handleJeepModal}
+            handleChangePasswordModal={handleChangePasswordModal}
             users={searchData ? searchData : data}
             page={page}
             setPage={setPage}
@@ -168,6 +180,15 @@ const Members = () => {
           onClose={deleteOnClose}
           onOpen={deleteOnOpen}
           isOpen={deleteIsOpen}
+          users={searchData ? searchData : data}
+          id={id}
+        />
+      )}
+      {changePasswordIsOpen && (
+        <ChangePasswordModal
+          onClose={changePasswordOnClose}
+          onOpen={changePasswordOnOpen}
+          isOpen={changePasswordIsOpen}
           users={searchData ? searchData : data}
           id={id}
         />

@@ -74,7 +74,7 @@ const LoanReport = () => {
       {loanReports && <LoanReportPdf ref={printRef} data={loanReports} />}
       <Box>
         <Heading>Loan Report</Heading>
-        <Button href='/add-loan-reports'>Add</Button>
+        {/* <Button href='/add-loan-reports'>Add</Button> */}
         {status === 'loading' && <Spinner />}
         {status === 'error' && <div>error...</div>}
         {status === 'success' && <LoanReportTable data={data} print={print} />}

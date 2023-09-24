@@ -16,6 +16,7 @@ const MemberTable = ({
   handledeleteModal,
   handleLoanModal,
   handleJeepModal,
+  handleChangePasswordModal,
   setPage,
   page,
   users,
@@ -47,6 +48,10 @@ const MemberTable = ({
                   </Button>
                   <Button onClick={(e) => handleLoanModal(e, user.id)}>
                     Loan
+                  </Button>
+                  <Button
+                    onClick={(e) => handleChangePasswordModal(e, user.id)}>
+                    Change Password
                   </Button>
                   <Button
                     onClick={(e) => handleJeepModal(e, user.id)}
