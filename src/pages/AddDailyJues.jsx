@@ -39,13 +39,13 @@ const AddDailyJues = () => {
   const { getUsers, setUsers, users } = useUser((state) => state);
   const [selectedUser, setSelectedUser] = useState([]);
   const [date, setDate] = useState();
-  const [ticket, setTicket] = useState();
+  // const [ticket, setTicket] = useState();
   const [title, setTitle] = useState();
   const { getUser, createDailyJues, postDailyDuesReport } =
     useContext(AuthContext);
 
   const dateRef = useRef();
-  const ticketRef = useRef();
+  // const ticketRef = useRef();
   const titleRef = useRef();
   const { mutate, isLoading } = useMutation({
     mutationFn: postDailyDuesReport,
@@ -66,7 +66,7 @@ const AddDailyJues = () => {
     fname: z.string(),
     lname: z.string(),
     amount: z.number(),
-    ticket: z.string(),
+    // ticket: z.string(),
     date: z.string(),
   });
   const submitDailyDuesReportSchema = z.object({
@@ -82,7 +82,7 @@ const AddDailyJues = () => {
       fname: value.first_name,
       lname: value.last_name,
       amount: 50,
-      ticket: ticket,
+      // ticket: ticket,
       date: date,
     });
     console.log(dailyDuesReportValidate);
@@ -92,10 +92,10 @@ const AddDailyJues = () => {
       });
     } else {
       setSelectedUser([...selectedUser, dailyDuesReportValidate.data]);
-      ticketRef.current.value = '';
-      dateRef.current.value = '';
-      setDate(null);
-      setTicket(null);
+      // ticketRef.current.value = '';
+      // dateRef.current.value = '';
+      // setDate(null);
+      // setTicket(null);
     }
     // const item = {
     //   user: value?.id,
@@ -154,11 +154,11 @@ const AddDailyJues = () => {
             type='date'
             ref={dateRef}
             onChange={(e) => setDate(e.target.value)}></input>
-          <Input
+          {/* <Input
             ref={ticketRef}
             placeholder='Ticket'
             onChange={(e) => setTicket(e.target.value)}
-          />
+          /> */}
 
           <UserDropdown handleChange={handleChange} data={data.data} />
           {isLoading ? (
@@ -176,7 +176,7 @@ const AddDailyJues = () => {
                   <Th>ID</Th>
                   <Th>First Name</Th>
                   <Th>Last Name</Th>
-                  <Th>Ticket</Th>
+                  {/* <Th>Ticket</Th> */}
                   <Th>Date</Th>
                   <Th>Action</Th>
                 </Tr>
@@ -189,7 +189,7 @@ const AddDailyJues = () => {
                         <Td>{item.user}</Td>
                         <Td>{item.fname}</Td>
                         <Td>{item.lname}</Td>
-                        <Td>{item.ticket}</Td>
+                        {/* <Td>{item.ticket}</Td> */}
                         <Td>{item.date}</Td>
                         <Td>
                           <Button onClick={() => handleDelete(item.user)}>

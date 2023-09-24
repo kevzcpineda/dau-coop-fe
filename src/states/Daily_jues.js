@@ -8,7 +8,7 @@ export const useDailyJues = create((set) => ({
 
   // functions
   getDailyJues: async (year) => {
-    const response = await fetch(`${baseURL}/daily_jues/?year=${year}`);
+    const response = await fetch(`${baseURL}/daily_jues/ledger/?year=${year}`);
     const result = await response.json();
 
     set({ dailyJues: result });

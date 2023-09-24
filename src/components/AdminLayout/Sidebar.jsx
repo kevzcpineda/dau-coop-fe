@@ -26,7 +26,9 @@ import AuthContext from '../../context/AuthContext';
 
 export const Sidebar = (props) => {
   const { logoutUser } = useContext(AuthContext);
-  const { isOpen, onToggle } = useDisclosure();
+  const { isOpen: loanIsOpen, onToggle: loanOnToggle } = useDisclosure();
+  const { isOpen: dailyDuesIsOpen, onToggle: dailyDuesOnToggle } =
+    useDisclosure();
   return (
     <Flex
       bg={mode('gray.50', 'gray.800')}
@@ -45,13 +47,48 @@ export const Sidebar = (props) => {
           <Stack spacing='1'>
             <NavLink label='Home' href='/dashboard' icon={AiFillHome} />
             <NavLink label='Members' href='/members' icon={BsFillPeopleFill} />
-            <NavLink label='Loan' icon={BsFillPeopleFill} onClick={onToggle} />
-            <Collapse in={isOpen} animateOpacity>
+            <NavLink
+              label='Loan'
+              icon={BsFillPeopleFill}
+              onClick={loanOnToggle}
+            />
+            <Collapse in={loanIsOpen} animateOpacity>
               <NavLink label='Granted Loan' href='/grantedLoan' ml={3} />
               <NavLink label='Done Loan' href='/doneLoan' ml={3} />
+              <NavLink label='Reports' href='/loan-reports' ml={3} />
+              <NavLink
+                label='Create Payments'
+                href='/add-loan-reports'
+                ml={3}
+              />
             </Collapse>
 
             <NavLink
+              label='Share Capital'
+              icon={BsFillPeopleFill}
+              onClick={dailyDuesOnToggle}
+            />
+            <Collapse in={dailyDuesIsOpen} animateOpacity>
+              <NavLink
+                label='Create Daily Dues'
+                href='/add-daily-jues'
+                ml={3}
+              />
+              <NavLink label='Reports' href='/daily-dues-reports' ml={3} />
+              <NavLink label='AR Ledger' href='/daily-jues' ml={3} />
+              <NavLink
+                label='Monthly Capital Share'
+                href='/monthly-capital-share'
+                ml={3}
+              />
+              <NavLink
+                label='Daily Capital Share'
+                href='/daily-capital-share'
+                ml={3}
+              />
+            </Collapse>
+
+            {/* <NavLink
               label='Daily Dues'
               href='/daily-jues'
               icon={BsFillPeopleFill}
@@ -65,13 +102,13 @@ export const Sidebar = (props) => {
               label='Daily Dues Reports'
               href='/daily-dues-reports'
               icon={FaRegChartBar}
-            />
+            /> */}
             {/* <NavLink
               label='Scheduled Viewing'
               href='/schedule'
               icon={BsCalendar}
             /> */}
-            <NavLink
+            {/* <NavLink
               label='Loan Reports'
               href='/loan-reports'
               icon={FaRegChartBar}
@@ -80,7 +117,7 @@ export const Sidebar = (props) => {
               label='Add Loan Reports'
               href='/add-loan-reports'
               icon={FaRegChartBar}
-            />
+            /> */}
 
             {/* <NavLink label='Setting' href='/settings' icon={AiFillSetting} /> */}
             <Button colorScheme='blue' onClick={logoutUser}>

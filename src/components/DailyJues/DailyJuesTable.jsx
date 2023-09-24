@@ -23,10 +23,10 @@ import {
   Spinner,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useDailyJues } from '../../states/Daily_jues';
+// import { useDailyJues } from '../../states/Daily_jues';
 
-const DailyJuesTable = () => {
-  const { dailyJues } = useDailyJues((state) => state);
+const DailyJuesTable = ({ data }) => {
+  // const { dailyJues } = useDailyJues((state) => state);
 
   return (
     <TableContainer>
@@ -62,10 +62,10 @@ const DailyJuesTable = () => {
           </Tr>
         </Thead>
         <Tbody>
-          {dailyJues.map((item) => {
+          {data.map((item) => {
             return (
               <Tr key={item.id}>
-                <Td>{item.first_name}</Td>
+                <Td>{`${item.last_name} ${item.first_name}`}</Td>
                 <Td>{item.beginning_capital}</Td>
                 <Td>{item.january}</Td>
                 <Td>{item.january_capital}</Td>
