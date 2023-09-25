@@ -25,6 +25,7 @@ import {
   Select,
   Spinner,
 } from '@chakra-ui/react';
+import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '../states/User';
 import { useDailyJues } from '../states/Daily_jues';
 import AuthContext from '../context/AuthContext';
@@ -39,20 +40,20 @@ const AddDailyJues = () => {
   const { getUsers, setUsers, users } = useUser((state) => state);
   const [selectedUser, setSelectedUser] = useState([]);
   const [date, setDate] = useState();
-  // const [ticket, setTicket] = useState();
-  const [title, setTitle] = useState();
+  const [amount, setAmount] = useState(50);
+  // const [title, setTitle] = useState();
   const { getUser, createDailyJues, postDailyDuesReport } =
     useContext(AuthContext);
 
   const dateRef = useRef();
-  // const ticketRef = useRef();
-  const titleRef = useRef();
+  const amountRef = useRef();
+
   const { mutate, isLoading } = useMutation({
     mutationFn: postDailyDuesReport,
     onSuccess: () => {
       toast.success('Added Successfully!');
-      titleRef.current.value = '';
-      setTitle(null);
+      // titleRef.current.value = '';
+      // setTitle(null);
       setSelectedUser([]);
     },
     onError: (error) => {
@@ -61,6 +62,7 @@ const AddDailyJues = () => {
   });
 
   const dailyDuesReportSchema = z.object({
+    uuid: z.string(),
     user: z.number(),
     member_status: z.string(),
     fname: z.string(),
@@ -70,19 +72,19 @@ const AddDailyJues = () => {
     date: z.string(),
   });
   const submitDailyDuesReportSchema = z.object({
-    title: z.string(),
+    // title: z.string(),
     daily_dues: z.array(dailyDuesReportSchema).nonempty(),
   });
   const handleChange = (value) => {
-    console.log(value);
+    console.log('valueeeeeeeeeeee', value);
     // const res = users.find((item) => item.id === value);
     const dailyDuesReportValidate = dailyDuesReportSchema.safeParse({
+      uuid: uuidv4(),
       user: value.id,
       member_status: value.member_status,
       fname: value.first_name,
       lname: value.last_name,
-      amount: 50,
-      // ticket: ticket,
+      amount: amount,
       date: date,
     });
     console.log(dailyDuesReportValidate);
@@ -93,9 +95,8 @@ const AddDailyJues = () => {
     } else {
       setSelectedUser([...selectedUser, dailyDuesReportValidate.data]);
       // ticketRef.current.value = '';
-      // dateRef.current.value = '';
-      // setDate(null);
-      // setTicket(null);
+      amountRef.current.value = '';
+      setAmount(50);
     }
     // const item = {
     //   user: value?.id,
@@ -111,13 +112,12 @@ const AddDailyJues = () => {
   };
 
   const handleDelete = (id) => {
-    const newSelected = selectedUser.filter((item) => item.user !== id);
+    const newSelected = selectedUser.filter((item) => item.uuid !== id);
     setSelectedUser(newSelected);
   };
 
   const handleSubmit = async () => {
     const validateSubmit = submitDailyDuesReportSchema.safeParse({
-      title: title,
       daily_dues: selectedUser,
     });
     if (!validateSubmit.success) {
@@ -144,21 +144,21 @@ const AddDailyJues = () => {
       {status === 'success' && (
         <Box>
           <Heading>Add Daily Dues</Heading>
-          <Input
+          {/* <Input
             ref={titleRef}
             placeholder='Title'
             onChange={(e) => setTitle(e.target.value)}
-          />
+          /> */}
 
           <input
             type='date'
             ref={dateRef}
             onChange={(e) => setDate(e.target.value)}></input>
-          {/* <Input
-            ref={ticketRef}
-            placeholder='Ticket'
-            onChange={(e) => setTicket(e.target.value)}
-          /> */}
+          <Input
+            ref={amountRef}
+            placeholder={amount}
+            onChange={(e) => setAmount(parseInt(e.target.value))}
+          />
 
           <UserDropdown handleChange={handleChange} data={data.data} />
           {isLoading ? (
@@ -176,29 +176,31 @@ const AddDailyJues = () => {
                   <Th>ID</Th>
                   <Th>First Name</Th>
                   <Th>Last Name</Th>
-                  {/* <Th>Ticket</Th> */}
+                  <Th>Amount</Th>
                   <Th>Date</Th>
                   <Th>Action</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {selectedUser &&
-                  selectedUser.map((item, index) => {
-                    return (
-                      <Tr key={index}>
-                        <Td>{item.user}</Td>
-                        <Td>{item.fname}</Td>
-                        <Td>{item.lname}</Td>
-                        {/* <Td>{item.ticket}</Td> */}
-                        <Td>{item.date}</Td>
-                        <Td>
-                          <Button onClick={() => handleDelete(item.user)}>
-                            Delete
-                          </Button>
-                        </Td>
-                      </Tr>
-                    );
-                  })}
+                  selectedUser
+                    .map((item, index) => {
+                      return (
+                        <Tr key={index}>
+                          <Td>{index + 1}</Td>
+                          <Td>{item.fname}</Td>
+                          <Td>{item.lname}</Td>
+                          <Td>{item.amount}</Td>
+                          <Td>{item.date}</Td>
+                          <Td>
+                            <Button onClick={() => handleDelete(item.uuid)}>
+                              Delete
+                            </Button>
+                          </Td>
+                        </Tr>
+                      );
+                    })
+                    .reverse()}
               </Tbody>
             </Table>
           </TableContainer>
