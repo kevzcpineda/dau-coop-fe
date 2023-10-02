@@ -21,6 +21,7 @@ import DailyDuesReport from './pages/DailyDuesReport';
 import AddLoanReport from './pages/AddLoanReport';
 import UserPayments from './pages/UserPayments';
 import UserProfile from './pages/UserProfile';
+import Profile from './pages/Profile';
 import UserJeep from './pages/UserJeep';
 import DailyCapitalShare from './pages/DailyCapitalShare';
 import MonthlyCapitalShare from './pages/MonthlyCapitalShare';
@@ -74,6 +75,7 @@ function App() {
                 />
                 <Route path='/user-jeep' element={<UserJeep />} exact />
                 <Route path='/user-profile' element={<UserProfile />} exact />
+                <Route path='/profile' element={<Profile />} exact />
                 <Route
                   path='/user-share-capital'
                   element={<UserShareCapital />}
