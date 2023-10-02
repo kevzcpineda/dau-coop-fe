@@ -1,44 +1,18 @@
 import React, { useContext } from 'react';
 import {
-  IconButton,
-  Avatar,
-  Box,
-  CloseButton,
   Flex,
-  HStack,
-  VStack,
-  Icon,
-  useColorModeValue,
-  Link,
-  Drawer,
-  DrawerContent,
-  Text,
   useDisclosure,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Heading,
-  StackDivider,
-  Stack,
-  Table,
-  Thead,
-  Tbody,
-  Tfoot,
-  Tr,
-  Th,
-  Td,
-  TableCaption,
   Spinner,
-  TableContainer,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Grid,
   FormControl,
   FormLabel,
   Input,
-  FormErrorMessage,
-  FormHelperText,
-  Grid,
-  GridItem,
+  Button,
 } from '@chakra-ui/react';
 import {
   FiHome,
@@ -93,23 +67,46 @@ export default function UserProfile({ children, userData, loanData }) {
         <Grid templateColumns='repeat(2, 1fr)' gap={6}>
           <FormControl isReadOnly={true}>
             <FormLabel>First Name</FormLabel>
-            <Input placeholder={data.data.first_name} />
+            <Input
+              placeholder={data.data.first_name}
+              sx={{
+                backgroundColor: 'gray.100',
+                fontSize: '15px',
+                color: 'black',
+              }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>Last Name</FormLabel>
-            <Input placeholder={data.data.last_name} />
+            <Input
+              placeholder={data.data.last_name}
+              sx={{
+                backgroundColor: 'gray.100',
+                color: 'white',
+                fontSize: '15px',
+              }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>Middle Name</FormLabel>
-            <Input placeholder={data.data.middle_name} />
+            <Input
+              placeholder={data.data.middle_name}
+              sx={{ backgroundColor: 'gray.100', fontSize: '15px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>Member Status</FormLabel>
-            <Input placeholder={data.data.member_status} />
+            <Input
+              placeholder={data.data.member_status}
+              sx={{ backgroundColor: 'gray.100', fontSize: '15px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>Driver Licence #</FormLabel>
-            <Input placeholder={data.data.driver_license_no} />
+            <Input
+              placeholder={data.data.driver_license_no}
+              sx={{ backgroundColor: 'gray.100', fontSize: '15px' }}
+            />
           </FormControl>
         </Grid>
       )}

@@ -71,63 +71,108 @@ const UserShareCapital = () => {
         <Grid templateColumns='repeat(2, 1fr)' gap={6}>
           <FormControl isReadOnly={true}>
             <FormLabel>{year - 1}</FormLabel>
-            <Input placeholder={data.data.year} />
+            <Input
+              placeholder={data.data.year}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>January</FormLabel>
-            <Input placeholder={data.data.january} />
+            <Input
+              placeholder={data.data.january}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>Febuary</FormLabel>
-            <Input placeholder={data.data.febuary} />
+            <Input
+              placeholder={data.data.febuary}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>March</FormLabel>
-            <Input placeholder={data.data.march} />
+            <Input
+              placeholder={data.data.march}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>April</FormLabel>
-            <Input placeholder={data.data.april} />
+            <Input
+              placeholder={data.data.april}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>May</FormLabel>
-            <Input placeholder={data.data.may} />
+            <Input
+              placeholder={data.data.may}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>June</FormLabel>
-            <Input placeholder={data.data.june} />
+            <Input
+              placeholder={data.data.june}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>July</FormLabel>
-            <Input placeholder={data.data.july} />
+            <Input
+              placeholder={data.data.july}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>August</FormLabel>
-            <Input placeholder={data.data.august} />
+            <Input
+              placeholder={data.data.august}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>September</FormLabel>
-            <Input placeholder={data.data.september} />
+            <Input
+              placeholder={data.data.september}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>October</FormLabel>
-            <Input placeholder={data.data.october} />
+            <Input
+              placeholder={data.data.october}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>November</FormLabel>
-            <Input placeholder={data.data.november} />
+            <Input
+              placeholder={data.data.november}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>December</FormLabel>
-            <Input placeholder={data.data.december} />
+            <Input
+              placeholder={data.data.december}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>Total Of {year}</FormLabel>
-            <Input placeholder={data.data.total} />
+            <Input
+              placeholder={data.data.total}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>Total Capital Share</FormLabel>
-            <Input placeholder={data.data.total_capital_share} />
+            <Input
+              placeholder={data.data.total_capital_share}
+              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+            />
           </FormControl>
         </Grid>
       )}
