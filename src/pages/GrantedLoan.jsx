@@ -73,6 +73,11 @@ const Loans = () => {
       return axios.post(`${baseURL}/loan/payments/`, payload);
     },
   });
+  const { mutate: mutateJeeps } = useMutation({
+    mutationFn: (payload) => {
+      return axios.post(`${baseURL}/createJeep/`, payload);
+    },
+  });
 
   const [isPrinting, setIsPrinting] = useState(false);
   const [search, setSearch] = useState('');
@@ -322,6 +327,33 @@ const Loans = () => {
     delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
     skipEmptyLines: true,
   };
+  const importJeepsConfig = {
+    delimiter: '', // auto-detect
+    newline: '', // auto-detect
+    quoteChar: '"',
+    escapeChar: '"',
+    header: true,
+    transformHeader: undefined,
+    dynamicTyping: true,
+    preview: 0,
+    encoding: '',
+    worker: false,
+    comments: false,
+    step: undefined,
+    complete: function (results, file) {
+      const data = results.data.filter((item) => {
+        return item.user_id !== null;
+      });
+      console.log('dattaaaa', data);
+      mutateJeeps(data);
+      toast.success('Successfully toasted!');
+    },
+    error: (results, file) => {
+      toast.error('Error');
+    },
+    delimitersToGuess: [',', '\t', '|', ';', Papa.RECORD_SEP, Papa.UNIT_SEP],
+    skipEmptyLines: true,
+  };
   // const parsepenaltyconfig = {
   //   delimiter: '', // auto-detect
   //   newline: '', // auto-detect
@@ -356,6 +388,9 @@ const Loans = () => {
   };
   const handleImportLoanPayments = () => {
     const value = Papa.parse(csv, importLoanPeymentsconfig);
+  };
+  const handleImportJeeps = () => {
+    const value = Papa.parse(csv, importJeepsConfig);
   };
   // const handleParsePenalty = () => {
   //   const value = Papa.parse(csv, parsepenaltyconfig);
@@ -482,6 +517,7 @@ const Loans = () => {
         <Button onClick={() => handleImportLoanPayments()}>
           Import loan Payments
         </Button>
+        <Button onClick={() => handleImportJeeps()}>Post Jeeps</Button>
         <Input type='file' onChange={(e) => setCsv(e.target.files[0])} />
 
         {pendingLoanStatus === 'loading' && loanDoneStatus === 'loading' && (
