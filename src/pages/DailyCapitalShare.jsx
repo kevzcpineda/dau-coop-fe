@@ -29,13 +29,13 @@ const DailyCapitalShare = () => {
   const dateNow = moment().format('L').split('/');
   const momentYear = dateNow[2];
   const momentMonth = dateNow[0];
-  const [page, setPage] = useState(1);
-  const [month, setMonth] = useState(9);
-  const [year, setYear] = useState(2023);
+  // const [page, setPage] = useState(1);
+  const [month, setMonth] = useState(momentMonth);
+  const [year, setYear] = useState(momentYear);
   const { data: dailyCapitalShareData, status: dailyCapitalShareStatus } =
     useQuery({
-      queryKey: ['dailyCapitalShare'],
-      queryFn: getDailyCapitalShare,
+      queryKey: ['dailyCapitalShare', year, month],
+      queryFn: () => getDailyCapitalShare(year, month),
     });
 
   const {
@@ -43,7 +43,7 @@ const DailyCapitalShare = () => {
     status: CapitalShareTotalOperatorStatus,
   } = useQuery({
     queryKey: ['CapitalShareTotal', 'Operator'],
-    queryFn: getDailyCapitalShareTotal,
+    queryFn: () => getDailyCapitalShareTotal(year, month, 'OPERATOR'),
   });
 
   const reactToPrintContent = useCallback(() => {
@@ -81,19 +81,28 @@ const DailyCapitalShare = () => {
 
   return (
     <AdminLayout>
-      <DailyCapitalSharePdf
-        ref={printRef}
-        operator={operators}
-        totalOperator={
-          CapitalShareTotalOperatorData && CapitalShareTotalOperatorData.data
-        }
-      />
+      {dailyCapitalShareStatus === 'success' && (
+        <DailyCapitalSharePdf
+          ref={printRef}
+          operator={operators}
+          totalOperator={
+            CapitalShareTotalOperatorData && CapitalShareTotalOperatorData.data
+          }
+        />
+      )}
       <Toaster position='top-right' reverseOrder={false} />
       <Box>
         <Heading>Daily Capital Share</Heading>
-        <Button onClick={() => print()}>Print</Button>
+        {dailyCapitalShareStatus === 'success' && (
+          <Button onClick={() => print()}>Print</Button>
+        )}
       </Box>
-      <DaysShareCapitalTable />
+      <DaysShareCapitalTable
+        setMonth={setMonth}
+        setYear={setYear}
+        month={month}
+        year={year}
+      />
     </AdminLayout>
   );
 };

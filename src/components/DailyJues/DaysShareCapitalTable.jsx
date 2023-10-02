@@ -20,15 +20,15 @@ import axios from 'axios';
 import moment from 'moment';
 import AuthContext from '../../context/AuthContext';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-const DaysShareCapitalTable = () => {
+const DaysShareCapitalTable = ({ year, month, setMonth, setYear }) => {
   const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
   const [page, setPage] = useState(1);
   // const splitDate = date?.split('-');
   const dateNow = moment().format('L').split('/');
   const momentYear = dateNow[2];
   const momentMonth = dateNow[0];
-  const [month, setMonth] = useState(momentMonth);
-  const [year, setYear] = useState(momentYear);
+  // const [month, setMonth] = useState(momentMonth);
+  // const [year, setYear] = useState(momentYear);
   const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
   const { paginateDayShareCapital } = useContext(AuthContext);
@@ -67,12 +67,18 @@ const DaysShareCapitalTable = () => {
       );
     },
   });
+  const { mutate: dailyCapitalShareMutate } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/daily_jues/days/?year=${year}&month=${month}`
+      );
+    },
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(['dailyCapitalShare', year, month], data);
+    },
+  });
 
   const handleNextPage = () => {
-    // setPage((prev) => {
-    //   return prev + 1;
-    // });
-
     mutate(page + 1);
     setPage(page + 1);
   };
@@ -88,6 +94,7 @@ const DaysShareCapitalTable = () => {
     setYear(splitDate[0]);
     setMonth(splitDate[1]);
     mutate();
+    dailyCapitalShareMutate();
   };
   const handleSearch = async (e) => {
     setSearch(e);
@@ -111,6 +118,7 @@ const DaysShareCapitalTable = () => {
             type='date'
             onChange={(e) => handleChangeDate(e.target.value)}
           />
+
           <Table variant='striped' colorScheme='gray'>
             <Thead>
               <Tr>
@@ -157,7 +165,7 @@ const DaysShareCapitalTable = () => {
                 return (
                   <Tr key={index}>
                     <td>{index + 1}</td>
-                    <td>{`${item.last_name} ${item.first_name}`}</td>
+                    <td className='name'>{`${item.last_name} ${item.first_name}`}</td>
                     <td>{item.day1}</td>
                     <td>{item.day2}</td>
                     <td>{item.day3}</td>
