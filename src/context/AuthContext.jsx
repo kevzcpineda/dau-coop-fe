@@ -360,12 +360,12 @@ export const AuthProvider = ({ children }) => {
   const adminChangePassword = async ({ id, ...payload }) => {
     return axios.put(`${baseURL}/adminChangePassword/${id}/`, payload);
   };
-  const getDailyCapitalShare = async () => {
-    return axios.get(`${baseURL}/daily_jues/days/?year=2023&month=01`);
+  const getDailyCapitalShare = async (year, month) => {
+    return axios.get(`${baseURL}/daily_jues/days/?year=${year}&month=${month}`);
   };
-  const getDailyCapitalShareTotal = async () => {
+  const getDailyCapitalShareTotal = async (year, month, status) => {
     return axios.get(
-      `${baseURL}/daily_jues/daily_jues_total/?year=2023&month=01&member_status=OPERATOR`
+      `${baseURL}/daily_jues/daily_jues_total/?year=${year}&month=${month}&member_status=${status}`
     );
   };
   const paginateDayShareCapital = async (year, month, page, search) => {
