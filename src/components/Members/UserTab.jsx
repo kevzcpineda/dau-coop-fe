@@ -113,6 +113,15 @@ const UserTab = ({ data, handleOnChange }) => {
                 </Editable>
               </Center>
             </Flex>
+            <Flex>
+              <Center>
+                <Text>Username:</Text>
+                <Editable defaultValue={data.username} isDisabled='true'>
+                  <EditablePreview />
+                  <EditableInput />
+                </Editable>
+              </Center>
+            </Flex>
           </Box>
           <Box flex='1'>
             <Flex>

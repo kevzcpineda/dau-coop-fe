@@ -25,6 +25,7 @@ import {
   StackDivider,
   Spinner,
   Stack,
+  Divider,
 } from '@chakra-ui/react';
 import logo from '../assets/noimage.png';
 import AuthContext from '../context/AuthContext';
@@ -63,53 +64,57 @@ const Home = () => {
             loanData.data.map((item, index) => {
               return (
                 <Box
+                  p={3}
+                  bg='blue.400'
+                  color='gray.200'
                   key={index}
                   boxShadow='xl'
-                  h='150'
-                  w='90%'
+                  h='170'
+                  w='100%'
                   borderRadius='15px'
                   onClick={() => navigate(`/user-payments/${item.id}`)}>
-                  <Stack p='20px' spacing={3} h='150' direction='row'>
-                    <Stack w='100%' spacing='4'>
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm' pr='3px'>
-                          Loan:
-                        </Heading>
-                        <Text fontSize='md'>{item.loan}</Text>
-                      </Flex>
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm' pr='3px'>
-                          Balance:
-                        </Heading>
-                        <Text>{item.balance}</Text>
-                      </Flex>
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm' pr='3px'>
-                          Penalty:
-                        </Heading>
-                        <Text>{item.penalty}</Text>
-                      </Flex>
-                    </Stack>
-                    <Stack w='100%' spacing='4'>
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm'>
-                          Date:
-                        </Heading>
-                        <Text>{item.date}</Text>
-                      </Flex>{' '}
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm'>
-                          Voucher # :
-                        </Heading>
-                        <Text>{item.voucher_number}</Text>
-                      </Flex>{' '}
-                      <Flex align='center'>
-                        <Heading as='h5' size='sm'>
-                          Status:
-                        </Heading>
-                        <Text>{item.status}</Text>
-                      </Flex>
-                    </Stack>
+                  <Stack>
+                    <HStack justify='space-evenly'>
+                      <Stack align='center' spacing={0}>
+                        <Text>Balance</Text>
+                        <Text fontSize='3xl' as='b'>
+                          {new Intl.NumberFormat({
+                            style: 'currency',
+                          }).format(item.balance)}
+                        </Text>
+                      </Stack>
+                      <Stack align='center' spacing={0}>
+                        <Text>Penalty</Text>
+                        <Text fontSize='3xl' as='b'>
+                          {new Intl.NumberFormat({
+                            style: 'currency',
+                          }).format(item.penalty)}
+                        </Text>
+                      </Stack>
+                    </HStack>
+                    <Divider />
+                    <HStack justify='space-evenly'>
+                      <Stack align='center' spacing={0}>
+                        <Text>Granted Loan</Text>
+                        <Text as='b'>
+                          {' '}
+                          {new Intl.NumberFormat({
+                            style: 'currency',
+                          }).format(item.loan)}
+                        </Text>
+                      </Stack>
+                      <Stack align='center' spacing={0}>
+                        <Text>Date</Text>
+                        <Text as='b'> {item.date}</Text>
+                      </Stack>
+                      <Stack align='center' spacing={0}>
+                        <Text>Cr</Text>
+                        <Text as='b'>
+                          {' '}
+                          {item.voucher_number ? item.voucher_number : 'none'}
+                        </Text>
+                      </Stack>
+                    </HStack>
                   </Stack>
                 </Box>
               );
