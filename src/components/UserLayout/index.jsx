@@ -56,7 +56,8 @@ const Index = ({ children, userData, loanData }) => {
           </Text>
         </Center>
       </Box>
-      <Box pl={10} pr={10} h='100vh'>
+
+      <Box pl={10} pr={10} h='100%'>
         {children}
       </Box>
 
@@ -65,14 +66,14 @@ const Index = ({ children, userData, loanData }) => {
         variant='line'
         align='center'
         onChange={(e) => setSelectedTab(e)}
-        defaultIndex={4}>
-        <TabList
-          sx={{
-            position: 'fixed',
-            bottom: '0',
-            width: '100%',
-            backgroundColor: 'white',
-          }}>
+        defaultIndex={4}
+        sx={{
+          position: 'fixed',
+          bottom: '0',
+          width: '100%',
+          backgroundColor: 'white',
+        }}>
+        <TabList>
           <Tab
             sx={{
               padding: '10px',

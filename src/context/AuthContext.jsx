@@ -462,6 +462,15 @@ export const AuthProvider = ({ children }) => {
         navigate('/dashboard');
       }
     }
+    if (accessToken) {
+      const { is_change_password, is_superuser } = jwt_decode(accessToken);
+
+      if (!is_superuser) {
+        if (!is_change_password) {
+          logoutUser();
+        }
+      }
+    }
 
     const fourMinute = 1000 * 60 * 4;
 
