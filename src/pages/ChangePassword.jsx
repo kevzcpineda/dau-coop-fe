@@ -34,30 +34,14 @@ const ChangePassword = () => {
   const confirmPasswordHandleClick = () =>
     setShowConfirmPassword(!showConfirmPassword);
 
-  const [username, setUsername] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [confirmPassword, setConfirmPassword] = useState(null);
-  const [isErrorUsername, SetIsErrorUsername] = useState({
-    isError: false,
-    message: 'Username is required',
-  });
-  const [isErrorPassword, setisErrorPassword] = useState({
-    isError: false,
-    message: 'Password is required',
-  });
-  const [isErrorConfirmPassword, setisErrorConfirmPassword] = useState({
-    isError: false,
-    message: 'Confirm Password is required',
-  });
-  const [isErrorPasswordNotMatch, setisErrorPasswordNotMatch] = useState({
-    isError: false,
-    message: 'Password Not Match',
-  });
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  // const isErrorUsername = username === null;
-  // const isErrorPassword = password === '';
-  // const isErrorConfirmPassword = confirmPassword === '';
-  // const isErrorPasswordNotMatch = confirmPassword === password;
+  const [isErrorUsername, setIsErrorUsername] = useState(false);
+  const [isErrorPassword, setIsErrorPassword] = useState(false);
+  const [isErrorConfirmPassword, setIsErrorConfirmPassword] = useState(false);
+  const [isErrorPasswordNotMatch, setisErrorPasswordNotMatch] = useState(false);
 
   const { mutate, isLoading } = useMutation({
     mutationFn: (payload) => {
@@ -82,9 +66,9 @@ const ChangePassword = () => {
   });
 
   const changePasswordSchema = z.object({
-    username: z.string(),
-    confirmPassword: z.string(),
-    password: z.string(),
+    username: z.string().min(1),
+    confirmPassword: z.string().min(1),
+    password: z.string().min(1),
   });
 
   const handleLogin = (e) => {
@@ -94,44 +78,52 @@ const ChangePassword = () => {
       confirmPassword: confirmPassword,
       password: password,
     });
-    console.log(changePasswordValidate);
+    console.log('log', changePasswordValidate);
     if (!changePasswordValidate.success) {
-      changePasswordValidate.error.issues.map((item) => {
-        if (item.path[0] === 'username') {
-          SetIsErrorUsername({ isError: true });
-        } else {
-          SetIsErrorUsername({ isError: false });
-        }
-        if (item.path[0] === 'confirmPassword') {
-          setisErrorConfirmPassword({ isError: true });
-        } else {
-          setisErrorConfirmPassword({ isError: false });
-        }
-        if (item.path[0] === 'password') {
-          setisErrorPassword({ isError: true });
-        } else {
-          setisErrorPassword({ isError: false });
-        }
-        // toast.error(`Error in ${item.path[0]} ${item.message}:`);
-      });
+      if (username === '') {
+        setIsErrorUsername(true);
+      } else {
+        setIsErrorUsername(false);
+      }
+      if (password === '') {
+        setIsErrorPassword(true);
+      } else {
+        setIsErrorPassword(false);
+      }
+      if (confirmPassword === '') {
+        setIsErrorConfirmPassword(true);
+      } else {
+        setIsErrorConfirmPassword(false);
+      }
+      //  const isErrorUsername = username === '';
+      //  const isErrorUsername = username === '';
+      // changePasswordValidate.error.issues.map((item) => {
+      // if (item.path[0] === 'username') {
+      //   console.log('username ');
+      //   setIsErrorUsername(true);
+      // } else if (item.path[0] === 'confirmPassword') {
+      //   setIsErrorConfirmPassword(true);
+      // } else if (item.path[0] === 'password') {
+      //   setIsErrorPassword(true);
+      // } else {
+      //   setIsErrorUsername(false);
+      //   setIsErrorConfirmPassword(false);
+      //   setIsErrorPassword(false);
+      // }
+      // });
     } else {
+      console.log('else');
       if (
         changePasswordValidate.data.password !==
         changePasswordValidate.data.confirmPassword
       ) {
-        setisErrorPasswordNotMatch({ isError: true });
-        // toast.error(`Password and Confirm password must be match`);
+        setisErrorPasswordNotMatch(true);
       } else {
         mutate(changePasswordValidate.data);
       }
     }
-    // if (password === confirmPassword) {
-    //   changePassword({ password: password, username: username });
-    // } else {
-    //   alert('Password and Confirm password must be match');
-    // }
   };
-  //className='vh-100 gray-900'
+
   return (
     <Container
       maxW='lg'
@@ -172,20 +164,20 @@ const ChangePassword = () => {
           <Stack as='form' onSubmit={handleLogin} spacing='6'>
             <Stack spacing='5'>
               <InputGroup size='md'>
-                <FormControl isInvalid={isErrorUsername.isError}>
+                <FormControl isInvalid={isErrorUsername}>
                   <Input
                     pr='4.5rem'
                     placeholder='Enter New Username'
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                   />
-                  {isErrorUsername.isError && (
+                  {isErrorUsername && (
                     <FormErrorMessage>Username Is Required</FormErrorMessage>
                   )}
                 </FormControl>
               </InputGroup>
               <InputGroup size='md'>
-                <FormControl isInvalid={isErrorPassword.isError}>
+                <FormControl isInvalid={isErrorPassword}>
                   <Input
                     pr='4.5rem'
                     type={showPassword ? 'text' : 'password'}
@@ -198,14 +190,14 @@ const ChangePassword = () => {
                       {showPassword ? 'Hide' : 'Show'}
                     </Button>
                   </InputRightElement>
-                  {isErrorPassword.isError && (
+                  {isErrorPassword && (
                     <FormErrorMessage>Password Is Required</FormErrorMessage>
                   )}
                 </FormControl>
               </InputGroup>
 
               <InputGroup size='md'>
-                <FormControl isInvalid={isErrorConfirmPassword.isError}>
+                <FormControl isInvalid={isErrorConfirmPassword}>
                   <Input
                     pr='4.5rem'
                     type={showConfirmPassword ? 'text' : 'password'}
@@ -221,13 +213,18 @@ const ChangePassword = () => {
                       {showConfirmPassword ? 'Hide' : 'Show'}
                     </Button>
                   </InputRightElement>
-                  {isErrorConfirmPassword.isError && (
+                  {isErrorConfirmPassword && (
                     <FormErrorMessage>
                       Confirm Password Is Required
                     </FormErrorMessage>
                   )}
                 </FormControl>
               </InputGroup>
+              <FormControl isInvalid={isErrorPasswordNotMatch}>
+                {isErrorPasswordNotMatch && (
+                  <FormErrorMessage>password not match</FormErrorMessage>
+                )}
+              </FormControl>
             </Stack>
             <Stack spacing='6'>
               {isLoading ? (
