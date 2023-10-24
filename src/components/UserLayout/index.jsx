@@ -48,8 +48,19 @@ const Index = ({ children, userData, loanData }) => {
   };
   return (
     <Box minH='100vh' bg={useColorModeValue('gray.50', 'gray.50')}>
-      <Box bg='blue.700' h={20} mb='30px' pl={10} pr={10} pt={2}>
-        {/* <Image src={Logo} alt='Logo' boxSize='60px' /> */}
+      <Box
+        h={20}
+        mb='30px'
+        pl={10}
+        pr={10}
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '10px',
+          backgroundColor: '#1d3557',
+        }}>
+        <Image src={Logo} alt='Logo' boxSize='60px' />
         <Center>
           <Text color='gray.100' as='b' fontSize='2xl'>
             Dau Cooperative

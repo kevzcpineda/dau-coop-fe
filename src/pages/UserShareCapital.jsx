@@ -68,12 +68,20 @@ const UserShareCapital = () => {
       )}
       {status === 'error' && <div>error...</div>}
       {status === 'success' && (
-        <Grid templateColumns='repeat(2, 1fr)' gap={6}>
+        <Grid
+          templateColumns='repeat(2, 1fr)'
+          gap={6}
+          sx={{ paddingBottom: '100px' }}>
           <FormControl isReadOnly={true}>
             <FormLabel>{year - 1}</FormLabel>
             <Input
               placeholder={data.data.year}
-              sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+              sx={{
+                backgroundColor: 'gray.100',
+                fontSize: '20px',
+                // fontWeight: '500',
+              }}
+              _placeholder={{ color: 'black' }}
             />
           </FormControl>
           <FormControl isReadOnly={true}>
@@ -81,11 +89,13 @@ const UserShareCapital = () => {
             <Input
               placeholder={data.data.january}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
+              _placeholder={{ color: 'black' }}
             />
           </FormControl>
           <FormControl isReadOnly={true}>
             <FormLabel>Febuary</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.febuary}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -93,6 +103,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>March</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.march}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -100,6 +111,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>April</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.april}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -107,6 +119,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>May</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.may}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -114,6 +127,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>June</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.june}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -121,6 +135,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>July</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.july}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -128,6 +143,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>August</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.august}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -135,6 +151,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>September</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.september}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -142,6 +159,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>October</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.october}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -149,6 +167,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>November</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.november}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -156,6 +175,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>December</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.december}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -163,6 +183,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>Total Of {year}</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.total}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />
@@ -170,6 +191,7 @@ const UserShareCapital = () => {
           <FormControl isReadOnly={true}>
             <FormLabel>Total Capital Share</FormLabel>
             <Input
+              _placeholder={{ color: 'black' }}
               placeholder={data.data.total_capital_share}
               sx={{ backgroundColor: 'gray.100', fontSize: '20px' }}
             />

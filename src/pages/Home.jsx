@@ -64,8 +64,8 @@ const Home = () => {
             loanData.data.map((item, index) => {
               return (
                 <Box
+                  sx={{ backgroundColor: '#1d3557' }}
                   p={3}
-                  bg='blue.400'
                   color='gray.200'
                   key={index}
                   boxShadow='xl'
