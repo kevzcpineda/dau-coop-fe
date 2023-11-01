@@ -101,42 +101,117 @@ export default function UserJeep({ children, userData, loanData }) {
             {data.data.jeep_id.map((item) => {
               return (
                 <TabPanel>
-                  <Grid templateColumns='repeat(2, 1fr)' gap={6}>
+                  <Grid
+                    templateColumns='repeat(2, 1fr)'
+                    gap={6}
+                    sx={{ paddingBottom: '100px' }}>
                     <FormControl isReadOnly={true}>
-                      <FormLabel>Cr File #</FormLabel>
-                      <Input placeholder={item.cr_fileNo} />
+                      <FormLabel>Cr File No.</FormLabel>
+                      <Input
+                        placeholder={item.cr_fileNo}
+                        sx={{
+                          backgroundColor: 'gray.100',
+                          fontSize: '18px',
+                          // fontWeight: '500',
+                        }}
+                        _placeholder={{ color: 'black' }}
+                      />
                     </FormControl>
                     <FormControl isReadOnly={true}>
-                      <FormLabel>Plate #</FormLabel>
-                      <Input placeholder={item.plate_no} />
+                      <FormLabel>Plate No.</FormLabel>
+                      <Input
+                        placeholder={item.plate_no}
+                        sx={{
+                          backgroundColor: 'gray.100',
+                          fontSize: '18px',
+                          // fontWeight: '500',
+                        }}
+                        _placeholder={{ color: 'black' }}
+                      />
                     </FormControl>
                     <FormControl isReadOnly={true}>
-                      <FormLabel>Engine #</FormLabel>
-                      <Input placeholder={item.engine_no} />
+                      <FormLabel>Engine No.</FormLabel>
+                      <Input
+                        placeholder={item.engine_no}
+                        sx={{
+                          backgroundColor: 'gray.100',
+                          fontSize: '18px',
+                          // fontWeight: '500',
+                        }}
+                        _placeholder={{ color: 'black' }}
+                      />
                     </FormControl>
                     <FormControl isReadOnly={true}>
-                      <FormLabel>Chasis #</FormLabel>
-                      <Input placeholder={item.chasis_no} />
+                      <FormLabel>Chasis No.</FormLabel>
+                      <Input
+                        placeholder={item.chasis_no}
+                        sx={{
+                          backgroundColor: 'gray.100',
+                          fontSize: '18px',
+                          // fontWeight: '500',
+                        }}
+                        _placeholder={{ color: 'black' }}
+                      />
                     </FormControl>
                     <FormControl isReadOnly={true}>
-                      <FormLabel>Case #</FormLabel>
-                      <Input placeholder={item.case_no} />
+                      <FormLabel>Case No.</FormLabel>
+                      <Input
+                        placeholder={item.case_no}
+                        sx={{
+                          backgroundColor: 'gray.100',
+                          fontSize: '18px',
+                          // fontWeight: '500',
+                        }}
+                        _placeholder={{ color: 'black' }}
+                      />
                     </FormControl>
                     <FormControl isReadOnly={true}>
                       <FormLabel>Make</FormLabel>
-                      <Input placeholder={item.make} />
+                      <Input
+                        placeholder={item.make}
+                        sx={{
+                          backgroundColor: 'gray.100',
+                          fontSize: '18px',
+                          // fontWeight: '500',
+                        }}
+                        _placeholder={{ color: 'black' }}
+                      />
                     </FormControl>
                     <FormControl isReadOnly={true}>
                       <FormLabel>Color</FormLabel>
-                      <Input placeholder={item.color} />
+                      <Input
+                        placeholder={item.color}
+                        sx={{
+                          backgroundColor: 'gray.100',
+                          fontSize: '18px',
+                          // fontWeight: '500',
+                        }}
+                        _placeholder={{ color: 'black' }}
+                      />
                     </FormControl>
                     <FormControl isReadOnly={true}>
                       <FormLabel>Year Model</FormLabel>
-                      <Input placeholder={item.year_model} />
+                      <Input
+                        placeholder={item.year_model}
+                        sx={{
+                          backgroundColor: 'gray.100',
+                          fontSize: '18px',
+                          // fontWeight: '500',
+                        }}
+                        _placeholder={{ color: 'black' }}
+                      />
                     </FormControl>
                     <FormControl isReadOnly={true}>
                       <FormLabel>Franchise Valid Date</FormLabel>
-                      <Input placeholder={item.franchise_valid_date} />
+                      <Input
+                        placeholder={item.franchise_valid_date}
+                        sx={{
+                          backgroundColor: 'gray.100',
+                          fontSize: '18px',
+                          // fontWeight: '500',
+                        }}
+                        _placeholder={{ color: 'black' }}
+                      />
                     </FormControl>
                   </Grid>
                 </TabPanel>

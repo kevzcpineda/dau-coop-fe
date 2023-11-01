@@ -73,7 +73,7 @@ const UserShareCapital = () => {
           gap={6}
           sx={{ paddingBottom: '100px' }}>
           <FormControl isReadOnly={true}>
-            <FormLabel>{year - 1}</FormLabel>
+            <FormLabel fontSize={14}>Beginning Balance</FormLabel>
             <Input
               placeholder={data.data.year}
               sx={{
@@ -181,7 +181,7 @@ const UserShareCapital = () => {
             />
           </FormControl>
           <FormControl isReadOnly={true}>
-            <FormLabel>Total Of {year}</FormLabel>
+            <FormLabel>Total of {year}</FormLabel>
             <Input
               _placeholder={{ color: 'black' }}
               placeholder={data.data.total}

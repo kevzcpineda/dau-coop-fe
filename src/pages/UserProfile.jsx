@@ -72,8 +72,8 @@ export default function UserProfile({ children, userData, loanData }) {
               sx={{
                 backgroundColor: 'gray.100',
                 fontSize: '15px',
-                color: 'black',
               }}
+              _placeholder={{ color: 'black' }}
             />
           </FormControl>
           <FormControl isReadOnly={true}>
@@ -82,9 +82,10 @@ export default function UserProfile({ children, userData, loanData }) {
               placeholder={data.data.last_name}
               sx={{
                 backgroundColor: 'gray.100',
-                color: 'white',
+
                 fontSize: '15px',
               }}
+              _placeholder={{ color: 'black' }}
             />
           </FormControl>
           <FormControl isReadOnly={true}>
@@ -92,6 +93,7 @@ export default function UserProfile({ children, userData, loanData }) {
             <Input
               placeholder={data.data.middle_name}
               sx={{ backgroundColor: 'gray.100', fontSize: '15px' }}
+              _placeholder={{ color: 'black' }}
             />
           </FormControl>
           <FormControl isReadOnly={true}>
@@ -99,6 +101,7 @@ export default function UserProfile({ children, userData, loanData }) {
             <Input
               placeholder={data.data.member_status}
               sx={{ backgroundColor: 'gray.100', fontSize: '15px' }}
+              _placeholder={{ color: 'black' }}
             />
           </FormControl>
           <FormControl isReadOnly={true}>
@@ -106,6 +109,7 @@ export default function UserProfile({ children, userData, loanData }) {
             <Input
               placeholder={data.data.driver_license_no}
               sx={{ backgroundColor: 'gray.100', fontSize: '15px' }}
+              _placeholder={{ color: 'black' }}
             />
           </FormControl>
         </Grid>
