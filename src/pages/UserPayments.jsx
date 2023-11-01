@@ -82,7 +82,7 @@ export default function UserPayments({ children, userData, loanData }) {
                 <Tr>
                   <Th>Date</Th>
                   <Th>Amount</Th>
-                  <Th>Or</Th>
+                  <Th>Cr/Or</Th>
                 </Tr>
               </Thead>
               <Tbody>

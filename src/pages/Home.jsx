@@ -69,7 +69,7 @@ const Home = () => {
                   color='gray.200'
                   key={index}
                   boxShadow='xl'
-                  h='170'
+                  h='180'
                   w='100%'
                   borderRadius='15px'
                   onClick={() => navigate(`/user-payments/${item.id}`)}>
@@ -94,7 +94,7 @@ const Home = () => {
                     </HStack>
                     <Divider />
                     <HStack justify='space-evenly'>
-                      <Stack align='center' spacing={0}>
+                      <Stack spacing={0} sx={{ textAlign: 'center' }}>
                         <Text>Granted Loan</Text>
                         <Text as='b'>
                           {' '}
@@ -103,12 +103,12 @@ const Home = () => {
                           }).format(item.loan)}
                         </Text>
                       </Stack>
-                      <Stack align='center' spacing={0}>
+                      <Stack spacing={0} sx={{ textAlign: 'center' }}>
                         <Text>Date</Text>
                         <Text as='b'> {item.date}</Text>
                       </Stack>
-                      <Stack align='center' spacing={0}>
-                        <Text>Cr</Text>
+                      <Stack spacing={0} sx={{ textAlign: 'center' }}>
+                        <Text>Voucher No.</Text>
                         <Text as='b'>
                           {' '}
                           {item.voucher_number ? item.voucher_number : 'none'}
