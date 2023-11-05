@@ -498,10 +498,10 @@ const Loans = () => {
           <EditablePreview />
           <EditableInput />
         </Editable>
-        <Button onClick={() => handleParse()}>Import CSV Users</Button>
-        {/* <Button onClick={() => handleParsePenalty()}>
+        {/* <Button onClick={() => handleParse()}>Import CSV Users</Button>
+        <Button onClick={() => handleParsePenalty()}>
           Import CSV loan penalty
-        </Button> */}
+        </Button>
         {userStatus === 'success' && (
           <Button onClick={() => handleUnparse()}>Unparse Users</Button>
         )}
@@ -518,7 +518,7 @@ const Loans = () => {
           Import loan Payments
         </Button>
         <Button onClick={() => handleImportJeeps()}>Post Jeeps</Button>
-        <Input type='file' onChange={(e) => setCsv(e.target.files[0])} />
+        <Input type='file' onChange={(e) => setCsv(e.target.files[0])} /> */}
 
         {pendingLoanStatus === 'loading' && loanDoneStatus === 'loading' && (
           <Spinner />
