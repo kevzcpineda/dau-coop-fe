@@ -32,8 +32,6 @@ import {
   Center,
 } from '@chakra-ui/react';
 import { GiTakeMyMoney } from 'react-icons/gi';
-import { AiFillHome } from 'react-icons/ai';
-import { BsFillPersonFill } from 'react-icons/bs';
 import Logo from '../../assets/logo.png';
 import { redirect, useNavigate, useLocation } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
@@ -45,6 +43,8 @@ import Peso from '../../assets/peso.png';
 import PesoFill from '../../assets/pesoFill.png';
 import ProfileIcon from '../../assets/profile.png';
 import ProfileIconFill from '../../assets/profileFill.png';
+import { BsPerson, BsPersonFill } from 'react-icons/bs';
+import { AiOutlineHome, AiFillHome } from 'react-icons/ai';
 const Index = ({ children, userData, loanData }) => {
   const [selectedTab, setSelectedTab] = useState(0);
   const navigate = useNavigate();
@@ -91,6 +91,7 @@ const Index = ({ children, userData, loanData }) => {
           bottom: '0',
           width: '100%',
           backgroundColor: 'white',
+          zIndex: 99,
         }}>
         <TabList>
           <Tab
@@ -106,10 +107,14 @@ const Index = ({ children, userData, loanData }) => {
                 color: location.pathname === '/' ? '#1d3557' : 'black',
               }}>
               {/* <Icon as={AiFillHome} boxSize={6} /> */}
-              <Image
+              {/* <Image
                 src={location.pathname === '/' ? HomeFillIcon : HomeIcon}
                 alt='Logo'
                 boxSize='20px'
+              /> */}
+              <Icon
+                as={location.pathname === '/' ? AiFillHome : AiOutlineHome}
+                fontSize='3xl'
               />
               <Text mt={0}>Home</Text>
             </VStack>
@@ -135,7 +140,7 @@ const Index = ({ children, userData, loanData }) => {
                   location.pathname === '/user-share-capital' ? PesoFill : Peso
                 }
                 alt='Logo'
-                boxSize='20px'
+                boxSize='25px'
               />
               <Text mt={0}> Daily Dues </Text>
             </VStack>
@@ -153,7 +158,7 @@ const Index = ({ children, userData, loanData }) => {
                 color: location.pathname === '/profile' ? '#1d3557' : 'black',
               }}>
               {/* <Icon as={BsFillPersonFill} boxSize={6} /> */}
-              <Image
+              {/* <Image
                 src={
                   location.pathname === '/profile' ||
                   location.pathname === '/user-profile' ||
@@ -163,6 +168,16 @@ const Index = ({ children, userData, loanData }) => {
                 }
                 alt='Logo'
                 boxSize='20px'
+              /> */}
+              <Icon
+                as={
+                  location.pathname === '/profile' ||
+                  location.pathname === '/user-profile' ||
+                  location.pathname === '/user-jeep'
+                    ? BsPersonFill
+                    : BsPerson
+                }
+                fontSize='3xl'
               />
               <Text mt={0}> Profile</Text>
             </VStack>
