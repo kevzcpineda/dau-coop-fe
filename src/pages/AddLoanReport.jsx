@@ -24,7 +24,9 @@ import {
   useDisclosure,
   Select,
   Spinner,
+  VStack,
 } from '@chakra-ui/react';
+import { v4 as uuidv4 } from 'uuid';
 import AuthContext from '../context/AuthContext';
 import LoanDropdown from '../components/AddLoanReport/LoanDropdown';
 import { useQuery, useMutation } from 'react-query';
@@ -68,6 +70,7 @@ const AddLoanReport = () => {
     return total + item.amount;
   }, 0);
   const loanReportSchema = z.object({
+    uuid: z.string(),
     user: z.number(),
     first_name: z.string(),
     last_name: z.string(),
@@ -86,9 +89,11 @@ const AddLoanReport = () => {
     const lastItem = selectedUser.findLast(
       (item) => parseInt(item.ticket) >= 0
     );
+
     // console.log(typeof lastItem.ticket);
 
     const loanReportValidate = loanReportSchema.safeParse({
+      uuid: uuidv4(),
       user: value.user,
       loan: value.id,
       first_name: value.first_name,
@@ -137,6 +142,36 @@ const AddLoanReport = () => {
       mutate(orValidate.data);
     }
   };
+  const handleOnChangeDate = (uuid, value) => {
+    // console.log(uuid, value);
+    const index = selectedUser.findIndex((item) => item.uuid === uuid);
+    // console.log('index', index);
+    // const newselected = (selectedUser[index].date = value);
+    const newarr = selectedUser.map((item) => {
+      if (item.uuid === uuid) {
+        return {
+          ...item,
+          date: value,
+        };
+      }
+      return item;
+    });
+    console.log('newarr', newarr);
+    setSelectedUser(newarr);
+  };
+  const handleOnChangeAmount = (uuid, value) => {
+    const newarr = selectedUser.map((item) => {
+      if (item.uuid === uuid) {
+        return {
+          ...item,
+          amount: value,
+        };
+      }
+      return item;
+    });
+    console.log('newarr', newarr);
+    setSelectedUser(newarr);
+  };
   return (
     <AdminLayout>
       <Toaster position='top-right' reverseOrder={false} />
@@ -145,30 +180,40 @@ const AddLoanReport = () => {
       {status === 'success' && (
         <Box>
           <Heading>Add Loan Report</Heading>
-          <Input placeholder='OR#' onChange={(e) => setTitle(e.target.value)} />
+          <VStack alignItems='start' mb={2}>
+            <Input
+              placeholder='OR#'
+              onChange={(e) => setTitle(e.target.value)}
+              w={300}
+            />
 
-          <input
-            ref={dataRef}
-            type='date'
-            onChange={(e) => setDate(e.target.value)}></input>
-          <Input
-            ref={ticketRef}
-            placeholder='Ticket'
-            onChange={(e) => setTicket(e.target.value)}
-          />
-          <Input
-            ref={amountRef}
-            placeholder='Amount'
-            onChange={(e) => setAmount(e.target.value)}
-          />
-
+            <Input
+              w={300}
+              ref={dataRef}
+              type='date'
+              onChange={(e) => setDate(e.target.value)}></Input>
+            <Input
+              w={300}
+              ref={ticketRef}
+              placeholder='Ticket'
+              onChange={(e) => setTicket(e.target.value)}
+            />
+            <Input
+              w={300}
+              ref={amountRef}
+              placeholder='Amount'
+              onChange={(e) => setAmount(e.target.value)}
+            />
+          </VStack>
           <LoanDropdown
             handleChange={handleChange}
             data={data.data}
             ref={dropdownRef}
           />
-          <Button onClick={() => handleSubmit()}>Submit</Button>
-          <h1>Total: {total}</h1>
+          <Button onClick={() => handleSubmit()} colorScheme='blue'>
+            SUBMIT
+          </Button>
+          <Heading size='md'>Total: {total}</Heading>
           <TableContainer>
             <Table variant='striped' colorScheme='gray'>
               <Thead>
@@ -192,8 +237,26 @@ const AddLoanReport = () => {
                           <Td>{item.first_name}</Td>
                           <Td>{item.last_name}</Td>
                           <Td>{item.ticket}</Td>
-                          <Td>{item.amount}</Td>
-                          <Td>{item.date}</Td>
+                          <Td>
+                            <Input
+                              value={item.amount}
+                              onChange={(e) =>
+                                handleOnChangeAmount(
+                                  item.uuid,
+                                  parseInt(e.target.value)
+                                )
+                              }
+                            />
+                          </Td>
+                          <Td>
+                            <Input
+                              type='date'
+                              value={item.date}
+                              onChange={(e) =>
+                                handleOnChangeDate(item.uuid, e.target.value)
+                              }
+                            />
+                          </Td>
                           <Td>
                             <Button onClick={() => handleDelete(item.user)}>
                               Delete
