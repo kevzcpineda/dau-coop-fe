@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Button,
   Modal,
@@ -30,11 +30,11 @@ const UserTab = ({ data, handleOnChange }) => {
   const lname = useRef();
   const mname = useRef();
   const age = useRef();
-  const birthdate = useRef();
+  const [birthdate, setBirthdate] = useState(null);
   const gender = useRef();
   const address = useRef();
   const phone = useRef();
-  const dateofmembership = useRef();
+  const [dateofmembership, setDateofmembership] = useState(null);
   const civilstatus = useRef();
   const driverlicenseno = useRef();
   const height = useRef();
@@ -43,6 +43,14 @@ const UserTab = ({ data, handleOnChange }) => {
   const philhealthno = useRef();
   const sssno = useRef();
   const memberstatus = useRef();
+  const handleChangeDate = (value, key) => {
+    setBirthdate(value);
+    handleOnChange(value, key);
+  };
+  const handleChangeMemberShip = (value, key) => {
+    setDateofmembership(value);
+    handleOnChange(value, key);
+  };
   return (
     <>
       <FormControl>
@@ -103,20 +111,30 @@ const UserTab = ({ data, handleOnChange }) => {
             <Flex>
               <Center>
                 <Text>Birthdate:</Text>
-                <Editable
+                <Input
+                  data-id={data.id}
+                  placeholder='Select Date'
+                  size='sm'
+                  type='date'
+                  value={birthdate === null ? data.birth_date : birthdate}
+                  onChange={(nextValue) =>
+                    handleChangeDate(nextValue.target.value, 'birth_date')
+                  }
+                />
+                {/* <Editable
                   defaultValue={data.birth_date ? data.birth_date : 'null'}
                   onChange={(nextValue) =>
                     handleOnChange(nextValue, birthdate.current.id)
                   }>
                   <EditablePreview />
                   <EditableInput id='birth_date' ref={birthdate} />
-                </Editable>
+                </Editable> */}
               </Center>
             </Flex>
             <Flex>
               <Center>
                 <Text>Username:</Text>
-                <Editable defaultValue={data.username} isDisabled='true'>
+                <Editable defaultValue={data.username} isDisabled={true}>
                   <EditablePreview />
                   <EditableInput />
                 </Editable>
@@ -166,7 +184,23 @@ const UserTab = ({ data, handleOnChange }) => {
             <Flex>
               <Center>
                 <Text>Date Of Membership:</Text>
-                <Editable
+                <Input
+                  placeholder='Select Date'
+                  size='sm'
+                  type='date'
+                  value={
+                    dateofmembership === null
+                      ? data.date_of_membership
+                      : dateofmembership
+                  }
+                  onChange={(nextValue) =>
+                    handleChangeMemberShip(
+                      nextValue.target.value,
+                      'date_of_membership'
+                    )
+                  }
+                />
+                {/* <Editable
                   onChange={(nextValue) =>
                     handleOnChange(nextValue, dateofmembership.current.id)
                   }
@@ -178,7 +212,7 @@ const UserTab = ({ data, handleOnChange }) => {
                     id='date_of_membership'
                     ref={dateofmembership}
                   />
-                </Editable>
+                </Editable> */}
               </Center>
             </Flex>
             <Flex>
