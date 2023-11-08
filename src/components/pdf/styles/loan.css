@@ -1,22 +1,10 @@
-/* table,
-th,
-td {
-  border: 1px solid black;
-  border-collapse: collapse;
-} */
+/* 
 @media print {
-  /* @page {
-    size: landscape;
-  } */
+
   * {
     font-size: 12px;
   }
-  table,
-  th,
-  td {
-    border: 1px solid black;
-    border-collapse: collapse;
-  }
+
   .loan_container {
     margin: 5px;
     display: grid;
@@ -36,4 +24,4 @@ td {
     margin-top: 10px;
     width: 200px;
   }
-}
+} */
