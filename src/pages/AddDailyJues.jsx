@@ -45,7 +45,7 @@ const AddDailyJues = () => {
   // const [selectedUser, setSelectedUser] = useState([]);
   const [date, setDate] = useState();
   const [amount, setAmount] = useState(50);
-  // const [title, setTitle] = useState();
+  const [totalAmount, setTotalAmount] = useState();
   const { getUser, createDailyJues, postDailyDuesReport } =
     useContext(AuthContext);
 
@@ -157,7 +157,13 @@ const AddDailyJues = () => {
     .sort((a, b) => {
       return a.last_name.localeCompare(b.last_name);
     });
-  // console.log(newamountRef.current.filter((item) => item.el.value === '50'));
+  const handleGetTotal = () => {
+    const newItem = newamountRef.current.filter((item) => item.el.value);
+    const total = newItem.reduce((total, item) => {
+      return total + parseInt(item.el.value);
+    }, 0);
+    setTotalAmount(total);
+  };
   return (
     <AdminLayout>
       <Toaster position='top-right' reverseOrder={false} />
@@ -182,9 +188,14 @@ const AddDailyJues = () => {
                 Submit
               </Button>
             )}
+            <Button colorScheme='whatsapp' onClick={() => handleGetTotal()}>
+              Get Total
+            </Button>
           </HStack>
+          <Heading size='md'>Total: {totalAmount}</Heading>
           <Grid templateColumns='repeat(6, 1fr)' gap={4}>
             <VStack alignItems='start'>
+              <h1>OPERATORS</h1>
               {operators?.map((item, index) => {
                 return (
                   <HStack w={300} justifyContent='space-between' key={index}>
@@ -193,13 +204,16 @@ const AddDailyJues = () => {
                       placeholder='Amount'
                       size='sm'
                       width={20}
-                      ref={(el) => (newamountRef.current[index] = { el, item })}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
                     />
                   </HStack>
                 );
               })}
             </VStack>
             <VStack alignItems='start'>
+              <h1>ASSOCIATE OPERATORS</h1>
               {asso_operators?.map((item, index) => {
                 return (
                   <HStack w={300} justifyContent='space-between' key={index}>
@@ -208,13 +222,16 @@ const AddDailyJues = () => {
                       placeholder='Amount'
                       size='sm'
                       width={20}
-                      ref={(el) => (newamountRef.current[index] = { el, item })}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
                     />
                   </HStack>
                 );
               })}
             </VStack>
             <VStack alignItems='start'>
+              <h1>DRIVERS</h1>
               {driver?.map((item, index) => {
                 return (
                   <HStack w={300} justifyContent='space-between' key={index}>
@@ -223,13 +240,16 @@ const AddDailyJues = () => {
                       placeholder='Amount'
                       size='sm'
                       width={20}
-                      ref={(el) => (newamountRef.current[index] = { el, item })}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
                     />
                   </HStack>
                 );
               })}
             </VStack>
             <VStack alignItems='start'>
+              <h1>SUBTITUTE DRIVERS</h1>
               {sub_driver?.map((item, index) => {
                 return (
                   <HStack w={300} justifyContent='space-between' key={index}>
@@ -238,13 +258,16 @@ const AddDailyJues = () => {
                       placeholder='Amount'
                       size='sm'
                       width={20}
-                      ref={(el) => (newamountRef.current[index] = { el, item })}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
                     />
                   </HStack>
                 );
               })}
             </VStack>
             <VStack alignItems='start'>
+              <h1>BARKERS</h1>
               {barker?.map((item, index) => {
                 return (
                   <HStack w={300} justifyContent='space-between' key={index}>
@@ -253,13 +276,16 @@ const AddDailyJues = () => {
                       placeholder='Amount'
                       size='sm'
                       width={20}
-                      ref={(el) => (newamountRef.current[index] = { el, item })}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
                     />
                   </HStack>
                 );
               })}
             </VStack>
             <VStack alignItems='start'>
+              <h1>REGULAR MEMBERS</h1>
               {regular_member?.map((item, index) => {
                 return (
                   <HStack w={300} justifyContent='space-between' key={index}>
@@ -268,7 +294,9 @@ const AddDailyJues = () => {
                       placeholder='Amount'
                       size='sm'
                       width={20}
-                      ref={(el) => (newamountRef.current[index] = { el, item })}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
                     />
                   </HStack>
                 );
