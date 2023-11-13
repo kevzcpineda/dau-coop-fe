@@ -22,8 +22,12 @@ import {
   FormLabel,
   Input,
   useDisclosure,
+  StackDivider,
   Select,
+  HStack,
   Spinner,
+  VStack,
+  Grid,
 } from '@chakra-ui/react';
 import { v4 as uuidv4 } from 'uuid';
 import { useUser } from '../states/User';
@@ -38,23 +42,24 @@ import axios from 'axios';
 const AddDailyJues = () => {
   const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
   const { getUsers, setUsers, users } = useUser((state) => state);
-  const [selectedUser, setSelectedUser] = useState([]);
+  // const [selectedUser, setSelectedUser] = useState([]);
   const [date, setDate] = useState();
   const [amount, setAmount] = useState(50);
-  // const [title, setTitle] = useState();
+  const [totalAmount, setTotalAmount] = useState();
   const { getUser, createDailyJues, postDailyDuesReport } =
     useContext(AuthContext);
 
   const dateRef = useRef();
   const amountRef = useRef();
+  const newamountRef = useRef([]);
 
   const { mutate, isLoading } = useMutation({
     mutationFn: postDailyDuesReport,
     onSuccess: () => {
       toast.success('Added Successfully!');
-      // titleRef.current.value = '';
-      // setTitle(null);
-      setSelectedUser([]);
+      newamountRef.current.map((item) => {
+        item.el.value = '';
+      });
     },
     onError: (error) => {
       toast.error(`Error ${error} `);
@@ -62,71 +67,46 @@ const AddDailyJues = () => {
   });
 
   const dailyDuesReportSchema = z.object({
-    uuid: z.string(),
     user: z.number(),
     member_status: z.string(),
     fname: z.string(),
     lname: z.string(),
     amount: z.number(),
-    // ticket: z.string(),
     date: z.string(),
   });
   const submitDailyDuesReportSchema = z.object({
     // title: z.string(),
     daily_dues: z.array(dailyDuesReportSchema).nonempty(),
   });
-  const handleChange = (value) => {
-    console.log('valueeeeeeeeeeee', value);
-    // const res = users.find((item) => item.id === value);
-    const dailyDuesReportValidate = dailyDuesReportSchema.safeParse({
-      uuid: uuidv4(),
-      user: value.id,
-      member_status: value.member_status,
-      fname: value.first_name,
-      lname: value.last_name,
-      amount: amount,
-      date: date,
-    });
-    console.log(dailyDuesReportValidate);
-    if (!dailyDuesReportValidate.success) {
-      dailyDuesReportValidate.error.issues.map((item) => {
-        toast.error(`Error in ${item.path[0]} ${item.message}:`);
-      });
-    } else {
-      setSelectedUser([...selectedUser, dailyDuesReportValidate.data]);
-      // ticketRef.current.value = '';
-      amountRef.current.value = '';
-      setAmount(50);
-    }
-    // const item = {
-    //   user: value?.id,
-    //   member_status: value?.member_status,
-    //   fname: value?.first_name,
-    //   lname: value?.last_name,
-    //   amount: 50,
-    //   ticket: ticket,
-    //   date: date,
-    // };
-
-    // value && setSelectedUser([...selectedUser, item]);
-  };
-
-  const handleDelete = (id) => {
-    const newSelected = selectedUser.filter((item) => item.uuid !== id);
-    setSelectedUser(newSelected);
-  };
 
   const handleSubmit = async () => {
-    const validateSubmit = submitDailyDuesReportSchema.safeParse({
-      daily_dues: selectedUser,
-    });
-    if (!validateSubmit.success) {
-      validateSubmit.error.issues.map((item) => {
-        toast.error(`Error in ${item.path[0]} ${item.message}:`);
+    const newItem = newamountRef.current.filter((item) => item.el.value);
+    const dailyDuesPayload = newItem.map((item) => {
+      const dailyDuesReportValidate = dailyDuesReportSchema.safeParse({
+        user: item.item.id,
+        member_status: item.item.member_status,
+        fname: item.item.first_name,
+        lname: item.item.last_name,
+        amount: parseInt(item.el.value),
+        date: date,
       });
-    } else {
-      mutate(validateSubmit.data);
+      if (!dailyDuesReportValidate.success) {
+        return { errorMessage: 'Invalid' };
+      }
+      return dailyDuesReportValidate.data;
+    });
+
+    const submitDailyDuesReportValidate = submitDailyDuesReportSchema.safeParse(
+      {
+        daily_dues: dailyDuesPayload,
+      }
+    );
+    if (!submitDailyDuesReportValidate.success) {
+      console.log('false');
+
+      return false;
     }
+    mutate(submitDailyDuesReportValidate.data);
   };
 
   const { data, status } = useQuery({
@@ -135,7 +115,55 @@ const AddDailyJues = () => {
       return axios.get(`${baseURL}/createUser/`);
     },
   });
-  console.log('data', data);
+  const operators = data?.data
+    .filter((item) => {
+      return item.member_status === 'OPERATOR';
+    })
+    .sort((a, b) => {
+      return a.last_name.localeCompare(b.last_name);
+    });
+  const asso_operators = data?.data
+    .filter((item) => {
+      return item.member_status === 'ASSOCIATE_OPERATOR';
+    })
+    .sort((a, b) => {
+      return a.last_name.localeCompare(b.last_name);
+    });
+  const driver = data?.data
+    .filter((item) => {
+      return item.member_status === 'DRIVER';
+    })
+    .sort((a, b) => {
+      return a.last_name.localeCompare(b.last_name);
+    });
+  const sub_driver = data?.data
+    .filter((item) => {
+      return item.member_status === 'SUBTITUTE_DRIVER';
+    })
+    .sort((a, b) => {
+      return a.last_name.localeCompare(b.last_name);
+    });
+  const barker = data?.data
+    .filter((item) => {
+      return item.member_status === 'BARKER';
+    })
+    .sort((a, b) => {
+      return a.last_name.localeCompare(b.last_name);
+    });
+  const regular_member = data?.data
+    .filter((item) => {
+      return item.member_status === 'REGULAR_MEMBER';
+    })
+    .sort((a, b) => {
+      return a.last_name.localeCompare(b.last_name);
+    });
+  const handleGetTotal = () => {
+    const newItem = newamountRef.current.filter((item) => item.el.value);
+    const total = newItem.reduce((total, item) => {
+      return total + parseInt(item.el.value);
+    }, 0);
+    setTotalAmount(total);
+  };
   return (
     <AdminLayout>
       <Toaster position='top-right' reverseOrder={false} />
@@ -144,66 +172,137 @@ const AddDailyJues = () => {
       {status === 'success' && (
         <Box>
           <Heading>Add Daily Dues</Heading>
-          {/* <Input
-            ref={titleRef}
-            placeholder='Title'
-            onChange={(e) => setTitle(e.target.value)}
-          /> */}
+          <HStack gap={6} pb={5}>
+            <Input
+              w={300}
+              type='date'
+              ref={dateRef}
+              onChange={(e) => setDate(e.target.value)}></Input>
 
-          <input
-            type='date'
-            ref={dateRef}
-            onChange={(e) => setDate(e.target.value)}></input>
-          <Input
-            ref={amountRef}
-            placeholder={amount}
-            onChange={(e) => setAmount(parseInt(e.target.value))}
-          />
-
-          <UserDropdown handleChange={handleChange} data={data.data} />
-          {isLoading ? (
-            <Button isLoading loadingText='Submitting'>
-              Submit
+            {isLoading ? (
+              <Button isLoading loadingText='Submitting'>
+                Submit
+              </Button>
+            ) : (
+              <Button onClick={() => handleSubmit()} colorScheme='whatsapp'>
+                Submit
+              </Button>
+            )}
+            <Button colorScheme='whatsapp' onClick={() => handleGetTotal()}>
+              Get Total
             </Button>
-          ) : (
-            <Button onClick={() => handleSubmit()}>Submit</Button>
-          )}
-
-          <TableContainer>
-            <Table variant='striped' colorScheme='gray'>
-              <Thead>
-                <Tr>
-                  <Th>ID</Th>
-                  <Th>First Name</Th>
-                  <Th>Last Name</Th>
-                  <Th>Amount</Th>
-                  <Th>Date</Th>
-                  <Th>Action</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {selectedUser &&
-                  selectedUser
-                    .map((item, index) => {
-                      return (
-                        <Tr key={index}>
-                          <Td>{index + 1}</Td>
-                          <Td>{item.fname}</Td>
-                          <Td>{item.lname}</Td>
-                          <Td>{item.amount}</Td>
-                          <Td>{item.date}</Td>
-                          <Td>
-                            <Button onClick={() => handleDelete(item.uuid)}>
-                              Delete
-                            </Button>
-                          </Td>
-                        </Tr>
-                      );
-                    })
-                    .reverse()}
-              </Tbody>
-            </Table>
-          </TableContainer>
+          </HStack>
+          <Heading size='md'>Total: {totalAmount}</Heading>
+          <Grid templateColumns='repeat(6, 1fr)' gap={4}>
+            <VStack alignItems='start'>
+              <h1>OPERATORS</h1>
+              {operators?.map((item, index) => {
+                return (
+                  <HStack w={300} justifyContent='space-between' key={index}>
+                    <span>{`${item.last_name} ${item.first_name}`}</span>
+                    <Input
+                      placeholder='Amount'
+                      size='sm'
+                      width={20}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
+                    />
+                  </HStack>
+                );
+              })}
+            </VStack>
+            <VStack alignItems='start'>
+              <h1>ASSOCIATE OPERATORS</h1>
+              {asso_operators?.map((item, index) => {
+                return (
+                  <HStack w={300} justifyContent='space-between' key={index}>
+                    <span>{`${item.last_name} ${item.first_name}`}</span>
+                    <Input
+                      placeholder='Amount'
+                      size='sm'
+                      width={20}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
+                    />
+                  </HStack>
+                );
+              })}
+            </VStack>
+            <VStack alignItems='start'>
+              <h1>DRIVERS</h1>
+              {driver?.map((item, index) => {
+                return (
+                  <HStack w={300} justifyContent='space-between' key={index}>
+                    <span>{`${item.last_name} ${item.first_name}`}</span>
+                    <Input
+                      placeholder='Amount'
+                      size='sm'
+                      width={20}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
+                    />
+                  </HStack>
+                );
+              })}
+            </VStack>
+            <VStack alignItems='start'>
+              <h1>SUBTITUTE DRIVERS</h1>
+              {sub_driver?.map((item, index) => {
+                return (
+                  <HStack w={300} justifyContent='space-between' key={index}>
+                    <span>{`${item.last_name} ${item.first_name}`}</span>
+                    <Input
+                      placeholder='Amount'
+                      size='sm'
+                      width={20}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
+                    />
+                  </HStack>
+                );
+              })}
+            </VStack>
+            <VStack alignItems='start'>
+              <h1>BARKERS</h1>
+              {barker?.map((item, index) => {
+                return (
+                  <HStack w={300} justifyContent='space-between' key={index}>
+                    <span>{`${item.last_name} ${item.first_name}`}</span>
+                    <Input
+                      placeholder='Amount'
+                      size='sm'
+                      width={20}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
+                    />
+                  </HStack>
+                );
+              })}
+            </VStack>
+            <VStack alignItems='start'>
+              <h1>REGULAR MEMBERS</h1>
+              {regular_member?.map((item, index) => {
+                return (
+                  <HStack w={300} justifyContent='space-between' key={index}>
+                    <span>{`${item.last_name} ${item.first_name}`}</span>
+                    <Input
+                      placeholder='Amount'
+                      size='sm'
+                      width={20}
+                      ref={(el) =>
+                        (newamountRef.current[item.id] = { el, item })
+                      }
+                    />
+                  </HStack>
+                );
+              })}
+            </VStack>
+          </Grid>
         </Box>
       )}
     </AdminLayout>

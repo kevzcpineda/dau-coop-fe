@@ -1,4 +1,10 @@
 @media print {
+  /* table,
+  th,
+  td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  } */
   .user_loan_container {
     margin: 20px;
   }
@@ -24,5 +30,11 @@
   }
   .loan_payments_table {
     width: 100%;
+  }
+  .loan_payments_table,
+  .loan_payments_table_th,
+  .loan_payments_table_td {
+    border: 1px solid black;
+    border-collapse: collapse;
   }
 }
