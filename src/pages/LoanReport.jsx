@@ -9,7 +9,7 @@ import '../components/pdf/styles/loan.css';
 import AdminLayout from '../components/AdminLayout';
 import LoanReportTable from '../components/LoanReport/LoanReportTable';
 import { useReactToPrint } from 'react-to-print';
-import { Box, Heading, Spinner, Button } from '@chakra-ui/react';
+import { Box, Heading, Spinner, Button, useDisclosure } from '@chakra-ui/react';
 import {
   useQuery,
   useMutation,
@@ -19,15 +19,19 @@ import {
 } from 'react-query';
 import AuthContext from '../context/AuthContext';
 import LoanReportPdf from '../components/pdf/LoanReportPdf';
+import LoanReportModal from '../components/LoanReport/LoanReportModal';
+import toast, { Toaster } from 'react-hot-toast';
 
 const LoanReport = () => {
   const printRef = useRef(null);
   const promiseResolveRef = useRef(null);
   const [loanReports, setLoanReports] = useState(null);
+  const [loanReportId, setLoanReportId] = useState(null);
   const { getLoanReport } = useContext(AuthContext);
   const [isPrinting, setIsPrinting] = useState(false);
   const { data, status } = useQuery('loan_report', getLoanReport);
   const queryClient = useQueryClient();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   // const {
   //   data: reportData,
   //   isLoading,
@@ -68,16 +72,34 @@ const LoanReport = () => {
     setLoanReports(data);
     handlePrint();
   };
+  const handleReportModal = (id) => {
+    setLoanReportId(id);
+    onOpen();
+  };
 
   return (
     <AdminLayout>
+      <Toaster position='top-right' reverseOrder={false} />
+      {isOpen && (
+        <LoanReportModal
+          isOpen={isOpen}
+          onClose={onClose}
+          loanReportId={loanReportId}
+        />
+      )}
       {loanReports && <LoanReportPdf ref={printRef} data={loanReports} />}
       <Box>
         <Heading>Loan Report</Heading>
         {/* <Button href='/add-loan-reports'>Add</Button> */}
         {status === 'loading' && <Spinner />}
         {status === 'error' && <div>error...</div>}
-        {status === 'success' && <LoanReportTable data={data} print={print} />}
+        {status === 'success' && (
+          <LoanReportTable
+            data={data}
+            print={print}
+            handleReportModal={handleReportModal}
+          />
+        )}
       </Box>
     </AdminLayout>
   );

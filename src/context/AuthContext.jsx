@@ -270,6 +270,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const getLoanPayments = async (id) => {
+    // return axios.get(`${baseURL}/loan/user_payments/?loan_id=${id}`);
     const response = await fetch(
       `${baseURL}/loan/user_payments/?loan_id=${id}`,
       {
@@ -308,6 +309,10 @@ export const AuthProvider = ({ children }) => {
     });
     const data = await response.json();
     return data;
+  };
+
+  const getLoanReportDetail = async (id) => {
+    return axios.get(`${baseURL}/loan/reportDetail/?reportId=${id}`);
   };
 
   const getDailyDuesReport = async () => {
@@ -397,9 +402,14 @@ export const AuthProvider = ({ children }) => {
       `${baseURL}/daily_jues/ledger/?year=${year}&page=${page}&search=${search}`
     );
   };
-
+  const getDailyDues = async (date, page, search) => {
+    return axios.get(
+      `${baseURL}/daily_jues/?date=${date}&page=${page}&search=${search}`
+    );
+  };
   const contextData = {
     user: user,
+    getDailyDues: getDailyDues,
     getLedger: getLedger,
     userDayShareCapital: userDayShareCapital,
     userMonthShareCapital: userMonthShareCapital,
@@ -431,6 +441,7 @@ export const AuthProvider = ({ children }) => {
     getLoanPayments: getLoanPayments,
     getLoanReport: getLoanReport,
     postLoanReport: postLoanReport,
+    getLoanReportDetail: getLoanReportDetail,
     getDailyDuesReport: getDailyDuesReport,
     postDailyDuesReport: postDailyDuesReport,
     getUserInfo: getUserInfo,

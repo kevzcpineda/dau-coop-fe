@@ -18,7 +18,7 @@ import {
   TabPanel,
   Spinner,
 } from '@chakra-ui/react';
-const LoanReportTable = ({ data, print }) => {
+const LoanReportTable = ({ data, print, handleReportModal }) => {
   return (
     <TableContainer>
       <Table variant='striped' colorScheme='gray'>
@@ -33,7 +33,7 @@ const LoanReportTable = ({ data, print }) => {
           {data &&
             data.map((item) => {
               return (
-                <Tr key={item.id}>
+                <Tr key={item.id} onClick={() => handleReportModal(item.id)}>
                   <Td>{item.id}</Td>
                   <Td>{item.title}</Td>
                   <Td>

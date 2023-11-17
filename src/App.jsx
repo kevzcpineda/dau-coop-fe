@@ -29,6 +29,7 @@ import UserShareCapital from './pages/UserShareCapital';
 import UserDayShareCapital from './pages/UserDayShareCapital';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import DailyDuesEdit from './pages/DailyDuesEdit';
 
 function App() {
   const queryClient = new QueryClient();
@@ -94,6 +95,7 @@ function App() {
                   path='/monthly-capital-share'
                   element={<MonthlyCapitalShare />}
                 />
+                <Route path='/daily-dues' element={<DailyDuesEdit />} exact />
                 {/* <Route path='/user-profile' element={<UserProfile />} exact /> */}
               </Route>
               <Route path='/login' element={<Login />} />

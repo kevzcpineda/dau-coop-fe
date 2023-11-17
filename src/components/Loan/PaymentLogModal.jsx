@@ -20,9 +20,25 @@ import {
   Td,
   TableCaption,
   TableContainer,
+  Spinner,
 } from '@chakra-ui/react';
-
-const PaymentLogModal = ({ isOpen, onClose }) => {
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from 'react-query';
+import axios from 'axios';
+const PaymentLogModal = ({ isOpen, onClose, loanId }) => {
+  const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
+  const { data, status } = useQuery({
+    queryKey: ['userLoanPayments', loanId],
+    queryFn: () => {
+      return axios.get(`${baseURL}/loan/user_payments/?loan_id=${loanId}`);
+    },
+  });
+  console.log(data);
   return (
     <Modal isOpen={isOpen} onClose={onClose} size='xl'>
       <ModalOverlay />
@@ -30,7 +46,10 @@ const PaymentLogModal = ({ isOpen, onClose }) => {
         <ModalHeader>Loan Payment Log</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <TableContainer>
+          {status === 'loading' && <Spinner />}
+          {status === 'error' && <div>error...</div>}
+          {status === 'success' && <div>sucess</div>}
+          {/* <TableContainer>
             <Table size='sm'>
               <Thead>
                 <Tr>
@@ -56,15 +75,8 @@ const PaymentLogModal = ({ isOpen, onClose }) => {
                   <Td isNumeric>0.91444</Td>
                 </Tr>
               </Tbody>
-              <Tfoot>
-                <Tr>
-                  <Th>To convert</Th>
-                  <Th>into</Th>
-                  <Th isNumeric>multiply by</Th>
-                </Tr>
-              </Tfoot>
             </Table>
-          </TableContainer>
+          </TableContainer> */}
         </ModalBody>
 
         <ModalFooter>

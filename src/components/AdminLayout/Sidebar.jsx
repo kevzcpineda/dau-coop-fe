@@ -86,6 +86,7 @@ export const Sidebar = (props) => {
                 href='/daily-capital-share'
                 ml={3}
               />
+              <NavLink label='Daily Dues' href='/daily-dues' ml={3} />
             </Collapse>
 
             {/* <NavLink
