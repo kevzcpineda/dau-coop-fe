@@ -46,7 +46,7 @@ const LoanModal = ({ id, isOpen, onClose }) => {
     loan: z.number(),
     voucher_number: z.string(),
     check_number: z.string().optional().nullable(),
-    promissory_note_number: z.string(),
+    promissory_note_number: z.string().optional().nullable(),
     status: z.string(),
   });
   const submitLoan = () => {
