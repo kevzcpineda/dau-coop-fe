@@ -262,14 +262,12 @@ const AddDailyJues = () => {
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
-                      onClick={() => setOperatorFocusId(item.id)}
+                      onClick={() => setOperatorFocusId(index)}
                       onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
-                      ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
-                      }
+                      ref={(el) => (newamountRef.current[index] = { el, item })}
                     />
                   </HStack>
                 );
@@ -282,13 +280,18 @@ const AddDailyJues = () => {
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
-                      onClick={() => setOperatorFocusId(item.id)}
+                      onClick={() =>
+                        setOperatorFocusId(index + operators.length)
+                      }
                       onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
                       ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
+                        (newamountRef.current[index + operators.length] = {
+                          el,
+                          item,
+                        })
                       }
                     />
                   </HStack>
@@ -302,13 +305,22 @@ const AddDailyJues = () => {
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
-                      onClick={() => setOperatorFocusId(item.id)}
+                      onClick={() =>
+                        setOperatorFocusId(
+                          index + asso_operators.length + operators.length
+                        )
+                      }
                       onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
                       ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
+                        (newamountRef.current[
+                          index + asso_operators.length + operators.length
+                        ] = {
+                          el,
+                          item,
+                        })
                       }
                     />
                   </HStack>
@@ -322,13 +334,28 @@ const AddDailyJues = () => {
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
-                      onClick={() => setOperatorFocusId(item.id)}
+                      onClick={() =>
+                        setOperatorFocusId(
+                          index +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        )
+                      }
                       onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
                       ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
+                        (newamountRef.current[
+                          index +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        ] = {
+                          el,
+                          item,
+                        })
                       }
                     />
                   </HStack>
@@ -342,13 +369,30 @@ const AddDailyJues = () => {
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
-                      onClick={() => setOperatorFocusId(item.id)}
+                      onClick={() =>
+                        setOperatorFocusId(
+                          index +
+                            sub_driver.length +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        )
+                      }
                       onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
                       ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
+                        (newamountRef.current[
+                          index +
+                            sub_driver.length +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        ] = {
+                          el,
+                          item,
+                        })
                       }
                     />
                   </HStack>
@@ -362,13 +406,32 @@ const AddDailyJues = () => {
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
-                      onClick={() => setOperatorFocusId(item.id)}
+                      onClick={() =>
+                        setOperatorFocusId(
+                          index +
+                            barker.length +
+                            sub_driver.length +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        )
+                      }
                       onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
                       ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
+                        (newamountRef.current[
+                          index +
+                            barker.length +
+                            sub_driver.length +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        ] = {
+                          el,
+                          item,
+                        })
                       }
                     />
                   </HStack>
