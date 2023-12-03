@@ -73,7 +73,9 @@ const DailyDuesEditTable = (data) => {
     const editButton = row.current.childNodes[5].childNodes[2];
     const deleteButton = row.current.childNodes[5].childNodes[3];
     const datevalue = dateInput.value;
-    const amountvalue = parseInt(amountInput.value);
+    const amountvalue = amountInput.value
+      ? parseInt(amountInput.value)
+      : parseInt(amountInput.placeholder);
     console.log(datevalue, amountvalue);
     const payload = {
       id: id,

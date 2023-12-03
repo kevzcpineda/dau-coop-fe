@@ -55,6 +55,9 @@ const DaysShareCapitalTable = ({ year, month, setMonth, setYear }) => {
         `${baseURL}/daily_jues/paginated-day-capital-share/?year=${year}&month=${month}&page=${page}&search=${search}`
       );
     },
+    onMutate: async () => {
+      await queryClient.cancelQueries(['paginateShareCapital']);
+    },
     onSuccess: (data, variables) => {
       console.log('page', page);
       console.log('variables', variables);
@@ -72,6 +75,9 @@ const DaysShareCapitalTable = ({ year, month, setMonth, setYear }) => {
       return axios.get(
         `${baseURL}/daily_jues/days/?year=${year}&month=${month}`
       );
+    },
+    onMutate: async () => {
+      await queryClient.cancelQueries(['dailyCapitalShare']);
     },
     onSuccess: (data, variables) => {
       queryClient.setQueryData(['dailyCapitalShare', year, month], data);
@@ -94,7 +100,7 @@ const DaysShareCapitalTable = ({ year, month, setMonth, setYear }) => {
     setYear(splitDate[0]);
     setMonth(splitDate[1]);
     mutate();
-    dailyCapitalShareMutate();
+    // dailyCapitalShareMutate();
   };
   const handleSearch = async (e) => {
     setSearch(e);

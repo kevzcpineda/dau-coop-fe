@@ -30,6 +30,8 @@ import {
   QueryClientProvider,
 } from 'react-query';
 import axios from 'axios';
+import PaymentLogModalTable from './PaymentLogModalTable';
+
 const PaymentLogModal = ({ isOpen, onClose, loanId }) => {
   const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
   const { data, status } = useQuery({
@@ -38,45 +40,27 @@ const PaymentLogModal = ({ isOpen, onClose, loanId }) => {
       return axios.get(`${baseURL}/loan/user_payments/?loan_id=${loanId}`);
     },
   });
+  const { data: penaltyData, status: penaltyStatus } = useQuery({
+    queryKey: ['userLoanPenalty', loanId],
+    queryFn: () => {
+      return axios.get(`${baseURL}/loan/user_penalty/${loanId}/`);
+    },
+  });
   console.log(data);
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size='xl'>
+    <Modal isOpen={isOpen} onClose={onClose} size='full'>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Loan Payment Log</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          {status === 'loading' && <Spinner />}
-          {status === 'error' && <div>error...</div>}
-          {status === 'success' && <div>sucess</div>}
-          {/* <TableContainer>
-            <Table size='sm'>
-              <Thead>
-                <Tr>
-                  <Th>To convert</Th>
-                  <Th>into</Th>
-                  <Th isNumeric>multiply by</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                <Tr>
-                  <Td>inches</Td>
-                  <Td>millimetres (mm)</Td>
-                  <Td isNumeric>25.4</Td>
-                </Tr>
-                <Tr>
-                  <Td>feet</Td>
-                  <Td>centimetres (cm)</Td>
-                  <Td isNumeric>30.48</Td>
-                </Tr>
-                <Tr>
-                  <Td>yards</Td>
-                  <Td>metres (m)</Td>
-                  <Td isNumeric>0.91444</Td>
-                </Tr>
-              </Tbody>
-            </Table>
-          </TableContainer> */}
+          {status === 'loading' && penaltyStatus === 'loading' && <Spinner />}
+          {status === 'error' && penaltyStatus === 'error' && (
+            <div>error...</div>
+          )}
+          {status === 'success' && penaltyStatus === 'success' && (
+            <PaymentLogModalTable data={data} penaltyData={penaltyData} />
+          )}
         </ModalBody>
 
         <ModalFooter>
