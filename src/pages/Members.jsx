@@ -20,8 +20,14 @@ import ChangePasswordModal from '../components/Members/ChangePasswordModal';
 import LoanModal from '../components/Members/LoanModal';
 import AddJeepModal from '../components/Members/AddJeepModal';
 import MemberTable from '../components/Members/MemberTable';
+import ShareCapitalModal from '../components/Members/ShareCapitalModal';
 
 const Members = () => {
+  const {
+    isOpen: shareCapitalIsOpen,
+    onOpen: shareCapitalOnOpen,
+    onClose: shareCapitalOnClose,
+  } = useDisclosure();
   const {
     isOpen: deleteIsOpen,
     onOpen: deleteOnOpen,
@@ -101,6 +107,11 @@ const Members = () => {
     changePasswordOnOpen();
     setId(id);
   };
+  const handleAddShareCapitalModal = (e, id) => {
+    e.stopPropagation();
+    shareCapitalOnOpen();
+    setId(id);
+  };
 
   const handleJeepModal = (e, id) => {
     e.stopPropagation();
@@ -168,6 +179,7 @@ const Members = () => {
             handleLoanModal={handleLoanModal}
             handleJeepModal={handleJeepModal}
             handleChangePasswordModal={handleChangePasswordModal}
+            handleAddShareCapitalModal={handleAddShareCapitalModal}
             users={searchData ? searchData : data}
             page={page}
             setPage={setPage}
@@ -175,6 +187,15 @@ const Members = () => {
           />
         )}
       </Box>
+      {shareCapitalIsOpen && (
+        <ShareCapitalModal
+          onClose={shareCapitalOnClose}
+          onOpen={shareCapitalOnOpen}
+          isOpen={shareCapitalIsOpen}
+          // users={searchData ? searchData : data}
+          id={id}
+        />
+      )}
       {deleteIsOpen && (
         <DeleteModal
           onClose={deleteOnClose}

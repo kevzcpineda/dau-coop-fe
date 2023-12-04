@@ -46,7 +46,7 @@ const LoanModal = ({ id, isOpen, onClose }) => {
     loan: z.number(),
     voucher_number: z.string(),
     check_number: z.string().optional().nullable(),
-    promissory_note_number: z.string(),
+    promissory_note_number: z.string().optional().nullable(),
     status: z.string(),
   });
   const submitLoan = () => {
@@ -56,8 +56,7 @@ const LoanModal = ({ id, isOpen, onClose }) => {
         voucher.current.value === '' ? null : voucher.current.value,
       promissory_note_number:
         promissory.current.value === '' ? null : promissory.current.value,
-      check_number:
-        check.current.value === '' ? null : check_number.current.value,
+      check_number: check.current.value === '' ? null : check.current.value,
       status: status.current.value === '' ? null : status.current.value,
     });
     loanValidate;

@@ -67,7 +67,9 @@ const LoanTable = ({
           {loanData &&
             loanData.results.map((item) => {
               return (
-                <Tr key={item.id}>
+                <Tr
+                  key={item.id}
+                  onClick={() => handlePaymentLogModal(item.id)}>
                   <Td>{item.id}</Td>
                   <Td>{item.first_name}</Td>
                   <Td>{item.last_name}</Td>
@@ -90,10 +92,10 @@ const LoanTable = ({
                     {/* <Button onClick={() => handlePaymentModal(item.id)}>
                               Payment
                             </Button> */}
-                    <Button onClick={() => print(item)}>Print</Button>
-                    <Button onClick={() => handleReducePenaltyModal(item.id)}>
+                    <Button onClick={(e) => print(e, item)}>Print</Button>
+                    {/* <Button onClick={() => handleReducePenaltyModal(item.id)}>
                       Reduce Penalty
-                    </Button>
+                    </Button> */}
                   </Td>
                 </Tr>
               );

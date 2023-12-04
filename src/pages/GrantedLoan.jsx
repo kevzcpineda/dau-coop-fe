@@ -196,9 +196,9 @@ const Loans = () => {
     },
   });
 
-  const print = async (user) => {
+  const print = async (e, user) => {
     // const response = await getUser(id);
-
+    e.stopPropagation();
     await setLoanId(user.id);
     await setUser(user);
     // await mutateLoanUserPayments();
@@ -206,6 +206,7 @@ const Loans = () => {
     toPrint('toprint');
   };
   const handlePaymentLogModal = (id) => {
+    setLoanId(id);
     onOpenLog();
   };
 
@@ -486,7 +487,13 @@ const Loans = () => {
         />
       )}
 
-      {isOpenLog && <PaymentLogModal isOpen={isOpenLog} onClose={onCloseLog} />}
+      {isOpenLog && (
+        <PaymentLogModal
+          isOpen={isOpenLog}
+          onClose={onCloseLog}
+          loanId={loanId}
+        />
+      )}
 
       <Box>
         <Heading>Granted Loans</Heading>

@@ -45,7 +45,10 @@ const AddDailyJues = () => {
   // const [selectedUser, setSelectedUser] = useState([]);
   const [date, setDate] = useState();
   const [amount, setAmount] = useState(50);
-  const [totalAmount, setTotalAmount] = useState();
+  const [shareCapitaltotalAmount, setShareCapitalTotalAmount] = useState();
+  const [subDriverTotalAmount, setSubDriverTotalAmount] = useState();
+  const [barkerTotalAmount, setBarkerTotalAmount] = useState();
+  const [operatorFocusId, setOperatorFocusId] = useState(null);
   const { getUser, createDailyJues, postDailyDuesReport } =
     useContext(AuthContext);
 
@@ -120,49 +123,105 @@ const AddDailyJues = () => {
       return item.member_status === 'OPERATOR';
     })
     .sort((a, b) => {
-      return a.last_name.localeCompare(b.last_name);
+      const lastNameComparison = a.last_name.localeCompare(b.last_name);
+      if (lastNameComparison === 0) {
+        return a.first_name.localeCompare(b.first_name);
+      }
+      return lastNameComparison;
     });
   const asso_operators = data?.data
     .filter((item) => {
       return item.member_status === 'ASSOCIATE_OPERATOR';
     })
     .sort((a, b) => {
-      return a.last_name.localeCompare(b.last_name);
+      const lastNameComparison = a.last_name.localeCompare(b.last_name);
+      if (lastNameComparison === 0) {
+        return a.first_name.localeCompare(b.first_name);
+      }
+      return lastNameComparison;
     });
   const driver = data?.data
     .filter((item) => {
       return item.member_status === 'DRIVER';
     })
     .sort((a, b) => {
-      return a.last_name.localeCompare(b.last_name);
+      const lastNameComparison = a.last_name.localeCompare(b.last_name);
+      if (lastNameComparison === 0) {
+        return a.first_name.localeCompare(b.first_name);
+      }
+      return lastNameComparison;
     });
   const sub_driver = data?.data
     .filter((item) => {
       return item.member_status === 'SUBTITUTE_DRIVER';
     })
     .sort((a, b) => {
-      return a.last_name.localeCompare(b.last_name);
+      const lastNameComparison = a.last_name.localeCompare(b.last_name);
+      if (lastNameComparison === 0) {
+        return a.first_name.localeCompare(b.first_name);
+      }
+      return lastNameComparison;
     });
   const barker = data?.data
     .filter((item) => {
       return item.member_status === 'BARKER';
     })
     .sort((a, b) => {
-      return a.last_name.localeCompare(b.last_name);
+      const lastNameComparison = a.last_name.localeCompare(b.last_name);
+      if (lastNameComparison === 0) {
+        return a.first_name.localeCompare(b.first_name);
+      }
+      return lastNameComparison;
     });
   const regular_member = data?.data
     .filter((item) => {
       return item.member_status === 'REGULAR_MEMBER';
     })
     .sort((a, b) => {
-      return a.last_name.localeCompare(b.last_name);
+      const lastNameComparison = a.last_name.localeCompare(b.last_name);
+      if (lastNameComparison === 0) {
+        return a.first_name.localeCompare(b.first_name);
+      }
+      return lastNameComparison;
     });
   const handleGetTotal = () => {
     const newItem = newamountRef.current.filter((item) => item.el.value);
-    const total = newItem.reduce((total, item) => {
+    const shareCapital = newItem.filter((item) => {
+      console.log(item);
+      return (
+        item.item.member_status === 'OPERATOR' ||
+        item.item.member_status === 'ASSOCIATE_OPERATOR' ||
+        item.item.member_status === 'DRIVER'
+      );
+    });
+    const subDriver = newItem.filter((item) => {
+      console.log(item);
+      return item.item.member_status === 'SUBTITUTE_DRIVER';
+    });
+    const barker = newItem.filter((item) => {
+      console.log(item);
+      return item.item.member_status === 'BARKER';
+    });
+    const totalShareCapital = shareCapital.reduce((total, item) => {
       return total + parseInt(item.el.value);
     }, 0);
-    setTotalAmount(total);
+    const totalSubDriver = subDriver.reduce((total, item) => {
+      return total + parseInt(item.el.value);
+    }, 0);
+    const totalBarker = barker.reduce((total, item) => {
+      return total + parseInt(item.el.value);
+    }, 0);
+    setShareCapitalTotalAmount(totalShareCapital);
+    setSubDriverTotalAmount(totalSubDriver);
+    setBarkerTotalAmount(totalBarker);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      newamountRef.current[operatorFocusId].el.focus();
+      setOperatorFocusId((prev) => prev + 1);
+    }
   };
   return (
     <AdminLayout>
@@ -192,7 +251,9 @@ const AddDailyJues = () => {
               Get Total
             </Button>
           </HStack>
-          <Heading size='md'>Total: {totalAmount}</Heading>
+          <Heading size='md'>Share Capital: {shareCapitaltotalAmount}</Heading>
+          <Heading size='md'>Sub Driver: {subDriverTotalAmount}</Heading>
+          <Heading size='md'>Barker: {barkerTotalAmount}</Heading>
           <Grid templateColumns='repeat(6, 1fr)' gap={4}>
             <VStack alignItems='start'>
               <h1>OPERATORS</h1>
@@ -201,12 +262,12 @@ const AddDailyJues = () => {
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
+                      onClick={() => setOperatorFocusId(index)}
+                      onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
-                      ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
-                      }
+                      ref={(el) => (newamountRef.current[index] = { el, item })}
                     />
                   </HStack>
                 );
@@ -219,11 +280,18 @@ const AddDailyJues = () => {
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
+                      onClick={() =>
+                        setOperatorFocusId(index + operators.length)
+                      }
+                      onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
                       ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
+                        (newamountRef.current[index + operators.length] = {
+                          el,
+                          item,
+                        })
                       }
                     />
                   </HStack>
@@ -231,17 +299,28 @@ const AddDailyJues = () => {
               })}
             </VStack>
             <VStack alignItems='start'>
-              <h1>DRIVERS</h1>
+              <h1>REGULAR DRIVERS</h1>
               {driver?.map((item, index) => {
                 return (
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
+                      onClick={() =>
+                        setOperatorFocusId(
+                          index + asso_operators.length + operators.length
+                        )
+                      }
+                      onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
                       ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
+                        (newamountRef.current[
+                          index + asso_operators.length + operators.length
+                        ] = {
+                          el,
+                          item,
+                        })
                       }
                     />
                   </HStack>
@@ -255,11 +334,28 @@ const AddDailyJues = () => {
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
+                      onClick={() =>
+                        setOperatorFocusId(
+                          index +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        )
+                      }
+                      onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
                       ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
+                        (newamountRef.current[
+                          index +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        ] = {
+                          el,
+                          item,
+                        })
                       }
                     />
                   </HStack>
@@ -273,11 +369,30 @@ const AddDailyJues = () => {
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
+                      onClick={() =>
+                        setOperatorFocusId(
+                          index +
+                            sub_driver.length +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        )
+                      }
+                      onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
                       ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
+                        (newamountRef.current[
+                          index +
+                            sub_driver.length +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        ] = {
+                          el,
+                          item,
+                        })
                       }
                     />
                   </HStack>
@@ -291,11 +406,32 @@ const AddDailyJues = () => {
                   <HStack w={300} justifyContent='space-between' key={index}>
                     <span>{`${item.last_name} ${item.first_name}`}</span>
                     <Input
+                      onClick={() =>
+                        setOperatorFocusId(
+                          index +
+                            barker.length +
+                            sub_driver.length +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        )
+                      }
+                      onKeyDown={(e) => handleKeyDown(e)}
                       placeholder='Amount'
                       size='sm'
                       width={20}
                       ref={(el) =>
-                        (newamountRef.current[item.id] = { el, item })
+                        (newamountRef.current[
+                          index +
+                            barker.length +
+                            sub_driver.length +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        ] = {
+                          el,
+                          item,
+                        })
                       }
                     />
                   </HStack>
