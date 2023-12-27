@@ -3,6 +3,9 @@ import { useLoan } from '../../states/Loan';
 // import Select from 'react-dropdown-select';
 import Select from 'react-select';
 const LoanDropdown = forwardRef((props, ref) => {
+  const transformNumber = (input) => {
+    return input.toLocaleString();
+  };
   function removeLastDuplicateFullName(arr) {
     let encounteredNames = {};
 
@@ -32,9 +35,9 @@ const LoanDropdown = forwardRef((props, ref) => {
         ' ' +
         item.last_name +
         ' | Balance: ' +
-        item.balance +
+        transformNumber(item.balance) +
         ' | Penalty: ' +
-        item.penalty,
+        transformNumber(item.penalty),
       ...item,
     };
   });
