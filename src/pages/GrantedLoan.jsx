@@ -109,8 +109,18 @@ const Loans = () => {
   const [grantedLoanPage, setGrantedLoanPage] = useState(1);
 
   const { data: grantedLoanData, status: pendingLoanStatus } = useQuery({
-    queryKey: ['loans', grantedLoanPage],
-    queryFn: () => grantedLoan(grantedLoanPage),
+    queryKey: [
+      'loans',
+      {
+        page: grantedLoanPage,
+        search: search,
+      },
+    ],
+    queryFn: () => {
+      return axios.get(
+        `${baseURL}/loan/loan_optimize/?status=GRANTED&page=${grantedLoanPage}&search=${search}`
+      );
+    },
     keepPreviousData: true,
   });
   const { data: loanDoneData, status: loanDoneStatus } = useQuery({
@@ -132,7 +142,6 @@ const Loans = () => {
     },
   });
 
-  console.log('grantedLoanData', grantedLoanData);
   const { loans, loanPayment } = useLoan((state) => state);
 
   // const { mutate: exlLoanPayments } = useMutation(postLoanPayments);
@@ -158,15 +167,6 @@ const Loans = () => {
     setId(id);
   };
 
-  const payload = {
-    loan: id,
-    amount: amount,
-    ticket: ticket,
-  };
-  const handlePayment = async () => {
-    await mutate(payload);
-    onClose();
-  };
   const printRef = useRef();
   useEffect(() => {
     if (isPrinting && promiseResolveRef.current) {
@@ -449,25 +449,43 @@ const Loans = () => {
   };
   // console.log(pendingLoanData);
   // console.log('loanDoneData', loanDoneData);
-  const {
-    data: searchData,
-    mutate: mutateSearch,
-    status: searchStatus,
-  } = useMutation(searchGrantedLoan, {
-    onSuccess: (data, variables, context) => {
-      queryClient.setQueryData(['grantedLoanSearch', search]);
+  const { mutateSearch, isLoadingSearch } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/loan/loan_optimize/?status=GRANTED&page=${grantedLoanPage}&search=${search}`
+      );
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['loans', { page: page, search: search }],
+        () => {
+          return data;
+        }
+      );
     },
   });
   const handleSearch = (e) => {
     setSearch(e);
-    mutateSearch(e);
+    // mutateSearch;
+  };
+  const handleNextPage = () => {
+    setGrantedLoanPage((prev) => {
+      return prev + 1;
+    });
+    // mutateSearch();
+  };
+  const handlePrevPage = () => {
+    setGrantedLoanPage((prev) => {
+      return prev - 1;
+    });
+    // mutateSearch();
   };
   const {
     isOpen: reducePenaltyIsOpen,
     onOpen: reducePenaltyOnOpen,
     onClose: reducePenaltyOnClose,
   } = useDisclosure();
-  console.log('loadingggg', searchStatus);
+
   return (
     <AdminLayout>
       <div>
@@ -505,7 +523,7 @@ const Loans = () => {
           <EditablePreview />
           <EditableInput />
         </Editable>
-        {/* <Button onClick={() => handleParse()}>Import CSV Users</Button>
+        <Button onClick={() => handleParse()}>Import CSV Users</Button>
         <Button onClick={() => handleParsePenalty()}>
           Import CSV loan penalty
         </Button>
@@ -525,21 +543,16 @@ const Loans = () => {
           Import loan Payments
         </Button>
         <Button onClick={() => handleImportJeeps()}>Post Jeeps</Button>
-        <Input type='file' onChange={(e) => setCsv(e.target.files[0])} /> */}
+        <Input type='file' onChange={(e) => setCsv(e.target.files[0])} />
 
-        {pendingLoanStatus === 'loading' && loanDoneStatus === 'loading' && (
-          <Spinner />
-        )}
-        {searchStatus === 'loading' && <Spinner />}
+        {pendingLoanStatus === 'loading' && <Spinner />}
 
-        {pendingLoanStatus === 'error' && loanDoneStatus === 'error' && (
-          <div>error...</div>
-        )}
-        {pendingLoanStatus === 'success' && loanDoneStatus === 'success' && (
+        {pendingLoanStatus === 'error' && <div>error...</div>}
+        {pendingLoanStatus === 'success' && (
           <LoanTable
             handlePaymentModal={handlePaymentModal}
             print={print}
-            loanData={searchData ? searchData.data : grantedLoanData.data}
+            loanData={grantedLoanData.data}
             handlePaymentLogModal={handlePaymentLogModal}
             setGrantedLoanPage={setGrantedLoanPage}
             setDoneLoanPage={setDoneLoanPage}
@@ -547,6 +560,9 @@ const Loans = () => {
             doneLoanPage={doneLoanPage}
             setLoanId={setLoanId}
             reducePenaltyOnOpen={reducePenaltyOnOpen}
+            handleNextPage={handleNextPage}
+            handlePrevPage={handlePrevPage}
+            isLoadingSearch={isLoadingSearch}
           />
         )}
         {/* {mutateSearch.isLoading ? (

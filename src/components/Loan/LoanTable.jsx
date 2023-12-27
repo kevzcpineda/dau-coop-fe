@@ -22,6 +22,9 @@ import { useMutation, useQueryClient } from 'react-query';
 const LoanTable = ({
   handlePaymentModal,
   print,
+  handlePrevPage,
+  handleNextPage,
+  isLoadingSearch,
   doneLoan,
   loanData,
   handlePaymentLogModal,
@@ -34,18 +37,13 @@ const LoanTable = ({
 }) => {
   const { updateLoanStatus } = useContext(AuthContext);
   const queryClient = useQueryClient();
-  const { isSuccess, isError, mutate } = useMutation(updateLoanStatus, {
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['loan'] });
-    },
-  });
-  const handleChangeStatus = async (id, status) => {
-    await mutate({ id: id, status: status });
-  };
+
   const handleReducePenaltyModal = (id) => {
     setLoanId(id);
     reducePenaltyOnOpen();
+  };
+  const transformNumber = (input) => {
+    return input.toLocaleString();
   };
   return (
     <TableContainer>
@@ -53,13 +51,12 @@ const LoanTable = ({
         <Thead>
           <Tr>
             <Th>loan ID</Th>
-            <Th>First Name</Th>
-            <Th>Lasr Name</Th>
+            <Th>Name</Th>
+            <Th>Granted Loan</Th>
+            <Th>Total Payments</Th>
             <Th>balance</Th>
             <Th>penalty</Th>
-            <Th>Total</Th>
-            <Th>date of Penalty</Th>
-            <Th>Status</Th>
+            <Th>date</Th>
             <Th>Action</Th>
           </Tr>
         </Thead>
@@ -71,23 +68,12 @@ const LoanTable = ({
                   key={item.id}
                   onClick={() => handlePaymentLogModal(item.id)}>
                   <Td>{item.id}</Td>
-                  <Td>{item.first_name}</Td>
-                  <Td>{item.last_name}</Td>
-                  <Td>{item.balance}</Td>
-                  <Td>{item.penalty}</Td>
-                  <Td>{item.total}</Td>
-                  <Td>{item.penalty_date}</Td>
-                  <Td>
-                    {
-                      <Select
-                        placeholder={item.status}
-                        onChange={(e) =>
-                          handleChangeStatus(item.id, e.target.value)
-                        }>
-                        <option value='DONE'>DONE</option>
-                      </Select>
-                    }
-                  </Td>
+                  <Td>{`${item.last_name} ${item.first_name}`}</Td>
+                  <Td>{transformNumber(item.loan)}</Td>
+                  <Td>{transformNumber(item.total_payments)}</Td>
+                  <Td>{transformNumber(item.balance)}</Td>
+                  <Td>{transformNumber(item.penalty)}</Td>
+                  <Td>{item.date}</Td>
                   <Td>
                     {/* <Button onClick={() => handlePaymentModal(item.id)}>
                               Payment
@@ -103,12 +89,14 @@ const LoanTable = ({
         </Tbody>
       </Table>
       <Button
-        onClick={() => setGrantedLoanPage(grantedLoanPage - 1)}
-        isDisabled={loanData.previous === null ? true : false}>
+        onClick={() => handlePrevPage()}
+        isDisabled={loanData.previous === null ? true : false}
+        // spinner={<BeatLoader size={8} color='white' />}
+      >
         previous
       </Button>
       <Button
-        onClick={() => setGrantedLoanPage(grantedLoanPage + 1)}
+        onClick={() => handleNextPage()}
         isDisabled={loanData.next === null ? true : false}>
         next
       </Button>

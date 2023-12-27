@@ -31,7 +31,7 @@ const LoanModal = ({ id, isOpen, onClose }) => {
       voucher.current.value = '';
       check.current.value = '';
       promissory.current.value = '';
-      status.current.value = '';
+      date.current.value = '';
       onClose();
       toast.success('Loan Successfully!');
     },
@@ -40,14 +40,14 @@ const LoanModal = ({ id, isOpen, onClose }) => {
   const voucher = useRef();
   const check = useRef();
   const promissory = useRef();
-  const status = useRef();
+  const date = useRef();
 
   const loanSchema = z.object({
     loan: z.number(),
     voucher_number: z.string(),
     check_number: z.string().optional().nullable(),
     promissory_note_number: z.string().optional().nullable(),
-    status: z.string(),
+    date: z.string(),
   });
   const submitLoan = () => {
     const loanValidate = loanSchema.safeParse({
@@ -57,15 +57,16 @@ const LoanModal = ({ id, isOpen, onClose }) => {
       promissory_note_number:
         promissory.current.value === '' ? null : promissory.current.value,
       check_number: check.current.value === '' ? null : check.current.value,
-      status: status.current.value === '' ? null : status.current.value,
+      date: date.current.value === '' ? null : date.current.value,
     });
-    loanValidate;
+    // loanValidate;
     if (!loanValidate.success) {
       loanValidate.error.issues.map((item) => {
         toast.error(`Error ${item.path[0]} ${item.message}:`);
       });
     } else {
       mutate({ user: id, ...loanValidate.data });
+      // console.log(loanValidate.data);
     }
   };
 
@@ -94,11 +95,8 @@ const LoanModal = ({ id, isOpen, onClose }) => {
               <Input ref={amount} />
             </FormControl>
             <FormControl>
-              <FormLabel>Status</FormLabel>
-              <Select placeholder='Select status' ref={status}>
-                <option value='PENDING'>Pending</option>
-                <option value='GRANTED'>Granted</option>
-              </Select>
+              <FormLabel>Date</FormLabel>
+              <Input type='date' ref={date} />
             </FormControl>
           </ModalBody>
           <ModalFooter>

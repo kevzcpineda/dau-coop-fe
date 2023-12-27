@@ -40,7 +40,7 @@ const AddLoanReport = () => {
   const { data, status } = useQuery({
     queryKey: ['addLoanReport'],
     queryFn: () => {
-      return axios.get(`${baseURL}/loan/`);
+      return axios.get(`${baseURL}/loan/loan_optimize_no_page/?status=GRANTED`);
     },
   });
 
@@ -124,7 +124,7 @@ const AddLoanReport = () => {
     }
   };
   const handleDelete = (id) => {
-    const newSelected = selectedUser.filter((item) => item.user !== id);
+    const newSelected = selectedUser.filter((item) => item.uuid !== id);
     setSelectedUser(newSelected);
   };
   const handleSubmit = async () => {
@@ -258,7 +258,7 @@ const AddLoanReport = () => {
                             />
                           </Td>
                           <Td>
-                            <Button onClick={() => handleDelete(item.user)}>
+                            <Button onClick={() => handleDelete(item.uuid)}>
                               Delete
                             </Button>
                           </Td>
