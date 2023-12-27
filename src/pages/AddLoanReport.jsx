@@ -40,7 +40,7 @@ const AddLoanReport = () => {
   const { data, status } = useQuery({
     queryKey: ['addLoanReport'],
     queryFn: () => {
-      return axios.get(`${baseURL}/loan/`);
+      return axios.get(`${baseURL}/loan/loan_optimize_no_page/?status=GRANTED`);
     },
   });
 
@@ -124,7 +124,7 @@ const AddLoanReport = () => {
     }
   };
   const handleDelete = (id) => {
-    const newSelected = selectedUser.filter((item) => item.user !== id);
+    const newSelected = selectedUser.filter((item) => item.uuid !== id);
     setSelectedUser(newSelected);
   };
   const handleSubmit = async () => {
@@ -172,6 +172,9 @@ const AddLoanReport = () => {
     console.log('newarr', newarr);
     setSelectedUser(newarr);
   };
+  const transformNumber = (input) => {
+    return input.toLocaleString();
+  };
   return (
     <AdminLayout>
       <Toaster position='top-right' reverseOrder={false} />
@@ -213,7 +216,7 @@ const AddLoanReport = () => {
           <Button onClick={() => handleSubmit()} colorScheme='blue'>
             SUBMIT
           </Button>
-          <Heading size='md'>Total: {total}</Heading>
+          <Heading size='md'>Total: {transformNumber(total)}</Heading>
           <TableContainer>
             <Table variant='striped' colorScheme='gray'>
               <Thead>
@@ -258,7 +261,7 @@ const AddLoanReport = () => {
                             />
                           </Td>
                           <Td>
-                            <Button onClick={() => handleDelete(item.user)}>
+                            <Button onClick={() => handleDelete(item.uuid)}>
                               Delete
                             </Button>
                           </Td>

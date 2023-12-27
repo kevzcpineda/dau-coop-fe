@@ -3,14 +3,41 @@ import { useLoan } from '../../states/Loan';
 // import Select from 'react-dropdown-select';
 import Select from 'react-select';
 const LoanDropdown = forwardRef((props, ref) => {
-  // const { loans } = useLoan((state) => state);
-  // const notDoneLoan = loans.filter((item) => item.is_fully_paid === false);
-  // const options = data;
+  const transformNumber = (input) => {
+    return input.toLocaleString();
+  };
+  function removeLastDuplicateFullName(arr) {
+    let encounteredNames = {};
 
-  const options = props.data.map((item) => {
+    for (let i = arr.length - 1; i >= 0; i--) {
+      let fullName = arr[i].first_name + arr[i].last_name;
+
+      if (encounteredNames[fullName]) {
+        // If the name has been encountered before, remove the object
+        arr.splice(i, 1);
+      } else {
+        // Mark the name as encountered
+        encounteredNames[fullName] = true;
+      }
+    }
+
+    return arr;
+  }
+
+  let firstUniqueObject = removeLastDuplicateFullName(props.data);
+
+  console.log('removeLastDuplicateFullName', firstUniqueObject);
+  const options = firstUniqueObject.map((item) => {
     return {
       value: item.id,
-      label: item.first_name + ' ' + item.last_name + ' --- ' + item.balance,
+      label:
+        item.first_name +
+        ' ' +
+        item.last_name +
+        ' | Balance: ' +
+        transformNumber(item.balance) +
+        ' | Penalty: ' +
+        transformNumber(item.penalty),
       ...item,
     };
   });
