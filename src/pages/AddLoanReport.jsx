@@ -172,6 +172,9 @@ const AddLoanReport = () => {
     console.log('newarr', newarr);
     setSelectedUser(newarr);
   };
+  const transformNumber = (input) => {
+    return input.toLocaleString();
+  };
   return (
     <AdminLayout>
       <Toaster position='top-right' reverseOrder={false} />
@@ -213,7 +216,7 @@ const AddLoanReport = () => {
           <Button onClick={() => handleSubmit()} colorScheme='blue'>
             SUBMIT
           </Button>
-          <Heading size='md'>Total: {total}</Heading>
+          <Heading size='md'>Total: {transformNumber(total)}</Heading>
           <TableContainer>
             <Table variant='striped' colorScheme='gray'>
               <Thead>
