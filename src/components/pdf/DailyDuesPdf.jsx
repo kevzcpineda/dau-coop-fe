@@ -124,7 +124,7 @@ const DailyDuesPdf = React.forwardRef((props, ref) => {
           </tr>
           <tr>
             <td>SHARE CAPITAL</td>
-            <td>{props.data.share_capital}</td>
+            <td>{props.data.management_fee}</td>
           </tr>
           <tr>
             <td>MANAGEMENT FEE</td>
@@ -137,6 +137,14 @@ const DailyDuesPdf = React.forwardRef((props, ref) => {
           <tr>
             <td>SUB SAVINGS</td>
             <td>{props.data.sub_savings}</td>
+          </tr>
+          <tr>
+            <td>BARKERS SAVINGS</td>
+            <td>{props.data.barker_savings}</td>
+          </tr>
+          <tr>
+            <td>BARKERS BOUNDARY</td>
+            <td>{props.data.barker_boundary}</td>
           </tr>
           <tr>
             <td>TOTAL</td>

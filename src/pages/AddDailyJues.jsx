@@ -48,13 +48,27 @@ const AddDailyJues = () => {
   const [shareCapitaltotalAmount, setShareCapitalTotalAmount] = useState();
   const [subDriverTotalAmount, setSubDriverTotalAmount] = useState();
   const [barkerTotalAmount, setBarkerTotalAmount] = useState();
+  const [barkerBoundaryTotalAmount, setBarkerBoundaryTotalAmount] = useState();
   const [operatorFocusId, setOperatorFocusId] = useState(null);
+  // const [barkerBoundary, setBarkerBoundary] = useState([
+  //   {
+  //     member_status: 'SM',
+  //     amount: 0,
+  //   },
+  //   {
+  //     member_status: 'BAYANIHAN',
+  //     amount: 0,
+  //   },
+  // ]);
+
   const { getUser, createDailyJues, postDailyDuesReport } =
     useContext(AuthContext);
 
   const dateRef = useRef();
   const amountRef = useRef();
   const newamountRef = useRef([]);
+  const smBoundaryRef = useRef({});
+  const bayanihanBoundaryRef = useRef({});
 
   const { mutate, isLoading } = useMutation({
     mutationFn: postDailyDuesReport,
@@ -70,10 +84,10 @@ const AddDailyJues = () => {
   });
 
   const dailyDuesReportSchema = z.object({
-    user: z.number(),
+    user: z.number().nullable(),
     member_status: z.string(),
-    fname: z.string(),
-    lname: z.string(),
+    fname: z.string().nullable(),
+    lname: z.string().nullable(),
     amount: z.number(),
     date: z.string(),
   });
@@ -84,6 +98,20 @@ const AddDailyJues = () => {
 
   const handleSubmit = async () => {
     const newItem = newamountRef.current.filter((item) => item.el.value);
+    const sm = smBoundaryRef.current.value;
+    const bayanihan = bayanihanBoundaryRef.current.value;
+    const barkerBoundary = [
+      {
+        member_status: 'SM',
+        amount: parseInt(sm),
+      },
+      {
+        member_status: 'BAYANIHAN',
+        amount: parseInt(bayanihan),
+      },
+    ];
+    console.log(sm);
+    // let combinedArray = [...newItem, ...barkerBoundary];
     const dailyDuesPayload = newItem.map((item) => {
       const dailyDuesReportValidate = dailyDuesReportSchema.safeParse({
         user: item.item.id,
@@ -99,9 +127,25 @@ const AddDailyJues = () => {
       return dailyDuesReportValidate.data;
     });
 
+    const barkerBoundaryPayload = barkerBoundary.map((item) => {
+      const barkerBoundaryReportValidate = dailyDuesReportSchema.safeParse({
+        user: null,
+        member_status: item.member_status,
+        fname: null,
+        lname: null,
+        amount: item.amount,
+        date: date,
+      });
+      if (!barkerBoundaryReportValidate.success) {
+        return { errorMessage: 'Invalid' };
+      }
+      return barkerBoundaryReportValidate.data;
+    });
+    let combinedArray = [...dailyDuesPayload, ...barkerBoundaryPayload];
+
     const submitDailyDuesReportValidate = submitDailyDuesReportSchema.safeParse(
       {
-        daily_dues: dailyDuesPayload,
+        daily_dues: combinedArray,
       }
     );
     if (!submitDailyDuesReportValidate.success) {
@@ -109,6 +153,7 @@ const AddDailyJues = () => {
 
       return false;
     }
+
     mutate(submitDailyDuesReportValidate.data);
   };
 
@@ -185,6 +230,10 @@ const AddDailyJues = () => {
       return lastNameComparison;
     });
   const handleGetTotal = () => {
+    const smBoundary = parseInt(smBoundaryRef.current.value);
+    const bayanihanBoundary = parseInt(bayanihanBoundaryRef.current.value);
+    console.log(smBoundary);
+    console.log(bayanihanBoundary);
     const newItem = newamountRef.current.filter((item) => item.el.value);
     const shareCapital = newItem.filter((item) => {
       console.log(item);
@@ -214,6 +263,7 @@ const AddDailyJues = () => {
     setShareCapitalTotalAmount(totalShareCapital);
     setSubDriverTotalAmount(totalSubDriver);
     setBarkerTotalAmount(totalBarker);
+    setBarkerBoundaryTotalAmount(smBoundary + bayanihanBoundary);
   };
 
   const handleKeyDown = (event) => {
@@ -253,8 +303,11 @@ const AddDailyJues = () => {
           </HStack>
           <Heading size='md'>Share Capital: {shareCapitaltotalAmount}</Heading>
           <Heading size='md'>Sub Driver: {subDriverTotalAmount}</Heading>
-          <Heading size='md'>Barker: {barkerTotalAmount}</Heading>
-          <Grid templateColumns='repeat(6, 1fr)' gap={4}>
+          <Heading size='md'>Barker Saving: {barkerTotalAmount}</Heading>
+          <Heading size='md'>
+            Barker Boundary: {barkerBoundaryTotalAmount}
+          </Heading>
+          <Grid templateColumns='repeat(7, 1fr)' gap={4}>
             <VStack alignItems='start'>
               <h1>OPERATORS</h1>
               {operators?.map((item, index) => {
@@ -437,6 +490,29 @@ const AddDailyJues = () => {
                   </HStack>
                 );
               })}
+            </VStack>
+            <VStack alignItems='start'>
+              <h1>BARKERS BOUNDARY</h1>
+              <HStack w={300} justifyContent='space-between'>
+                <span>BAYANIHAN</span>
+                <Input
+                  // onKeyDown={(e) => handleKeyDown(e)}
+                  ref={bayanihanBoundaryRef}
+                  placeholder='Amount'
+                  size='sm'
+                  width={20}
+                />
+              </HStack>
+              <HStack w={300} justifyContent='space-between'>
+                <span>SM</span>
+                <Input
+                  // onKeyDown={(e) => handleKeyDown(e)}
+                  ref={smBoundaryRef}
+                  placeholder='Amount'
+                  size='sm'
+                  width={20}
+                />
+              </HStack>
             </VStack>
           </Grid>
         </Box>
