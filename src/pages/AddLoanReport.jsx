@@ -11,6 +11,7 @@ import {
   Td,
   TableContainer,
   Button,
+  Flex,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -183,6 +184,12 @@ const AddLoanReport = () => {
       {status === 'success' && (
         <Box>
           <Heading>Add Loan Report</Heading>
+          <Flex justify='end'>
+            <Button onClick={() => handleSubmit()} colorScheme='blue'>
+              SUBMIT
+            </Button>
+          </Flex>
+
           <VStack alignItems='start' mb={2}>
             <Input
               placeholder='OR#'
@@ -213,9 +220,7 @@ const AddLoanReport = () => {
             data={data.data}
             ref={dropdownRef}
           />
-          <Button onClick={() => handleSubmit()} colorScheme='blue'>
-            SUBMIT
-          </Button>
+
           <Heading size='md'>Total: {transformNumber(total)}</Heading>
           <TableContainer>
             <Table variant='striped' colorScheme='gray'>
