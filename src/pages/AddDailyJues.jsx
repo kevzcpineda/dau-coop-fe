@@ -98,8 +98,10 @@ const AddDailyJues = () => {
 
   const handleSubmit = async () => {
     const newItem = newamountRef.current.filter((item) => item.el.value);
-    const sm = smBoundaryRef.current.value;
-    const bayanihan = bayanihanBoundaryRef.current.value;
+    const sm = smBoundaryRef.current.value ? smBoundaryRef.current.value : 0;
+    const bayanihan = bayanihanBoundaryRef.current.value
+      ? bayanihanBoundaryRef.current.value
+      : 0;
     const barkerBoundary = [
       {
         member_status: 'SM',
@@ -301,7 +303,9 @@ const AddDailyJues = () => {
               Get Total
             </Button>
           </HStack>
-          <Heading size='md'>Share Capital: {shareCapitaltotalAmount}</Heading>
+          <Heading size='md'>
+            Share Capital: {shareCapitaltotalAmount / 2}
+          </Heading>
           <Heading size='md'>Sub Driver: {subDriverTotalAmount}</Heading>
           <Heading size='md'>Barker Saving: {barkerTotalAmount}</Heading>
           <Heading size='md'>

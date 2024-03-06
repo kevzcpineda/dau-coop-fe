@@ -48,7 +48,10 @@ const MonthlyCapitalShare = () => {
     },
     onSuccess: (data) => {
       queryClient.setQueryData(
-        ['paginateShareCapital', { year: year, page: page, search: search }],
+        [
+          'paginatedMonthlyShareCapital',
+          { year: year, page: page, search: search },
+        ],
         () => {
           return data;
         }

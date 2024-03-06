@@ -20,16 +20,25 @@ import axios from 'axios';
 import moment from 'moment';
 import AuthContext from '../../context/AuthContext';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-const DaysShareCapitalTable = ({ year, month, setMonth, setYear }) => {
+const DaysShareCapitalTable = ({
+  page,
+  year,
+  month,
+  setMonth,
+  setYear,
+  search,
+  handleNextPage,
+  handlePrevPage,
+}) => {
   const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
   // const splitDate = date?.split('-');
   const dateNow = moment().format('L').split('/');
   const momentYear = dateNow[2];
   const momentMonth = dateNow[0];
   // const [month, setMonth] = useState(momentMonth);
   // const [year, setYear] = useState(momentYear);
-  const [search, setSearch] = useState('');
+  // const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
   const { paginateDayShareCapital } = useContext(AuthContext);
 
@@ -70,61 +79,45 @@ const DaysShareCapitalTable = ({ year, month, setMonth, setYear }) => {
       );
     },
   });
-  const { mutate: dailyCapitalShareMutate } = useMutation({
-    mutationFn: () => {
-      return axios.get(
-        `${baseURL}/daily_jues/days/?year=${year}&month=${month}`
-      );
-    },
-    onMutate: async () => {
-      await queryClient.cancelQueries(['dailyCapitalShare']);
-    },
-    onSuccess: (data, variables) => {
-      queryClient.setQueryData(['dailyCapitalShare', year, month], data);
-    },
-  });
+  // const { mutate: dailyCapitalShareMutate } = useMutation({
+  //   mutationFn: () => {
+  //     return axios.get(
+  //       `${baseURL}/daily_jues/days/?year=${year}&month=${month}`
+  //     );
+  //   },
+  //   onMutate: async () => {
+  //     await queryClient.cancelQueries(['dailyCapitalShare']);
+  //   },
+  //   onSuccess: (data, variables) => {
+  //     queryClient.setQueryData(['dailyCapitalShare', year, month], data);
+  //   },
+  // });
 
-  const handleNextPage = () => {
-    mutate(page + 1);
-    setPage(page + 1);
-  };
-  const handlePrevPage = () => {
-    setPage((prev) => {
-      return prev - 1;
-    });
-    mutate();
-  };
-  const handleChangeDate = async (e) => {
-    const splitDate = e.split('-');
-    console.log(splitDate);
-    setYear(splitDate[0]);
-    setMonth(splitDate[1]);
-    mutate();
-    // dailyCapitalShareMutate();
-  };
-  const handleSearch = async (e) => {
-    setSearch(e);
-    mutate();
-  };
+  // const handleNextPage = () => {
+  //   mutate(page + 1);
+  //   setPage(page + 1);
+  // };
+  // const handlePrevPage = () => {
+  //   setPage((prev) => {
+  //     return prev - 1;
+  //   });
+  //   mutate();
+  // };
+  // const handleChangeDate = async (e) => {
+  //   const splitDate = e.split('-');
+  //   console.log(splitDate);
+  //   setYear(splitDate[0]);
+  //   setMonth(splitDate[1]);
+  //   mutate();
+  //   // dailyCapitalShareMutate();
+  // };
+
   return (
     <>
       {paginateShareCapitalStatus === 'loading' && <Spinner />}
       {paginateShareCapitalStatus === 'error' && <div>error...</div>}
       {paginateShareCapitalStatus === 'success' && (
         <TableContainer>
-          <Editable
-            defaultValue='Search'
-            onSubmit={(e) => {
-              handleSearch(e);
-            }}>
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
-          <input
-            type='date'
-            onChange={(e) => handleChangeDate(e.target.value)}
-          />
-
           <Table variant='striped' colorScheme='gray'>
             <Thead>
               <Tr>
@@ -170,7 +163,7 @@ const DaysShareCapitalTable = ({ year, month, setMonth, setYear }) => {
               {paginateShareCapitalData?.data?.results?.map((item, index) => {
                 return (
                   <Tr key={index}>
-                    <td>{index + 1}</td>
+                    <td>{item.id}</td>
                     <td className='name'>{`${item.last_name} ${item.first_name}`}</td>
                     <td>{item.day1}</td>
                     <td>{item.day2}</td>

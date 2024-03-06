@@ -15,7 +15,19 @@ const DailyDuesPdf = React.forwardRef((props, ref) => {
   const subDriver = props.data.daily_dues.filter(
     (item) => item.member_status === 'SUBTITUTE_DRIVER'
   );
-
+  const barkers = props.data.daily_dues.filter(
+    (item) => item.member_status === 'BARKER'
+  );
+  const regular_member = props.data.daily_dues.filter(
+    (item) => item.member_status === 'REGULAR_MEMBER'
+  );
+  const sm = props?.data?.daily_dues?.filter(
+    (item) => item.member_status === 'SM'
+  );
+  const bayanihan = props?.data?.daily_dues?.filter(
+    (item) => item.member_status === 'BAYANIHAN'
+  );
+  console.log('sm', sm[0]);
   return (
     <div style={{ display: 'none' }}>
       <div ref={ref}>
@@ -113,6 +125,78 @@ const DailyDuesPdf = React.forwardRef((props, ref) => {
                       </tr>
                     );
                   })}
+              </tbody>
+            </table>
+          </div>
+          <div className='table1'>
+            <h1>BARKERS</h1>
+            <table className='table'>
+              <thead>
+                <tr>
+                  <th>NO.</th>
+                  <th>Name</th>
+                  <th>AMOUNT</th>
+                </tr>
+              </thead>
+              <tbody>
+                {barkers &&
+                  barkers.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{`${item.last_name} ${item.first_name}`}</td>
+                        <td>{item.amount}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+          <div className='table2'>
+            <h1>REGULAR MEMBERS</h1>
+            <table className='table'>
+              <thead>
+                <tr>
+                  <th>NO.</th>
+                  <th>Name</th>
+                  <th>AMOUNT</th>
+                </tr>
+              </thead>
+              <tbody>
+                {regular_member &&
+                  regular_member.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{`${item.last_name} ${item.first_name}`}</td>
+                        <td>{item.amount}</td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+          <div className='table3'>
+            <h1>BARKERS BOUNDARY</h1>
+            <table className='table'>
+              <thead>
+                <tr>
+                  <th>NO.</th>
+                  <th>Name</th>
+                  <th>AMOUNT</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>SM</td>
+                  <td>{sm[0].amount}</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>BAYANIHAN</td>
+                  <td>{bayanihan[0].amount}</td>
+                </tr>
               </tbody>
             </table>
           </div>
