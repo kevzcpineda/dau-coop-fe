@@ -23,6 +23,7 @@ import {
   Spinner,
   useDisclosure,
 } from '@chakra-ui/react';
+import transformNumber from '../../utils/transformNumber';
 // import { useDailyJues } from '../../states/Daily_jues';
 
 const DailyJuesTable = ({ data }) => {
@@ -66,31 +67,31 @@ const DailyJuesTable = ({ data }) => {
             return (
               <Tr key={item.id}>
                 <Td>{`${item.last_name} ${item.first_name}`}</Td>
-                <Td>{item.beginning_capital}</Td>
-                <Td>{item.january}</Td>
-                <Td>{item.january_capital}</Td>
-                <Td>{item.february}</Td>
-                <Td>{item.feb_capital}</Td>
-                <Td>{item.march}</Td>
-                <Td>{item.march_capital}</Td>
-                <Td>{item.april}</Td>
-                <Td>{item.april_capital}</Td>
-                <Td>{item.may}</Td>
-                <Td>{item.may_capital}</Td>
-                <Td>{item.june}</Td>
-                <Td>{item.june_capital}</Td>
-                <Td>{item.july}</Td>
-                <Td>{item.july_capital}</Td>
-                <Td>{item.august}</Td>
-                <Td>{item.august_capital}</Td>
-                <Td>{item.september}</Td>
-                <Td>{item.september_capital}</Td>
-                <Td>{item.october}</Td>
-                <Td>{item.october_capital}</Td>
-                <Td>{item.november}</Td>
-                <Td>{item.november_capital}</Td>
-                <Td>{item.december}</Td>
-                <Td>{item.december_capital}</Td>
+                <Td>{transformNumber(item.beginning_capital)}</Td>
+                <Td>{transformNumber(item.january)}</Td>
+                <Td>{transformNumber(item.january_capital)}</Td>
+                <Td>{transformNumber(item.february)}</Td>
+                <Td>{transformNumber(item.feb_capital)}</Td>
+                <Td>{transformNumber(item.march)}</Td>
+                <Td>{transformNumber(item.march_capital)}</Td>
+                <Td>{transformNumber(item.april_capital)}</Td>
+                <Td>{transformNumber(item.april)}</Td>
+                <Td>{transformNumber(item.may)}</Td>
+                <Td>{transformNumber(item.may_capital)}</Td>
+                <Td>{transformNumber(item.june)}</Td>
+                <Td>{transformNumber(item.june_capital)}</Td>
+                <Td>{transformNumber(item.july)}</Td>
+                <Td>{transformNumber(item.july_capital)}</Td>
+                <Td>{transformNumber(item.august)}</Td>
+                <Td>{transformNumber(item.august_capital)}</Td>
+                <Td>{transformNumber(item.september)}</Td>
+                <Td>{transformNumber(item.september_capital)}</Td>
+                <Td>{transformNumber(item.october)}</Td>
+                <Td>{transformNumber(item.october_capital)}</Td>
+                <Td>{transformNumber(item.november)}</Td>
+                <Td>{transformNumber(item.november_capital)}</Td>
+                <Td>{transformNumber(item.december)}</Td>
+                <Td>{transformNumber(item.december_capital)}</Td>
               </Tr>
             );
           })}

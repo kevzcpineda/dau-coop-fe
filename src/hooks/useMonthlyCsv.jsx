@@ -1,67 +1,15 @@
-import React, {
-  useContext,
-  useState,
-  useRef,
-  useEffect,
-  useCallback,
-} from 'react';
-import AuthContext from '../context/AuthContext';
-import AdminLayout from '../components/AdminLayout';
-import toast, { Toaster } from 'react-hot-toast';
+import React, { useState, useEffect } from 'react';
+
 import moment from 'moment';
 import axios from 'axios';
-import { useQuery, useMutation, useQueryClient } from 'react-query';
-import {
-  Box,
-  Heading,
-  Button,
-  Editable,
-  EditableInput,
-  EditableTextarea,
-  EditablePreview,
-} from '@chakra-ui/react';
-import { useReactToPrint } from 'react-to-print';
-import MonthlyCapitalSharePdf from '../components/pdf/MonthlyCapitalSharePdf';
-import MonthlyShareCapitalTable from '../components/DailyJues/MonthlyShareCapitalTable';
-import { CSVLink } from 'react-csv';
+import { useMutation, useQueryClient } from 'react-query';
+
 import transformNumber from '../utils/transformNumber';
-const MonthlyCapitalShare = () => {
+
+export function useMontlyCsv(year) {
   const queryClient = useQueryClient();
   const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
-  const { getDailyCapitalShare } = useContext(AuthContext);
-  const [isPrinting, setIsPrinting] = useState(false);
-  const promiseResolveRef = useRef(null);
-  const printRef = useRef();
-  const dateNow = moment().format('L').split('/');
-  const yearNow = dateNow[2];
-  const [year, setYear] = useState(yearNow);
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
   const [csvData, setCsvData] = useState([]);
-  // const { data, status } = useQuery({
-  //   queryKey: ['dailyCapitalShare'],
-  //   queryFn: getDailyCapitalShare,
-  // });
-
-  console.log('dataaaaaassssasasasas', data);
-  const { mutate, isLoading } = useMutation({
-    mutationFn: () => {
-      return axios.get(
-        `${baseURL}/daily_jues/paginated-monthly-capital-share/?year=${year}&page=${page}&search=${search}`
-      );
-    },
-    onSuccess: (data) => {
-      queryClient.setQueryData(
-        [
-          'paginatedMonthlyShareCapital',
-          { year: year, page: page, search: search },
-        ],
-        () => {
-          return data;
-        }
-      );
-    },
-  });
 
   const {
     isSuccess: csvMonthlySuccess,
@@ -192,34 +140,6 @@ const MonthlyCapitalShare = () => {
     },
   });
 
-  const handleNextPage = () => {
-    setPage((prev) => {
-      return prev + 1;
-    });
-    mutate();
-  };
-  const handlePrevPage = () => {
-    setPage((prev) => {
-      return prev - 1;
-    });
-    mutate();
-  };
-  const handleChangeDate = ([year, month, day]) => {
-    setYear(year);
-    mutate();
-    csvMonthlySutate();
-    operator_total_mutate();
-    asso_operator_total_mutate();
-    driver_total_mutate();
-    sub_driver_total_mutate();
-    barker_total_mutate();
-    regular_member_total_mutate();
-    mutateAll();
-  };
-  const handleSearch = (e) => {
-    setSearch(e);
-    mutate();
-  };
   const transformData = (data, member_status) => {
     const filtered = data
       .filter((item) => {
@@ -298,6 +218,15 @@ const MonthlyCapitalShare = () => {
       ]);
       return transformedArray;
     }
+  };
+  const mutateAll = () => {
+    csvMonthlySutate();
+    operator_total_mutate();
+    asso_operator_total_mutate();
+    driver_total_mutate();
+    sub_driver_total_mutate();
+    barker_total_mutate();
+    regular_member_total_mutate();
   };
   useEffect(() => {
     if (
@@ -465,33 +394,5 @@ const MonthlyCapitalShare = () => {
     barker_total_success,
     regular_member_total_success,
   ]);
-  return (
-    <AdminLayout>
-      <CSVLink data={csvData}>Download</CSVLink>
-
-      {/* <MonthlyCapitalSharePdf ref={printRef} /> */}
-      <Toaster position='top-right' reverseOrder={false} />
-      <Box>
-        <Heading>Monthly Capital Share</Heading>
-      </Box>
-      <Editable defaultValue='Search' onSubmit={(e) => handleSearch(e)}>
-        <EditablePreview />
-        <EditableInput />
-      </Editable>
-      <input
-        type='date'
-        onChange={(e) => handleChangeDate(e.target.value.split('-'))}
-      />
-      <MonthlyShareCapitalTable
-        year={year}
-        page={page}
-        search={search}
-        handleNextPage={handleNextPage}
-        handlePrevPage={handlePrevPage}
-        isLoading={isLoading}
-      />
-    </AdminLayout>
-  );
-};
-
-export default MonthlyCapitalShare;
+  return [csvData, mutateAll];
+}

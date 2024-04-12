@@ -197,8 +197,22 @@ const DaysShareCapitalTable = ({
                     <td>{item.day30}</td>
                     <td>{item.day31}</td>
                     <td>{item.total}</td>
-                    <td>{item.total / 2}</td>
-                    <td>{item.total / 2}</td>
+                    <td>
+                      {item.member_status === 'REGULAR_MEMBER' ||
+                      'SM' ||
+                      'BAYANIHAN' ||
+                      'BARKER'
+                        ? item.total
+                        : item.total / 2}
+                    </td>
+                    <td>
+                      {item.member_status === 'REGULAR_MEMBER' ||
+                      'SM' ||
+                      'BAYANIHAN' ||
+                      'BARKER'
+                        ? item.total
+                        : item.total / 2}
+                    </td>
                   </Tr>
                 );
               })}

@@ -23,6 +23,7 @@ import {
 } from '@chakra-ui/react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import AuthContext from '../../context/AuthContext';
+import transformNumber from '../../utils/transformNumber';
 const MonthlyShareCapitalTable = ({
   year,
   page,
@@ -77,21 +78,21 @@ const MonthlyShareCapitalTable = ({
                   <Tr key={index}>
                     <td>{item.id}</td>
                     <td>{`${item.last_name} ${item.first_name}`}</td>
-                    <td>{item.year}</td>
-                    <td>{item.january}</td>
-                    <td>{item.febuary}</td>
-                    <td>{item.march}</td>
-                    <td>{item.april}</td>
-                    <td>{item.may}</td>
-                    <td>{item.june}</td>
-                    <td>{item.july}</td>
-                    <td>{item.august}</td>
-                    <td>{item.september}</td>
-                    <td>{item.october}</td>
-                    <td>{item.november}</td>
-                    <td>{item.december}</td>
-                    <td>{item.total}</td>
-                    <td>{item.total_capital_share}</td>
+                    <td>{transformNumber(item.year)}</td>
+                    <td>{transformNumber(item.january)}</td>
+                    <td>{transformNumber(item.febuary)}</td>
+                    <td>{transformNumber(item.march)}</td>
+                    <td>{transformNumber(item.april)}</td>
+                    <td>{transformNumber(item.may)}</td>
+                    <td>{transformNumber(item.june)}</td>
+                    <td>{transformNumber(item.july)}</td>
+                    <td>{transformNumber(item.august)}</td>
+                    <td>{transformNumber(item.september)}</td>
+                    <td>{transformNumber(item.october)}</td>
+                    <td>{transformNumber(item.november)}</td>
+                    <td>{transformNumber(item.december)}</td>
+                    <td>{transformNumber(item.total)}</td>
+                    <td>{transformNumber(item.total_capital_share)}</td>
                   </Tr>
                 );
               })}

@@ -43,205 +43,586 @@ const DailyCapitalShare = () => {
   const [search, setSearch] = useState('');
   const [month, setMonth] = useState(momentMonth);
   const [year, setYear] = useState(momentYear);
-  const [csvData, setCsvData] = useState([
-    ['REGULAR OPERATOR'],
-    ['NO.', 'NAMES', '1', '2'],
-  ]);
+  const [csvData, setCsvData] = useState([]);
+  const {
+    isSuccess,
+    data: csvShareCapitalData,
+    mutate: csvMutate,
+    isLoading: csvIsloading,
+    status: csvShareCapitalDataStatus,
+  } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/daily_jues/days/?month=${month}&year=${year}`
+      );
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['csvShareCapital', { year: year, month: month }],
+        () => {
+          return data;
+        }
+      );
+    },
+  });
 
-  const { data: csvShareCapitalData, status: csvShareCapitalDataStatus } =
-    useQuery({
-      queryKey: [
-        'csvShareCapital',
-        {
-          year: year,
-          month: month,
-        },
-      ],
-      queryFn: () => {
-        return axios.get(
-          `${baseURL}/daily_jues/days/?month=${month}&year=${year}`
-        );
-      },
-    });
-  const { data: csvOperatorTotal, status: csvOperatorTotalStatus } = useQuery({
-    queryKey: [
-      'csvShareCapitalOperatorTotal',
-      {
-        year: year,
-        month: month,
-      },
-    ],
-    queryFn: () => {
+  const {
+    isSuccess: operator_total_success,
+    data: operator_total_data,
+    mutate: operator_total_mutate,
+  } = useMutation({
+    mutationFn: () => {
       return axios.get(
         `${baseURL}/daily_jues/daily_jues_total/?month=${month}&year=${year}&member_status=OPERATOR`
       );
     },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['csvShareCapitalOperatorTotal', { year: year, month: month }],
+        () => {
+          return data;
+        }
+      );
+    },
   });
-  if (csvOperatorTotalStatus === 'success') {
-    const arr = Object.values(csvOperatorTotal.data);
-    console.log('arr', arr);
-  }
-  useEffect(() => {
-    if (csvShareCapitalDataStatus === 'success') {
-      const data = [
-        ['OPERATOR'],
-        [
-          'NO.',
-          'NAMES',
-          '1',
-          '2',
-          // '3',
-          // '4',
-          // '5',
-          // '6',
-          // '7',
-          // '8',
-          // '9',
-          // '10',
-          // '11',
-          // '12',
-          // '13',
-          // '14',
-          // '15',
-          // '16',
-          // '17',
-          // '18',
-          // '19',
-          // '20',
-          // '21',
-          // '22',
-          // '23',
-          // '24',
-          // '25',
-          // '26',
-          // '27',
-          // '28',
-          // '29',
-          // '30',
-          // '31',
-          // 'TOTAL',
-          // 'OPERATION FEE',
-          // 'SHARE CAPITAL',
-        ],
-      ];
-      const operators = csvShareCapitalData?.data
-        .filter((item) => {
-          return item.member_status === 'OPERATOR';
-        })
-        .sort((a, b) => {
-          const lastNameComparison = a.last_name.localeCompare(b.last_name);
-          if (lastNameComparison === 0) {
-            return a.first_name.localeCompare(b.first_name);
-          }
-          return lastNameComparison;
-        })
-        .map((item, index) => [
-          index + 1,
-          item.last_name + ' ' + item.first_name,
-          item.member_status,
-          item.day1,
-          item.total,
-        ]);
-      const asso_operators = csvShareCapitalData?.data
-        .filter((item) => {
-          return item.member_status === 'ASSOCIATE_OPERATOR';
-        })
-        .sort((a, b) => {
-          const lastNameComparison = a.last_name.localeCompare(b.last_name);
-          if (lastNameComparison === 0) {
-            return a.first_name.localeCompare(b.first_name);
-          }
-          return lastNameComparison;
-        })
-        .map((item, index) => [
-          index + 1,
-          item.last_name + ' ' + item.first_name,
-          item.member_status,
-          item.day1,
-          item.total,
-        ]);
-      const driver = csvShareCapitalData?.data
-        .filter((item) => {
-          return item.member_status === 'DRIVER';
-        })
-        .sort((a, b) => {
-          const lastNameComparison = a.last_name.localeCompare(b.last_name);
-          if (lastNameComparison === 0) {
-            return a.first_name.localeCompare(b.first_name);
-          }
-          return lastNameComparison;
-        })
-        .map((item, index) => [
-          index + 1,
-          item.last_name + ' ' + item.first_name,
-          item.member_status,
-          item.day1,
-          item.total,
-        ]);
-      const sub_driver = csvShareCapitalData?.data
-        .filter((item) => {
-          return item.member_status === 'SUBTITUTE_DRIVER';
-        })
-        .sort((a, b) => {
-          const lastNameComparison = a.last_name.localeCompare(b.last_name);
-          if (lastNameComparison === 0) {
-            return a.first_name.localeCompare(b.first_name);
-          }
-          return lastNameComparison;
-        })
-        .map((item, index) => [
-          index + 1,
-          item.last_name + ' ' + item.first_name,
-          item.member_status,
-          item.day1,
-          item.total,
-        ]);
-      const barker = csvShareCapitalData?.data
-        .filter((item) => {
-          return item.member_status === 'BARKER';
-        })
-        .sort((a, b) => {
-          const lastNameComparison = a.last_name.localeCompare(b.last_name);
-          if (lastNameComparison === 0) {
-            return a.first_name.localeCompare(b.first_name);
-          }
-          return lastNameComparison;
-        })
-        .map((item, index) => [
-          index + 1,
-          item.last_name + ' ' + item.first_name,
-          item.member_status,
-          item.day1,
-          item.total,
-        ]);
-      const regular_member = csvShareCapitalData?.data
-        .filter((item) => {
-          return item.member_status === 'REGULAR_MEMBER';
-        })
-        .sort((a, b) => {
-          const lastNameComparison = a.last_name.localeCompare(b.last_name);
-          if (lastNameComparison === 0) {
-            return a.first_name.localeCompare(b.first_name);
-          }
-          return lastNameComparison;
-        })
-        .map((item, index) => [
-          index + 1,
-          item.last_name + ' ' + item.first_name,
-          item.member_status,
-          item.day1,
-          item.total,
-        ]);
+  const {
+    isSuccess: asso_operator_total_success,
+    data: asso_operator_total_data,
+    mutate: asso_operator_total_mutate,
+  } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/daily_jues/daily_jues_total/?month=${month}&year=${year}&member_status=ASSOCIATE_OPERATOR`
+      );
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['csvShareCapitalAssoOperatorTotal', { year: year, month: month }],
+        () => {
+          return data;
+        }
+      );
+    },
+  });
+  const {
+    isSuccess: driver_total_success,
+    data: driver_total_data,
+    mutate: driver_total_mutate,
+  } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/daily_jues/daily_jues_total/?month=${month}&year=${year}&member_status=DRIVER`
+      );
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['csvShareCapitaldriverTotal', { year: year, month: month }],
+        () => {
+          return data;
+        }
+      );
+    },
+  });
+  const {
+    isSuccess: sub_driver_total_success,
+    data: sub_driver_total_data,
+    mutate: sub_driver_total_mutate,
+  } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/daily_jues/daily_jues_total/?month=${month}&year=${year}&member_status=SUBTITUTE_DRIVER`
+      );
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['csvShareCapitalSubDriverTotal', { year: year, month: month }],
+        () => {
+          return data;
+        }
+      );
+    },
+  });
+  const {
+    isSuccess: barker_total_success,
+    data: barker_total_data,
+    mutate: barker_total_mutate,
+  } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/daily_jues/daily_jues_total/?month=${month}&year=${year}&member_status=BARKER`
+      );
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['csvShareCapitalBarkerTotal', { year: year, month: month }],
+        () => {
+          return data;
+        }
+      );
+    },
+  });
+  const {
+    isSuccess: regular_member_total_success,
+    data: regular_member_total_data,
+    mutate: regular_member_total_mutate,
+  } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/daily_jues/daily_jues_total/?month=${month}&year=${year}&member_status=REGULAR_MEMBER`
+      );
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['csvShareCapitalRegularMemberTotal', { year: year, month: month }],
+        () => {
+          return data;
+        }
+      );
+    },
+  });
+  const {
+    isSuccess: barkers_boundary_total_success,
+    data: barkers_boundary_total_data,
+    mutate: barkers_boundary_total_mutate,
+  } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/daily_jues/daily_jues_total/?month=${month}&year=${year}&member_status=BARKERS_BOUNDARY`
+      );
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['csvShareCapitalBarkersBoundaryTotal', { year: year, month: month }],
+        () => {
+          return data;
+        }
+      );
+    },
+  });
+  const {
+    isSuccess: subTotal_success,
+    data: subTotal_data,
+    mutate: subTotal_mutate,
+  } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/daily_jues/daily_jues_total/?month=${month}&year=${year}&member_status=SUBTOTAL`
+      );
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['csvShareCapitalSubTotal', { year: year, month: month }],
+        () => {
+          return data;
+        }
+      );
+    },
+  });
+  const {
+    isSuccess: grandTotal_success,
+    data: grandTotal_data,
+    mutate: grandTotal_mutate,
+  } = useMutation({
+    mutationFn: () => {
+      return axios.get(
+        `${baseURL}/daily_jues/daily_jues_total/?month=${month}&year=${year}&member_status=GRANDTOTAL`
+      );
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(
+        ['csvShareCapitalGrandTotal', { year: year, month: month }],
+        () => {
+          return data;
+        }
+      );
+    },
+  });
 
-      operators.map((item) => {
+  const transformData = (data, member_status) => {
+    if (
+      member_status === 'BARKER_BOUNDARY' ||
+      member_status === 'BARKER' ||
+      member_status === 'REGULAR_MEMBER'
+    ) {
+      const filtered = data
+        .filter((item) => {
+          return item.member_status === member_status;
+        })
+        .sort((a, b) => {
+          const lastNameComparison = a.last_name.localeCompare(b.last_name);
+          if (lastNameComparison === 0) {
+            return a.first_name.localeCompare(b.first_name);
+          }
+          return lastNameComparison;
+        })
+        .map((item, index) => [
+          index + 1,
+          item.last_name + ' ' + item.first_name,
+          item.day1,
+          item.day2,
+          item.day3,
+          item.day4,
+          item.day5,
+          item.day6,
+          item.day7,
+          item.day8,
+          item.day9,
+          item.day10,
+          item.day11,
+          item.day12,
+          item.day13,
+          item.day14,
+          item.day15,
+          item.day16,
+          item.day17,
+          item.day18,
+          item.day19,
+          item.day20,
+          item.day21,
+          item.day22,
+          item.day23,
+          item.day24,
+          item.day25,
+          item.day26,
+          item.day27,
+          item.day28,
+          item.day29,
+          item.day30,
+          item.day31,
+          item.total,
+        ]);
+      return filtered;
+    } else {
+      const filtered = data
+        .filter((item) => {
+          return item.member_status === member_status;
+        })
+        .sort((a, b) => {
+          const lastNameComparison = a.last_name.localeCompare(b.last_name);
+          if (lastNameComparison === 0) {
+            return a.first_name.localeCompare(b.first_name);
+          }
+          return lastNameComparison;
+        })
+        .map((item, index) => [
+          index + 1,
+          item.last_name + ' ' + item.first_name,
+          item.day1,
+          item.day2,
+          item.day3,
+          item.day4,
+          item.day5,
+          item.day6,
+          item.day7,
+          item.day8,
+          item.day9,
+          item.day10,
+          item.day11,
+          item.day12,
+          item.day13,
+          item.day14,
+          item.day15,
+          item.day16,
+          item.day17,
+          item.day18,
+          item.day19,
+          item.day20,
+          item.day21,
+          item.day22,
+          item.day23,
+          item.day24,
+          item.day25,
+          item.day26,
+          item.day27,
+          item.day28,
+          item.day29,
+          item.day30,
+          item.day31,
+          item.total,
+          item.total / 2,
+          item.total / 2,
+        ]);
+      return filtered;
+    }
+  };
+  const transformTotal = (memberStatus, title, data) => {
+    if (
+      memberStatus === 'BARKER_BOUNDARY' ||
+      memberStatus === 'BARKER' ||
+      memberStatus === 'REGULAR_MEMBER' ||
+      memberStatus === 'SUBTOTAL' ||
+      memberStatus === 'GRANDTOTAL'
+    ) {
+      const transformedArray = [data].map((item) => [
+        '',
+        `${title}`,
+        item.day1_total,
+        item.day2_total,
+        item.day3_total,
+        item.day4_total,
+        item.day5_total,
+        item.day6_total,
+        item.day7_total,
+        item.day8_total,
+        item.day9_total,
+        item.day10_total,
+        item.day11_total,
+        item.day12_total,
+        item.day13_total,
+        item.day14_total,
+        item.day15_total,
+        item.day16_total,
+        item.day17_total,
+        item.day18_total,
+        item.day19_total,
+        item.day20_total,
+        item.day21_total,
+        item.day22_total,
+        item.day23_total,
+        item.day24_total,
+        item.day25_total,
+        item.day26_total,
+        item.day27_total,
+        item.day28_total,
+        item.day29_total,
+        item.day30_total,
+        item.day31_total,
+        item.total,
+      ]);
+      return transformedArray;
+    } else {
+      const transformedArray = [data].map((item) => [
+        '',
+        `${title}`,
+        item.day1_total,
+        item.day2_total,
+        item.day3_total,
+        item.day4_total,
+        item.day5_total,
+        item.day6_total,
+        item.day7_total,
+        item.day8_total,
+        item.day9_total,
+        item.day10_total,
+        item.day11_total,
+        item.day12_total,
+        item.day13_total,
+        item.day14_total,
+        item.day15_total,
+        item.day16_total,
+        item.day17_total,
+        item.day18_total,
+        item.day19_total,
+        item.day20_total,
+        item.day21_total,
+        item.day22_total,
+        item.day23_total,
+        item.day24_total,
+        item.day25_total,
+        item.day26_total,
+        item.day27_total,
+        item.day28_total,
+        item.day29_total,
+        item.day30_total,
+        item.day31_total,
+        item.total,
+        item.total / 2,
+        item.total / 2,
+      ]);
+      return transformedArray;
+    }
+  };
+  useEffect(() => {
+    if (
+      isSuccess &&
+      operator_total_success &&
+      asso_operator_total_success &&
+      driver_total_success &&
+      sub_driver_total_success &&
+      barker_total_success &&
+      regular_member_total_success &&
+      barkers_boundary_total_success &&
+      subTotal_success &&
+      grandTotal_success
+    ) {
+      console.log('csvShareCapitalData?.data', csvShareCapitalData?.data);
+      const operatorsTotal = transformTotal(
+        'OPERATOR',
+        'TOTAL',
+        operator_total_data.data
+      );
+      const assoOperatorsTotal = transformTotal(
+        'ASSO_OPERATOR',
+        'TOTAL',
+        asso_operator_total_data.data
+      );
+      const driverTotal = transformTotal(
+        'DRIVER',
+        'TOTAL',
+        driver_total_data.data
+      );
+      const subDriverTotal = transformTotal(
+        'SUB_DRIVER',
+        'TOTAL',
+        sub_driver_total_data.data
+      );
+      const barkerTotal = transformTotal(
+        'BARKER',
+        'TOTAL',
+        barker_total_data.data
+      );
+      const regularMemberTotal = transformTotal(
+        'REGULAR_MEMBER',
+        'TOTAL',
+        regular_member_total_data.data
+      );
+      const barkersBoundaryTotal = transformTotal(
+        'BARKER_BOUNDARY',
+        'TOTAL',
+        barkers_boundary_total_data.data
+      );
+      const subTotal = transformTotal(
+        'SUBTOTAL',
+        'SUBTOTAL',
+        subTotal_data.data
+      );
+      const grandTotal = transformTotal(
+        'GRANDTOTAL',
+        'GRANDTOTAL',
+        grandTotal_data.data
+      );
+
+      const operators = transformData(csvShareCapitalData?.data, 'OPERATOR');
+      const asso_operators = transformData(
+        csvShareCapitalData?.data,
+        'ASSOCIATE_OPERATOR'
+      );
+      const driver = transformData(csvShareCapitalData?.data, 'DRIVER');
+      const sub_driver = transformData(
+        csvShareCapitalData?.data,
+        'SUBTITUTE_DRIVER'
+      );
+      const barker = transformData(csvShareCapitalData?.data, 'BARKER');
+      const regular_member = transformData(
+        csvShareCapitalData?.data,
+        'REGULAR_MEMBER'
+      );
+      const barkers_boundary = csvShareCapitalData?.data
+        .filter((item) => {
+          return (
+            item.member_status === 'SM' || item.member_status === 'BAYANIHAN'
+          );
+        })
+        .sort((a, b) => {
+          const lastNameComparison = a.last_name.localeCompare(b.last_name);
+          if (lastNameComparison === 0) {
+            return a.first_name.localeCompare(b.first_name);
+          }
+          return lastNameComparison;
+        })
+        .map((item, index) => [
+          index + 1,
+          item.last_name + ' ' + item.first_name,
+          item.day1,
+          item.day2,
+          item.day3,
+          item.day4,
+          item.day5,
+          item.day6,
+          item.day7,
+          item.day8,
+          item.day9,
+          item.day10,
+          item.day11,
+          item.day12,
+          item.day13,
+          item.day14,
+          item.day15,
+          item.day16,
+          item.day17,
+          item.day18,
+          item.day19,
+          item.day20,
+          item.day21,
+          item.day22,
+          item.day23,
+          item.day24,
+          item.day25,
+          item.day26,
+          item.day27,
+          item.day28,
+          item.day29,
+          item.day30,
+          item.day31,
+          item.total,
+        ]);
+      setCsvData([]);
+      setCsvData((prev) => {
+        return [
+          ...prev,
+          ['REGULAR OPERATOR'],
+          [
+            'NO.',
+            'NAMES',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9',
+            '10',
+            '11',
+            '12',
+            '13',
+            '14',
+            '15',
+            '16',
+            '17',
+            '18',
+            '19',
+            '20',
+            '21',
+            '22',
+            '23',
+            '24',
+            '25',
+            '26',
+            '27',
+            '28',
+            '29',
+            '30',
+            '31',
+            'TOTAL',
+            'OPERATION FEE',
+            'SHARE CAPITAL',
+          ],
+        ];
+      });
+
+      operators?.map((item) => {
         setCsvData((prev) => {
           return [...prev, item];
         });
       });
+
+      operatorsTotal?.map((item) => {
+        setCsvData((prev) => {
+          return [...prev, item];
+        });
+      });
+
       setCsvData((prev) => {
         return [...prev, [], [], ['ASSOCIATE OPERATOR']];
       });
-      asso_operators.map((item) => {
+      asso_operators?.map((item) => {
+        setCsvData((prev) => {
+          return [...prev, item];
+        });
+      });
+      assoOperatorsTotal?.map((item) => {
         setCsvData((prev) => {
           return [...prev, item];
         });
@@ -249,7 +630,12 @@ const DailyCapitalShare = () => {
       setCsvData((prev) => {
         return [...prev, [], [], ['REGULAR MEMBER']];
       });
-      regular_member.map((item) => {
+      regular_member?.map((item) => {
+        setCsvData((prev) => {
+          return [...prev, item];
+        });
+      });
+      regularMemberTotal?.map((item) => {
         setCsvData((prev) => {
           return [...prev, item];
         });
@@ -257,7 +643,12 @@ const DailyCapitalShare = () => {
       setCsvData((prev) => {
         return [...prev, [], [], ['REGULAR DRIVER']];
       });
-      driver.map((item) => {
+      driver?.map((item) => {
+        setCsvData((prev) => {
+          return [...prev, item];
+        });
+      });
+      driverTotal?.map((item) => {
         setCsvData((prev) => {
           return [...prev, item];
         });
@@ -265,7 +656,12 @@ const DailyCapitalShare = () => {
       setCsvData((prev) => {
         return [...prev, [], [], ['SUBTITUTE DRIVER']];
       });
-      sub_driver.map((item) => {
+      sub_driver?.map((item) => {
+        setCsvData((prev) => {
+          return [...prev, item];
+        });
+      });
+      subDriverTotal?.map((item) => {
         setCsvData((prev) => {
           return [...prev, item];
         });
@@ -273,96 +669,55 @@ const DailyCapitalShare = () => {
       setCsvData((prev) => {
         return [...prev, [], [], ['BARKER']];
       });
-      barker.map((item) => {
+      barker?.map((item) => {
+        setCsvData((prev) => {
+          return [...prev, item];
+        });
+      });
+      barkerTotal?.map((item) => {
+        setCsvData((prev) => {
+          return [...prev, item];
+        });
+      });
+      setCsvData((prev) => {
+        return [...prev, [], [], ['BARKER BOUNDARY']];
+      });
+      barkers_boundary?.map((item) => {
+        setCsvData((prev) => {
+          return [...prev, item];
+        });
+      });
+      barkersBoundaryTotal?.map((item) => {
+        setCsvData((prev) => {
+          return [...prev, item];
+        });
+      });
+      setCsvData((prev) => {
+        return [...prev, [], []];
+      });
+      subTotal?.map((item) => {
+        setCsvData((prev) => {
+          return [...prev, item];
+        });
+      });
+      grandTotal?.map((item) => {
         setCsvData((prev) => {
           return [...prev, item];
         });
       });
     }
-  }, [csvShareCapitalDataStatus]);
-
-  // const convertedOperators = operators.map((item) => [
-  //   item.last_name + ' ' + item.first_name,
-  //   item.member_status,
-  //   item.day1,
-  //   item.total,
-  // ]);
-  // const convertedAssoOperators = asso_operators.map((item) => [
-  //   item.last_name + ' ' + item.first_name,
-  //   item.member_status,
-  //   item.day1,
-  //   item.total,
-  // ]);
-  // const convertedDriver = driver.map((item) => [
-  //   item.last_name + ' ' + item.first_name,
-  //   item.member_status,
-  //   item.day1,
-  //   item.total,
-  // ]);
-  // const convertedSubDriver = sub_driver.map((item) => [
-  //   item.last_name + ' ' + item.first_name,
-  //   item.member_status,
-  //   item.day1,
-  //   item.total,
-  // ]);
-  // const convertedBarker = barker.map((item) => [
-  //   item.last_name + ' ' + item.first_name,
-  //   item.member_status,
-  //   item.day1,
-  //   item.total,
-  // ]);
-  // const convertedRegularMember = regular_member.map((item) => [
-  //   item.last_name + ' ' + item.first_name,
-  //   item.member_status,
-  //   item.day1,
-  //   item.total,
-  // ]);
-  // console.log('convertedOperators', convertedOperators);
-  // console.log('convertedAssoOperators', convertedAssoOperators);
-
-  // const { data: dailyCapitalShareData, status: dailyCapitalShareStatus } =
-  //   useQuery({
-  //     queryKey: ['dailyCapitalShare', year, month],
-  //     queryFn: () => getDailyCapitalShare(year, month),
-  //   });
-
-  // const {
-  //   data: CapitalShareTotalOperatorData,
-  //   status: CapitalShareTotalOperatorStatus,
-  // } = useQuery({
-  //   queryKey: ['CapitalShareTotal', 'Operator'],
-  //   queryFn: () => getDailyCapitalShareTotal(year, month, 'OPERATOR'),
-  // });
-
-  // const reactToPrintContent = useCallback(() => {
-  //   return printRef.current;
-  // }, [printRef.current]);
-
-  // useEffect(() => {
-  //   if (isPrinting && promiseResolveRef.current) {
-  //     promiseResolveRef.current();
-  //   }
-  // }, [isPrinting]);
-
-  // const handlePrint = useReactToPrint({
-  //   content: () => reactToPrintContent(),
-  //   pageStyle: ' @page { size: landscape; }',
-  //   onBeforeGetContent: () => {
-  //     return new Promise((resolve) => {
-  //       promiseResolveRef.current = resolve;
-  //       setIsPrinting(true);
-  //     });
-  //   },
-  //   onAfterPrint: () => {
-  //     // Reset the Promise resolve so we can print again
-  //     promiseResolveRef.current = null;
-  //     setIsPrinting(false);
-  //   },
-  // });
-
-  // const print = () => {
-  //   handlePrint();
-  // };
+  }, [
+    isSuccess,
+    operator_total_success,
+    asso_operator_total_success,
+    driver_total_success,
+    sub_driver_total_success,
+    barker_total_success,
+    regular_member_total_success,
+    barkers_boundary_total_success,
+    subTotal_success,
+    grandTotal_success,
+  ]);
 
   const { mutate, isLoading } = useMutation({
     mutationFn: () => {
@@ -384,7 +739,6 @@ const DailyCapitalShare = () => {
   });
 
   const handleNextPage = () => {
-    console.log('click next');
     setPage(page + 1);
     mutate();
   };
@@ -398,6 +752,16 @@ const DailyCapitalShare = () => {
     setYear(year);
     setMonth(month);
     mutate();
+    csvMutate();
+    operator_total_mutate();
+    asso_operator_total_mutate();
+    driver_total_mutate();
+    sub_driver_total_mutate();
+    barker_total_mutate();
+    regular_member_total_mutate();
+    barkers_boundary_total_mutate();
+    subTotal_mutate();
+    grandTotal_mutate();
   };
   const handleSearch = async (e) => {
     setSearch(e);
@@ -406,9 +770,13 @@ const DailyCapitalShare = () => {
 
   return (
     <AdminLayout>
-      {csvShareCapitalDataStatus == 'success' && (
-        <CSVLink data={csvData}>Download me</CSVLink>
-      )}
+      {/* <Button
+        onClick={() => {
+          csvMutate();
+        }}>
+        Download
+      </Button> */}
+      <CSVLink data={csvData}>Download</CSVLink>
 
       <Toaster position='top-right' reverseOrder={false} />
       <Box>

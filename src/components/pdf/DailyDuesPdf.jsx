@@ -21,13 +21,10 @@ const DailyDuesPdf = React.forwardRef((props, ref) => {
   const regular_member = props.data.daily_dues.filter(
     (item) => item.member_status === 'REGULAR_MEMBER'
   );
-  const sm = props?.data?.daily_dues?.filter(
-    (item) => item.member_status === 'SM'
+  const barkersBoundary = props.data.daily_dues.filter(
+    (item) => item.member_status === 'SM' || item.member_status === 'BAYANIHAN'
   );
-  const bayanihan = props?.data?.daily_dues?.filter(
-    (item) => item.member_status === 'BAYANIHAN'
-  );
-  console.log('sm', sm[0]);
+
   return (
     <div style={{ display: 'none' }}>
       <div ref={ref}>
@@ -187,16 +184,16 @@ const DailyDuesPdf = React.forwardRef((props, ref) => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>SM</td>
-                  <td>{sm[0].amount}</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>BAYANIHAN</td>
-                  <td>{bayanihan[0].amount}</td>
-                </tr>
+                {barkersBoundary &&
+                  barkersBoundary.map((item, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{`${item.last_name}`}</td>
+                        <td>{item.amount}</td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>
@@ -229,6 +226,10 @@ const DailyDuesPdf = React.forwardRef((props, ref) => {
           <tr>
             <td>BARKERS BOUNDARY</td>
             <td>{props.data.barker_boundary}</td>
+          </tr>
+          <tr>
+            <td>REGULAR MEMBERS</td>
+            <td>{props.data.regular_members}</td>
           </tr>
           <tr>
             <td>TOTAL</td>

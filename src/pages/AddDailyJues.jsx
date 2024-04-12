@@ -49,6 +49,7 @@ const AddDailyJues = () => {
   const [subDriverTotalAmount, setSubDriverTotalAmount] = useState();
   const [barkerTotalAmount, setBarkerTotalAmount] = useState();
   const [barkerBoundaryTotalAmount, setBarkerBoundaryTotalAmount] = useState();
+  const [regularMemberTotalAmount, setRegularMemberTotalAmount] = useState();
   const [operatorFocusId, setOperatorFocusId] = useState(null);
   // const [barkerBoundary, setBarkerBoundary] = useState([
   //   {
@@ -129,25 +130,25 @@ const AddDailyJues = () => {
       return dailyDuesReportValidate.data;
     });
 
-    const barkerBoundaryPayload = barkerBoundary.map((item) => {
-      const barkerBoundaryReportValidate = dailyDuesReportSchema.safeParse({
-        user: null,
-        member_status: item.member_status,
-        fname: null,
-        lname: null,
-        amount: item.amount,
-        date: date,
-      });
-      if (!barkerBoundaryReportValidate.success) {
-        return { errorMessage: 'Invalid' };
-      }
-      return barkerBoundaryReportValidate.data;
-    });
-    let combinedArray = [...dailyDuesPayload, ...barkerBoundaryPayload];
+    // const barkerBoundaryPayload = barkerBoundary.map((item) => {
+    //   const barkerBoundaryReportValidate = dailyDuesReportSchema.safeParse({
+    //     user: null,
+    //     member_status: item.member_status,
+    //     fname: null,
+    //     lname: null,
+    //     amount: item.amount,
+    //     date: date,
+    //   });
+    //   if (!barkerBoundaryReportValidate.success) {
+    //     return { errorMessage: 'Invalid' };
+    //   }
+    //   return barkerBoundaryReportValidate.data;
+    // });
+    // let combinedArray = [...dailyDuesPayload, ...barkerBoundaryPayload];
 
     const submitDailyDuesReportValidate = submitDailyDuesReportSchema.safeParse(
       {
-        daily_dues: combinedArray,
+        daily_dues: dailyDuesPayload,
       }
     );
     if (!submitDailyDuesReportValidate.success) {
@@ -231,11 +232,11 @@ const AddDailyJues = () => {
       }
       return lastNameComparison;
     });
+  const barkerBoundary = data?.data.filter((item) => {
+    return item.member_status === 'SM' || item.member_status === 'BAYANIHAN';
+  });
+
   const handleGetTotal = () => {
-    const smBoundary = parseInt(smBoundaryRef.current.value);
-    const bayanihanBoundary = parseInt(bayanihanBoundaryRef.current.value);
-    console.log(smBoundary);
-    console.log(bayanihanBoundary);
     const newItem = newamountRef.current.filter((item) => item.el.value);
     const shareCapital = newItem.filter((item) => {
       console.log(item);
@@ -245,6 +246,7 @@ const AddDailyJues = () => {
         item.item.member_status === 'DRIVER'
       );
     });
+
     const subDriver = newItem.filter((item) => {
       console.log(item);
       return item.item.member_status === 'SUBTITUTE_DRIVER';
@@ -252,6 +254,16 @@ const AddDailyJues = () => {
     const barker = newItem.filter((item) => {
       console.log(item);
       return item.item.member_status === 'BARKER';
+    });
+    const regularMember = newItem.filter((item) => {
+      console.log(item);
+      return item.item.member_status === 'REGULAR_MEMBER';
+    });
+    const barkerBoundary = newItem.filter((item) => {
+      return (
+        item.item.member_status === 'SM' ||
+        item.item.member_status === 'BAYANIHAN'
+      );
     });
     const totalShareCapital = shareCapital.reduce((total, item) => {
       return total + parseInt(item.el.value);
@@ -262,10 +274,17 @@ const AddDailyJues = () => {
     const totalBarker = barker.reduce((total, item) => {
       return total + parseInt(item.el.value);
     }, 0);
+    const totalBarkerBoundary = barkerBoundary.reduce((total, item) => {
+      return total + parseInt(item.el.value);
+    }, 0);
+    const totalRegularMember = regularMember.reduce((total, item) => {
+      return total + parseInt(item.el.value);
+    }, 0);
     setShareCapitalTotalAmount(totalShareCapital);
     setSubDriverTotalAmount(totalSubDriver);
     setBarkerTotalAmount(totalBarker);
-    setBarkerBoundaryTotalAmount(smBoundary + bayanihanBoundary);
+    setBarkerBoundaryTotalAmount(totalBarkerBoundary);
+    setRegularMemberTotalAmount(totalRegularMember);
   };
 
   const handleKeyDown = (event) => {
@@ -308,6 +327,9 @@ const AddDailyJues = () => {
           </Heading>
           <Heading size='md'>Sub Driver: {subDriverTotalAmount}</Heading>
           <Heading size='md'>Barker Saving: {barkerTotalAmount}</Heading>
+          <Heading size='md'>
+            Regular Members: {regularMemberTotalAmount}
+          </Heading>
           <Heading size='md'>
             Barker Boundary: {barkerBoundaryTotalAmount}
           </Heading>
@@ -497,26 +519,44 @@ const AddDailyJues = () => {
             </VStack>
             <VStack alignItems='start'>
               <h1>BARKERS BOUNDARY</h1>
-              <HStack w={300} justifyContent='space-between'>
-                <span>BAYANIHAN</span>
-                <Input
-                  // onKeyDown={(e) => handleKeyDown(e)}
-                  ref={bayanihanBoundaryRef}
-                  placeholder='Amount'
-                  size='sm'
-                  width={20}
-                />
-              </HStack>
-              <HStack w={300} justifyContent='space-between'>
-                <span>SM</span>
-                <Input
-                  // onKeyDown={(e) => handleKeyDown(e)}
-                  ref={smBoundaryRef}
-                  placeholder='Amount'
-                  size='sm'
-                  width={20}
-                />
-              </HStack>
+              {barkerBoundary?.map((item, index) => {
+                return (
+                  <HStack w={300} justifyContent='space-between' key={index}>
+                    <span>{`${item.last_name}`}</span>
+                    <Input
+                      onClick={() =>
+                        setOperatorFocusId(
+                          index +
+                            regular_member.length +
+                            barker.length +
+                            sub_driver.length +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        )
+                      }
+                      onKeyDown={(e) => handleKeyDown(e)}
+                      placeholder='Amount'
+                      size='sm'
+                      width={20}
+                      ref={(el) =>
+                        (newamountRef.current[
+                          index +
+                            regular_member.length +
+                            barker.length +
+                            sub_driver.length +
+                            driver.length +
+                            asso_operators.length +
+                            operators.length
+                        ] = {
+                          el,
+                          item,
+                        })
+                      }
+                    />
+                  </HStack>
+                );
+              })}
             </VStack>
           </Grid>
         </Box>
