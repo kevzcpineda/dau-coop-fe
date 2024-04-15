@@ -19,6 +19,7 @@ import {
   EditableInput,
   EditableTextarea,
   EditablePreview,
+  Spinner,
 } from '@chakra-ui/react';
 import { useReactToPrint } from 'react-to-print';
 import MonthlyCapitalSharePdf from '../components/pdf/MonthlyCapitalSharePdf';
@@ -43,7 +44,6 @@ const MonthlyCapitalShare = () => {
   //   queryFn: getDailyCapitalShare,
   // });
 
-  console.log('dataaaaaassssasasasas', data);
   const { mutate, isLoading } = useMutation({
     mutationFn: () => {
       return axios.get(
@@ -64,6 +64,7 @@ const MonthlyCapitalShare = () => {
   });
 
   const {
+    isLoading: csvMonthlyPending,
     isSuccess: csvMonthlySuccess,
     data: csvMonthlyData,
     mutate: csvMonthlySutate,
@@ -78,6 +79,7 @@ const MonthlyCapitalShare = () => {
     },
   });
   const {
+    isLoading: operator_total_pending,
     isSuccess: operator_total_success,
     data: operator_total_data,
     mutate: operator_total_mutate,
@@ -97,6 +99,7 @@ const MonthlyCapitalShare = () => {
     },
   });
   const {
+    isLoading: asso_operator_total_pending,
     isSuccess: asso_operator_total_success,
     data: asso_operator_total_data,
     mutate: asso_operator_total_mutate,
@@ -116,6 +119,7 @@ const MonthlyCapitalShare = () => {
     },
   });
   const {
+    isLoading: driver_total_pending,
     isSuccess: driver_total_success,
     data: driver_total_data,
     mutate: driver_total_mutate,
@@ -135,6 +139,7 @@ const MonthlyCapitalShare = () => {
     },
   });
   const {
+    isLoading: sub_driver_total_pending,
     isSuccess: sub_driver_total_success,
     data: sub_driver_total_data,
     mutate: sub_driver_total_mutate,
@@ -154,6 +159,7 @@ const MonthlyCapitalShare = () => {
     },
   });
   const {
+    isLoading: barker_total_pending,
     isSuccess: barker_total_success,
     data: barker_total_data,
     mutate: barker_total_mutate,
@@ -173,6 +179,7 @@ const MonthlyCapitalShare = () => {
     },
   });
   const {
+    isLoading: regular_member_total_pending,
     isSuccess: regular_member_total_success,
     data: regular_member_total_data,
     mutate: regular_member_total_mutate,
@@ -467,7 +474,21 @@ const MonthlyCapitalShare = () => {
   ]);
   return (
     <AdminLayout>
-      <CSVLink data={csvData}>Download</CSVLink>
+      {csvMonthlyPending &&
+        operator_total_pending &&
+        asso_operator_total_pending &&
+        driver_total_pending &&
+        barker_total_pending &&
+        regular_member_total_pending &&
+        sub_driver_total_pending && <Spinner />}
+
+      {csvMonthlySuccess &&
+        operator_total_success &&
+        asso_operator_total_success &&
+        driver_total_success &&
+        sub_driver_total_success &&
+        regular_member_total_success &&
+        barker_total_success && <CSVLink data={csvData}>Download</CSVLink>}
 
       {/* <MonthlyCapitalSharePdf ref={printRef} /> */}
       <Toaster position='top-right' reverseOrder={false} />

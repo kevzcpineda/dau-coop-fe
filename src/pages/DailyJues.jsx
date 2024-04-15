@@ -77,6 +77,7 @@ const DailyJues = () => {
     },
   });
   const {
+    isLoading: csvIsLoading,
     isSuccess: csvLedgerSuccess,
     data: csvLedgerData,
     mutate: csvLedgerMutate,
@@ -93,6 +94,7 @@ const DailyJues = () => {
     },
   });
   const {
+    isLoading: operatorIsLoading,
     isSuccess: operator_total_success,
     data: operator_total_data,
     mutate: operator_total_mutate,
@@ -112,6 +114,7 @@ const DailyJues = () => {
     },
   });
   const {
+    isLoading: assoOperatorIsLoading,
     isSuccess: asso_operator_total_success,
     data: asso_operator_total_data,
     mutate: asso_operator_total_mutate,
@@ -131,6 +134,7 @@ const DailyJues = () => {
     },
   });
   const {
+    isLoading: driverIsLoading,
     isSuccess: driver_total_success,
     data: driver_total_data,
     mutate: driver_total_mutate,
@@ -150,6 +154,7 @@ const DailyJues = () => {
     },
   });
   const {
+    isLoading: subDriverIsLoading,
     isSuccess: sub_driver_total_success,
     data: sub_driver_total_data,
     mutate: sub_driver_total_mutate,
@@ -169,6 +174,7 @@ const DailyJues = () => {
     },
   });
   const {
+    isLoading: barkerIsLoading,
     isSuccess: barker_total_success,
     data: barker_total_data,
     mutate: barker_total_mutate,
@@ -188,6 +194,7 @@ const DailyJues = () => {
     },
   });
   const {
+    isLoading: regularMemberIsLoading,
     isSuccess: regular_member_total_success,
     data: regular_member_total_data,
     mutate: regular_member_total_mutate,
@@ -207,6 +214,7 @@ const DailyJues = () => {
     },
   });
   const {
+    isLoading: subTotalIsLoading,
     isSuccess: subTotal_success,
     data: subTotal_data,
     mutate: subTotal_mutate,
@@ -825,7 +833,24 @@ const DailyJues = () => {
   ]);
   return (
     <AdminLayout>
-      <CSVLink data={csvData}>Download</CSVLink>
+      {csvIsLoading &&
+        operatorIsLoading &&
+        assoOperatorIsLoading &&
+        driverIsLoading &&
+        subDriverIsLoading &&
+        barkerIsLoading &&
+        regularMemberIsLoading &&
+        subTotalIsLoading && <Spinner />}
+
+      {csvLedgerSuccess &&
+        operator_total_success &&
+        asso_operator_total_success &&
+        driver_total_success &&
+        sub_driver_total_success &&
+        regular_member_total_success &&
+        barker_total_success &&
+        subTotal_success && <CSVLink data={csvData}>Download</CSVLink>}
+      {/* <CSVLink data={csvData}>Download</CSVLink> */}
 
       <Box>
         <Editable defaultValue='Search' onSubmit={(e) => handleSearch(e)}>

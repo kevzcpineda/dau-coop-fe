@@ -67,6 +67,7 @@ const DailyCapitalShare = () => {
   });
 
   const {
+    isLoading: operator_total_isloading,
     isSuccess: operator_total_success,
     data: operator_total_data,
     mutate: operator_total_mutate,
@@ -86,6 +87,7 @@ const DailyCapitalShare = () => {
     },
   });
   const {
+    isLoading: asso_operator_total_isloading,
     isSuccess: asso_operator_total_success,
     data: asso_operator_total_data,
     mutate: asso_operator_total_mutate,
@@ -105,6 +107,7 @@ const DailyCapitalShare = () => {
     },
   });
   const {
+    isLoading: driver_total_isloading,
     isSuccess: driver_total_success,
     data: driver_total_data,
     mutate: driver_total_mutate,
@@ -124,6 +127,7 @@ const DailyCapitalShare = () => {
     },
   });
   const {
+    isLoading: sub_driver_total_isloading,
     isSuccess: sub_driver_total_success,
     data: sub_driver_total_data,
     mutate: sub_driver_total_mutate,
@@ -143,6 +147,7 @@ const DailyCapitalShare = () => {
     },
   });
   const {
+    isLoading: barker_total_isloading,
     isSuccess: barker_total_success,
     data: barker_total_data,
     mutate: barker_total_mutate,
@@ -162,6 +167,7 @@ const DailyCapitalShare = () => {
     },
   });
   const {
+    isLoading: regular_member_total_isloading,
     isSuccess: regular_member_total_success,
     data: regular_member_total_data,
     mutate: regular_member_total_mutate,
@@ -181,6 +187,7 @@ const DailyCapitalShare = () => {
     },
   });
   const {
+    isLoading: barkers_boundary_total_isloading,
     isSuccess: barkers_boundary_total_success,
     data: barkers_boundary_total_data,
     mutate: barkers_boundary_total_mutate,
@@ -200,6 +207,7 @@ const DailyCapitalShare = () => {
     },
   });
   const {
+    isLoading: subTotal_total_isloading,
     isSuccess: subTotal_success,
     data: subTotal_data,
     mutate: subTotal_mutate,
@@ -219,6 +227,7 @@ const DailyCapitalShare = () => {
     },
   });
   const {
+    isLoading: grandTotal_total_isloading,
     isSuccess: grandTotal_success,
     data: grandTotal_data,
     mutate: grandTotal_mutate,
@@ -770,13 +779,28 @@ const DailyCapitalShare = () => {
 
   return (
     <AdminLayout>
-      {/* <Button
-        onClick={() => {
-          csvMutate();
-        }}>
-        Download
-      </Button> */}
-      <CSVLink data={csvData}>Download</CSVLink>
+      {csvIsloading &&
+        operator_total_isloading &&
+        asso_operator_total_isloading &&
+        driver_total_isloading &&
+        sub_driver_total_isloading &&
+        barker_total_isloading &&
+        regular_member_total_isloading &&
+        barkers_boundary_total_isloading &&
+        subTotal_total_isloading &&
+        grandTotal_total_isloading && <Spinner />}
+
+      {isSuccess &&
+        operator_total_success &&
+        asso_operator_total_success &&
+        driver_total_success &&
+        sub_driver_total_success &&
+        regular_member_total_success &&
+        barker_total_success &&
+        barkers_boundary_total_success &&
+        subTotal_success &&
+        grandTotal_success && <CSVLink data={csvData}>Download</CSVLink>}
+      {/* <CSVLink data={csvData}>Download</CSVLink> */}
 
       <Toaster position='top-right' reverseOrder={false} />
       <Box>
