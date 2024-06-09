@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import moment from 'moment';
 import axios from 'axios';
-import { useMutation, useQueryClient } from 'react-query';
+import { useMutation, useQueryClient, useQuery } from 'react-query';
 
 import transformNumber from '../utils/transformNumber';
 
@@ -10,8 +10,11 @@ export function useMontlyCsv(year) {
   const queryClient = useQueryClient();
   const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
   const [csvData, setCsvData] = useState([]);
+  const [isloading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const {
+    isLoading: csvMonthlyPending,
     isSuccess: csvMonthlySuccess,
     data: csvMonthlyData,
     mutate: csvMonthlySutate,
@@ -26,6 +29,7 @@ export function useMontlyCsv(year) {
     },
   });
   const {
+    isLoading: operator_total_pending,
     isSuccess: operator_total_success,
     data: operator_total_data,
     mutate: operator_total_mutate,
@@ -45,6 +49,7 @@ export function useMontlyCsv(year) {
     },
   });
   const {
+    isLoading: asso_operator_total_pending,
     isSuccess: asso_operator_total_success,
     data: asso_operator_total_data,
     mutate: asso_operator_total_mutate,
@@ -64,6 +69,7 @@ export function useMontlyCsv(year) {
     },
   });
   const {
+    isLoading: driver_total_pending,
     isSuccess: driver_total_success,
     data: driver_total_data,
     mutate: driver_total_mutate,
@@ -83,6 +89,7 @@ export function useMontlyCsv(year) {
     },
   });
   const {
+    isLoading: sub_driver_total_pending,
     isSuccess: sub_driver_total_success,
     data: sub_driver_total_data,
     mutate: sub_driver_total_mutate,
@@ -102,6 +109,7 @@ export function useMontlyCsv(year) {
     },
   });
   const {
+    isLoading: barker_total_pending,
     isSuccess: barker_total_success,
     data: barker_total_data,
     mutate: barker_total_mutate,
@@ -121,6 +129,7 @@ export function useMontlyCsv(year) {
     },
   });
   const {
+    isLoading: regular_member_total_pending,
     isSuccess: regular_member_total_success,
     data: regular_member_total_data,
     mutate: regular_member_total_mutate,
@@ -139,7 +148,15 @@ export function useMontlyCsv(year) {
       );
     },
   });
-
+  const mutateAll = () => {
+    operator_total_mutate();
+    csvMonthlySutate();
+    asso_operator_total_mutate();
+    driver_total_mutate();
+    sub_driver_total_mutate();
+    barker_total_mutate();
+    regular_member_total_mutate();
+  };
   const transformData = (data, member_status) => {
     const filtered = data
       .filter((item) => {
@@ -219,19 +236,10 @@ export function useMontlyCsv(year) {
       return transformedArray;
     }
   };
-  const mutateAll = () => {
-    csvMonthlySutate();
-    operator_total_mutate();
-    asso_operator_total_mutate();
-    driver_total_mutate();
-    sub_driver_total_mutate();
-    barker_total_mutate();
-    regular_member_total_mutate();
-  };
   useEffect(() => {
     if (
-      csvMonthlySuccess &&
       operator_total_success &&
+      csvMonthlySuccess &&
       asso_operator_total_success &&
       driver_total_success &&
       sub_driver_total_success &&
@@ -385,7 +393,34 @@ export function useMontlyCsv(year) {
         });
       });
     }
+    if (
+      csvMonthlyPending &&
+      operator_total_pending &&
+      asso_operator_total_pending &&
+      driver_total_pending &&
+      sub_driver_total_pending &&
+      barker_total_pending &&
+      regular_member_total_pending
+    ) {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
+    if (
+      csvMonthlySuccess &&
+      operator_total_success &&
+      asso_operator_total_success &&
+      driver_total_success &&
+      sub_driver_total_success &&
+      barker_total_success &&
+      regular_member_total_success
+    ) {
+      setIsSuccess(true);
+    } else {
+      setIsSuccess(false);
+    }
   }, [
+    year,
     csvMonthlySuccess,
     operator_total_success,
     asso_operator_total_success,
@@ -394,5 +429,6 @@ export function useMontlyCsv(year) {
     barker_total_success,
     regular_member_total_success,
   ]);
-  return [csvData, mutateAll];
+
+  return [csvData, mutateAll, isloading, isSuccess];
 }

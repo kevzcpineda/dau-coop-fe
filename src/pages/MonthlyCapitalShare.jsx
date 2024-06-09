@@ -26,6 +26,7 @@ import MonthlyCapitalSharePdf from '../components/pdf/MonthlyCapitalSharePdf';
 import MonthlyShareCapitalTable from '../components/DailyJues/MonthlyShareCapitalTable';
 import { CSVLink } from 'react-csv';
 import transformNumber from '../utils/transformNumber';
+import { useMontlyCsv } from '../hooks/useMonthlyCsv';
 const MonthlyCapitalShare = () => {
   const queryClient = useQueryClient();
   const baseURL = `${import.meta.env.VITE_API_BASE_URL}`;
@@ -38,7 +39,10 @@ const MonthlyCapitalShare = () => {
   const [year, setYear] = useState(yearNow);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [csvData, setCsvData] = useState([]);
+  // const [csvData, setCsvData] = useState([]);
+  const [csvData, mutateAll, csvIsloading, csvIsSuccess] =
+    useMontlyCsv(yearNow);
+  console.log(csvData);
   // const { data, status } = useQuery({
   //   queryKey: ['dailyCapitalShare'],
   //   queryFn: getDailyCapitalShare,
@@ -214,14 +218,14 @@ const MonthlyCapitalShare = () => {
   const handleChangeDate = ([year, month, day]) => {
     setYear(year);
     mutate();
-    csvMonthlySutate();
-    operator_total_mutate();
-    asso_operator_total_mutate();
-    driver_total_mutate();
-    sub_driver_total_mutate();
-    barker_total_mutate();
-    regular_member_total_mutate();
     mutateAll();
+    // csvMonthlySutate();
+    // operator_total_mutate();
+    // asso_operator_total_mutate();
+    // driver_total_mutate();
+    // sub_driver_total_mutate();
+    // barker_total_mutate();
+    // regular_member_total_mutate();
   };
   const handleSearch = (e) => {
     setSearch(e);
@@ -474,21 +478,9 @@ const MonthlyCapitalShare = () => {
   ]);
   return (
     <AdminLayout>
-      {csvMonthlyPending &&
-        operator_total_pending &&
-        asso_operator_total_pending &&
-        driver_total_pending &&
-        barker_total_pending &&
-        regular_member_total_pending &&
-        sub_driver_total_pending && <Spinner />}
+      {csvIsloading && <Spinner />}
 
-      {csvMonthlySuccess &&
-        operator_total_success &&
-        asso_operator_total_success &&
-        driver_total_success &&
-        sub_driver_total_success &&
-        regular_member_total_success &&
-        barker_total_success && <CSVLink data={csvData}>Download</CSVLink>}
+      {csvIsSuccess && <CSVLink data={csvData}>Download</CSVLink>}
 
       {/* <MonthlyCapitalSharePdf ref={printRef} /> */}
       <Toaster position='top-right' reverseOrder={false} />
